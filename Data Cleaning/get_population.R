@@ -19,6 +19,6 @@ write.csv(population, "population_worldbank_all_years.csv", row.names = FALSE, q
 
 # get mean for 2006-2016
 population_mean <- population %>%
-  group_by(country, iso2c, iso3c) %>%
+  group_by(country, iso3c) %>%
   summarise(mean_population = mean(total_population, na.rm = TRUE))
 write.csv(population_mean, "population_worldbank_mean_2006-2016.csv", row.names = FALSE, quote = FALSE)
