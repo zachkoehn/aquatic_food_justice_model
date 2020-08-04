@@ -1,5 +1,5 @@
 #######################
-# Cleaning
+# Cleaning world bank GDP per capita (PPP)
 # Zach Koehn
 # zkoehn@stanford.edu
 #######################
@@ -10,6 +10,7 @@ library(tidyverse)
 library(here)
 library(countrycode)
 
+# data from https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.CD?view=map
 dat_raw <- read.csv(
   here(
     "data",
