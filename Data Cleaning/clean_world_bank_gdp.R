@@ -8,6 +8,7 @@
 # load dataset and packages
 library(tidyverse)
 library(here)
+library(countrycode)
 
 dat_raw <- read.csv(
   here(
@@ -30,7 +31,27 @@ dat_clean <- dat_raw %>%
   group_by(Country.Name,Country.Code) %>% # group by country
   summarize(mean_gdp=mean(gdp_annual,na.rm=TRUE)) # aggregate by mean
 
-# now add necessary country information using 
+# now add necessary country information using {countrycode}
+
+dat_final <- dat_clean %>%
+  mutate(
+    iso3c=countrycode(Country.Name,"country.name","iso3c"), # assign iso3c from country name
+    iso3n=countrycode(iso3c,"iso3c","iso3n"), # assign iso3n from iso3c
+    year_range="2006-2016" #add the year_range category
+    ) %>%
+  rename(country_name_en=Country.Name) %>% #rename to align with other datasets
+  select(country_name_en,iso3c,iso3n,mean_gdp,year_range) #only select variable 
+
+# and write the csv 
+write.csv(
+  dat_final,
+  here(
+    "data",
+    "data_clean",
+    "gdp_mean_2006-2016.csv"
+  ),
+  row.names = FALSE
+  )
 
 
-write.csv("data","data_clean")
+
