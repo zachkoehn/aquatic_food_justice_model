@@ -1,9 +1,12 @@
 # kdgorospe@gmail.com
-# Get datasets for net exports (in t and $) and total catch and production (t)
+# Get total catch and production (tonnes) from FAO Stat
+
+# NOTE: brown seaweeds, green seaweeds, and red seaweeds (isscaap groups) and plantae aquaticae (species_major_group) are all filtered out of production
 
 # First load function for rebuilding from FishStat ZIP file:
 rm(list=ls())
 library(tidyverse)
+# note: Change outdir to the filepath where you want outputs to go
 outdir <- "Outputs"
 
 rebuild_fish <- function(path_to_zipfile) {
@@ -126,13 +129,15 @@ rebuild_fish <- function(path_to_zipfile) {
   return(time_series_join)
 }
 
-
+# NOTE: Change file path to location of zip file
 fishstat_dat <- rebuild_fish("/Volumes/jgephart/FishStatR/Data/Production-Global/ZippedFiles/GlobalProduction_2019.1.0.zip")
 
-
+# Output total production per country
 fishstat_dat_total <- fishstat_dat %>%
   rename(iso3n = country,
          iso3c = country_iso3_code) %>%
+  filter(isscaap_group %in% c("Red seaweeds", "Green seaweeds", "Brown seaweeds")==FALSE) %>%
+  filter(species_major_group != "PLANTAE AQUATICAE") %>% 
   filter(unit == "t") %>%
   filter(year < 2017 & year > 2005) %>% # subset 2006 to 2016
   group_by(country_name_en, iso3n, iso3c, year, unit) %>%
@@ -146,6 +151,26 @@ fishstat_dat_total <- fishstat_dat %>%
 
 write.csv(fishstat_dat_total, file.path(outdir, "production_total_faostat_mean_2006-2016.csv"), row.names = FALSE, quote = FALSE)
 
+# Output production split by source (i.e., capture vs aquaculture) per country
+fishstat_dat_by_source <- fishstat_dat %>%
+  rename(iso3n = country,
+         iso3c = country_iso3_code) %>%
+  filter(isscaap_group %in% c("Red seaweeds", "Green seaweeds", "Brown seaweeds")==FALSE) %>%
+  filter(species_major_group != "PLANTAE AQUATICAE") %>% 
+  filter(unit == "t") %>%
+  filter(year < 2017 & year > 2005) %>% # subset 2006 to 2016
+  group_by(country_name_en, iso3n, iso3c, source_name_en, year, unit) %>%
+  summarise(isscaap_production_by_year = sum(quantity, na.rm = TRUE)) %>% # calculate production of each production source, per country, per year
+  ungroup() %>%
+  group_by(country_name_en, iso3n, iso3c, source_name_en, unit) %>% # now collapse year, and calculate mean across years
+  summarise(mean_production_by_isscaap = mean(isscaap_production_by_year)) %>%
+  ungroup() %>% 
+  mutate_all(~str_replace_all(., ",", "")) %>% # remove commas before writing to csv
+  mutate(year_range = '2006-2016') # add metadata column
+
+write.csv(fishstat_dat_by_source, file.path(outdir, "production_by_source_faostat_mean_2006-2016.csv"), row.names = FALSE, quote = FALSE)
+
+# Output production split by isscaap group per country
 fishstat_dat_by_isscaap <- fishstat_dat %>%
   rename(iso3n = country,
          iso3c = country_iso3_code) %>%
