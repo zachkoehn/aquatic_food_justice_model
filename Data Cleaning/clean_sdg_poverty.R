@@ -28,7 +28,7 @@ dat_clean <- dat_raw %>%
   select(-c(Indicator.Name,Indicator.Code)) %>%
   gather(key="year",value="povprop_annual",-Country.Name,-Country.Code) %>% #gathers all pov-year combinations into two columns (year and gdp_annual)
   mutate(year=as.numeric(str_replace_all(year,"X",""))) %>% # cleans string to remove leading X....
-  filter(year > 2005) %>% # subset annual sequence we are currently using 2006:2016
+  filter(year > 2005 & year < 2017 ) %>% # subset annual sequence we are currently using 2006:2016
   group_by(Country.Name,Country.Code) %>% # group by country
   summarize(mean_pov_prop=mean(povprop_annual,na.rm=TRUE)) # aggregate by mean
 
