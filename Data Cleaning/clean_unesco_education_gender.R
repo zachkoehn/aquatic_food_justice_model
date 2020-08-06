@@ -10,7 +10,6 @@ library(tidyverse)
 library(here)
 library(countrycode)
 library(readxl)
-library(R.utils)
 
 # data from http://data.uis.unesco.org/#
 dat_raw <- as.data.frame(read_excel(
