@@ -85,7 +85,7 @@ sau_clean_final <- sau_clean %>%
          pp = as.numeric(pp)) %>%
   select(sau_name_full, country_name, iso3c, iso3n, eez, ifa, pp)
 
-write.csv(sau_clean_final, file = file.path(outdir, "sau_eez_ifa_pp_individual.csv"), quote = FALSE, row.names = FALSE)
+write.csv(sau_clean_final, file = file.path(outdir, "covariates_sau_eez_ifa_pp_individual.csv"), quote = FALSE, row.names = FALSE)
 
 
 sau_aggregated <- sau_clean_final %>%
@@ -95,4 +95,4 @@ sau_aggregated <- sau_clean_final %>%
             ifa_total = sum(ifa),
             pp_eez_weighted = sum(pp * (eez/eez_total)))
 
-write.csv(sau_aggregated, file = file.path(outdir, "sau_eez_ifa_pp_aggregated.csv"), quote = FALSE, row.names = FALSE)
+write.csv(sau_aggregated, file = file.path(outdir, "covariates_sau_eez_ifa_pp_aggregated.csv"), quote = FALSE, row.names = FALSE)
