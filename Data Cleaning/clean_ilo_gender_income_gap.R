@@ -75,30 +75,30 @@ write.csv(
 ########################
 # # out of curiousity, viz of how the fishing sector compares to total gender age
 ########################
-
+# require(ggrepel)
 # my_theme <- function() {
-#   
+# 
 #   # Colors
 #   color.background = "white"
 #   color.text = "#22211d"
-#   
+# 
 #   # Begin construction of chart
 #   theme_bw(base_size=15) +
-#     
+# 
 #     # Format background colors
 #     theme(panel.background = element_rect(fill=color.background, color=color.background)) +
 #     theme(plot.background  = element_rect(fill=color.background, color=color.background)) +
 #     theme(panel.border     = element_rect(color=color.background)) +
 #     theme(strip.background = element_rect(fill=color.background, color=color.background)) +
-#     
+# 
 #     # Format the grid
 #     theme(panel.grid.major.y = element_blank()) +
 #     theme(panel.grid.minor.y = element_blank()) +
 #     theme(axis.ticks       = element_blank()) +
-#     
+# 
 #     # Format the legend
 #     theme(legend.position = "none") +
-#     
+# 
 #     # Format title and axis labels
 #     theme(plot.title       = element_text(color=color.text, size=20, face = "bold")) +
 #     theme(axis.title.x     = element_text(size=14, color="black", face = "bold")) +
@@ -106,7 +106,7 @@ write.csv(
 #     theme(axis.text.x      = element_text(size=10, vjust=0.5, hjust=0.5, color = color.text)) +
 #     theme(axis.text.y      = element_text(size=10, color = color.text)) +
 #     theme(strip.text       = element_text(face = "bold")) +
-#     
+# 
 #     # Plot margins
 #     theme(plot.margin = unit(c(0.35, 0.2, 0.3, 0.35), "cm"))
 # }
@@ -117,24 +117,31 @@ write.csv(
 #   ) %>%
 #   filter(value>0) %>%
 #   mutate(sector=fct_relevel(sector,"mean_wage_gap_fishing_sector","mean_wage_gap_all_sectors"))
-#   
+# 
 # 
 # wage_comparison %>%
 #   ggplot(aes(x=sector,y=value,group=geog))+
 #   geom_line(aes(color = geog),  alpha = .75, size = 2) +
 #   geom_point(aes(color = geog),alpha = .75, size = 4) +
-#   geom_text(data = wage_comparison %>% filter(sector == "mean_wage_gap_fishing_sector"),
-#             aes(label = geog, x = .95) , hjust = .85, fontface = "bold", color = "#888888", size = 3) +
-#   geom_text(data = wage_comparison %>% filter(sector == "mean_wage_gap_all_sectors"),
-#             aes(label = geog, x = 2.05) , hjust = 0.15, fontface = "bold", color = "#888888", size = 3) +
+#   geom_text_repel(
+#     data = wage_comparison %>% filter(sector == "mean_wage_gap_fishing_sector"),
+#             aes(label = geog, x = .95) , 
+#     hjust = .85, fontface = "bold", color = "#888888", segment.size = .2,
+#     direction = "y",nudge_x = -0.2) +
+#   geom_text_repel(
+#     data = wage_comparison %>% filter(sector == "mean_wage_gap_all_sectors"),
+#             aes(label = geog,color=geog, x = 2.05) , 
+#     hjust = 0.15, fontface = "bold", color = "#888888", segment.size = .2,
+#     direction = "y",nudge_x = 0.2) +
 #   labs(
 #     x="sector",
 #     y="Wage ratio of women's to men's",
 #     title="Gender wage gap",
 #     subtitle="Fishing sector compared to total"
 #   ) +
+#   scale_x_discrete(labels=c("Fishing sector", "All sectors")) +
 #   my_theme()
-#   
-# 
-#   
-#   
+
+
+
+
