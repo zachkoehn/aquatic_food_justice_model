@@ -6,7 +6,7 @@ library(countrycode)
 
 # First load function for rebuilding from FishStat ZIP file:
 rm(list=ls())
-library(tidyverse)
+
 # note: Change outdir to the filepath where you want outputs to go
 outdir <- "Outputs"
 # for MacOS
