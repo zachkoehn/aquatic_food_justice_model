@@ -7,8 +7,10 @@ rm(list=ls())
 library(tidyverse)
 # note: Change outdir to the filepath where you want outputs to go
 outdir <- "Outputs"
-datadir <- "/Volumes/jgephart/FishStatR/Data/CommoditiesAndTrade/FishStatJFiles"
-
+# for MacOS
+#datadir <- "/Volumes/jgephart/FishStatR/Data/CommoditiesAndTrade/FishStatJFiles"
+# for Windows:
+datadir <- "K:/FishStatR/Data/CommoditiesAndTrade/FishStatJFiles"
 
 # First load function for rebuilding from FishStat ZIP file:
 
@@ -71,6 +73,15 @@ trade_dat_total <- trade_dat %>%
   ungroup() %>%
   mutate_all(~str_replace_all(., ",", "")) %>% # remove commas before writing to csv
   mutate(year_range = '2006-2016') # add metadata column
+
+# get list of unique countries for future reference:
+trade_dat_country_list <- trade_dat_total %>%
+  select(country_name_en, iso3n, iso3c) %>%
+  unique() %>%
+  arrange(country_name_en)
+
+# OUTPUTS:
+write.csv(trade_dat_country_list, file.path(outdir, "trade_dat_country_list.csv"), quote = FALSE, row.names = FALSE)
 
 write.csv(trade_dat_total, file.path(outdir, "distribution_exports_in_USD_faostat_mean_2006-2016.csv"), row.names = FALSE, quote = FALSE)
 
