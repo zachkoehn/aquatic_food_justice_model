@@ -31,10 +31,9 @@ names(dat_raw) <- c("geography","female_particip_ssf","count_femal_particip_ssf"
 dat_final <- dat_raw %>%
   mutate(
     iso3c=countrycode(geography,"country.name","iso3c"), # assign iso3c from country name
-    iso3n=countrycode(iso3c,"iso3c","iso3n"), # assign iso3n from iso3c
-    year_range="2006-2016" #add the year_range category
+    iso3n=countrycode(iso3c,"iso3c","iso3n") # assign iso3n from iso3c
   ) %>%
-  select(geography,iso3c,iso3n,female_particip_ssf,count_femal_particip_ssf,year_range) %>% #only select variable 
+  select(geography,iso3c,iso3n,female_particip_ssf,count_femal_particip_ssf) %>% #only select variable 
   rename(country_name_en=geography)
 
 # check to see how many countries are missing
