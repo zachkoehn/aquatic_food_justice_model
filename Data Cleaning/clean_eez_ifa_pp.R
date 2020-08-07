@@ -38,7 +38,8 @@ test_double_matches <- sau_clean %>%
   # if the "territory" name is NOT found in trade data country_list, use the iso3c match for the name in parentheses
   mutate(sau_parenth_test = iso3c_sau_parenth %in% country_list$iso3c,
          sau_name_test = iso3c_sau_name %in% country_list$iso3c) %>%
-  mutate(iso3c_final = case_when(sau_name_test == TRUE ~ iso3c_sau_name,
+  mutate(iso3c_final = case_when(sau_name_full == "Congo (ex-Zaire)" ~ iso3c_sau_parenth, # special case: for Congo (ex-Zaire) - go with COD (Zaire == Demo Rep of Congo; different from the Rep of Congo (COG)
+                                 sau_name_test == TRUE ~ iso3c_sau_name,
                                  sau_name_test == FALSE ~ iso3c_sau_parenth,
                                  TRUE ~ "no_match"))
 
@@ -79,13 +80,13 @@ sau_clean_final <- sau_clean %>%
   mutate(country_name = countrycode(iso3c, origin = "iso3c", destination = "country.name"),
          iso3n = countrycode(iso3c, origin = "iso3c", destination = "iso3n")) %>%
   # Remove commas (messes up convert to numeric)
-  mutate_at(vars(c(eez, ifa, pp)), ~str_remove_all(., pattern = ",")) %>% 
+  mutate_all(~str_remove_all(., pattern = ",")) %>% 
   mutate(eez = as.numeric(eez),
          ifa = as.numeric(ifa),
          pp = as.numeric(pp)) %>%
   select(sau_name_full, country_name, iso3c, iso3n, eez, ifa, pp)
 
-write.csv(sau_clean_final, file = file.path(outdir, "covariates_sau_eez_ifa_pp_individual.csv"), quote = FALSE, row.names = FALSE)
+write.csv(sau_clean_final, file = file.path(outdir, "covariates_sau_eez_ifa_pp_NOTaggregated.csv"), quote = FALSE, row.names = FALSE)
 
 
 sau_aggregated <- sau_clean_final %>%
