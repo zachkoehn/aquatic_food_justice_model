@@ -20,43 +20,40 @@ dat_raw <- read.csv(
   file.path(
     "data",
     "data_raw",
-    "world_bank_gender_politics",
-    "data.csv"
+    "world_bank_women_parliament",
+    "API_SG.GEN.PARL.ZS_DS2_en_csv_v2_1217669.csv"
   ),
+  skip = 4,
   header=TRUE
 )
 
-dat_clean <- dat_raw %>%
-  filter(
-    Indicator == "Women in parliament",
-    Subindicator.Type =="Index"
-  ) %>% 
-  select(Country.Name,Country.ISO3,X2018)
-  
 
+dat_clean <- dat_raw %>% 
+  select(-c(Indicator.Name,Indicator.Code)) %>%
+  gather(key="year",value="women_parl_perc_annual",-Country.Name,-Country.Code) %>% #gathers all GDP-year combinations into two columns (year and gdp_annual)
+  mutate(year=as.numeric(str_replace_all(year,"X",""))) %>% # cleans string to remove leading X....
+  filter(year > 2005 & year < 2017 ) %>% # subset annual sequence we are currently using 2006:2016
+  group_by(Country.Name,Country.Code) %>% # group by country
+  summarize(mean_women_parl_perc=mean(women_parl_perc_annual,na.rm=TRUE)) # aggregate by mean
+
+# now add necessary country information using {countrycode}
 
 dat_final <- dat_clean %>%
   mutate(
-    iso3n=countrycode(Country.ISO3,"iso3c","iso3n"), # assign iso3n from iso3c
-    year_range="snapshot_2018"
+    iso3c=countrycode(Country.Name,"country.name","iso3c"), # assign iso3c from country name
+    iso3n=countrycode(iso3c,"iso3c","iso3n"), # assign iso3n from iso3c
+    year_range="2006-2016" #add the year_range category
   ) %>%
-  rename(
-    country_name_en=Country.Name,
-    women_parl_index=X2018,
-    iso3c=Country.ISO3
-         ) %>%
-  select(country_name_en,iso3c,iso3n,women_parl_index,year_range)  #only select variable 
+  rename(country_name_en=Country.Name) %>% #rename to align with other datasets
+  select(country_name_en,iso3c,iso3n,mean_women_parl_perc,year_range) #only select variable 
 
-# check to see how many countries are missing
-# dat_final[is.na(dat_final$iso3n)==TRUE,]
-
-
+# and write the csv 
 write.csv(
   dat_final,
   file.path(
     "data",
     "data_clean",
-    "women_parliament_snapshot2018.csv"
+    "women_parl_2006-2016.csv"
   ),
   row.names = FALSE
 )
