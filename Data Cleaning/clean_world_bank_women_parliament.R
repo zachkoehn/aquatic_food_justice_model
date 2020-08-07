@@ -14,40 +14,49 @@ directory <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Justice/section_model
 setwd(
   file.path(
     directory
-    )
   )
+)
 dat_raw <- read.csv(
   file.path(
     "data",
     "data_raw",
-    "harper_women_fishing",
-    "harper_et_al_table_S1_female_ssf_participation.csv"
+    "world_bank_gender_politics",
+    "data.csv"
   ),
   header=TRUE
 )
 
-names(dat_raw) <- c("geography","female_particip_ssf","count_femal_particip_ssf")
+dat_clean <- dat_raw %>%
+  filter(
+    Indicator == "Women in parliament",
+    Subindicator.Type =="Index"
+  ) %>% 
+  select(Country.Name,Country.ISO3,X2018)
+  
 
-dat_final <- dat_raw %>%
+
+dat_final <- dat_clean %>%
   mutate(
-    iso3c=countrycode(geography,"country.name","iso3c"), # assign iso3c from country name
-    iso3n=countrycode(iso3c,"iso3c","iso3n"), # assign iso3n from iso3c
-    year_range="snapshot"
+    iso3n=countrycode(Country.ISO3,"iso3c","iso3n"), # assign iso3n from iso3c
+    year_range="snapshot_2018"
   ) %>%
-  select(geography,iso3c,iso3n,female_particip_ssf,count_femal_particip_ssf,year_range) %>% #only select variable 
-  rename(country_name_en=geography)
+  rename(
+    country_name_en=Country.Name,
+    women_parl_index=X2018,
+    iso3c=Country.ISO3
+         ) %>%
+  select(country_name_en,iso3c,iso3n,women_parl_index,year_range)  #only select variable 
 
 # check to see how many countries are missing
 # dat_final[is.na(dat_final$iso3n)==TRUE,]
 
-dat_final <- dat_final[complete.cases(dat_final),]
 
 write.csv(
   dat_final,
   file.path(
     "data",
     "data_clean",
-    "women_particip_ssf_snapshot.csv"
+    "women_parliament_snapshot2018.csv"
   ),
   row.names = FALSE
 )
