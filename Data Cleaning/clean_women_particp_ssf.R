@@ -25,7 +25,7 @@ dat_raw <- read.csv(
   ),
   header=TRUE
 )
-wo
+
 names(dat_raw) <- c("geography","female_particip_ssf","count_femal_particip_ssf")
 
 dat_final <- dat_raw %>%
