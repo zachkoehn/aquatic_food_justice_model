@@ -21,4 +21,4 @@ df$year.range <- "2003"
 df <- df %>%
   select(country = Country, year.range, iso3c, iso3n, direct_w_esitimated_ssf, indirect_w_esitimated_ssf)
 
-write.csv(df, "Outputs/livelihoods_direct_indirect.csv")
+write.csv(df, "Outputs/livelihoods_direct_indirect.csv", row.names = FALSE)

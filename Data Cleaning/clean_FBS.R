@@ -36,6 +36,6 @@ df$year.range <- "2014-2016"
 df <- df %>%
   select(country = Area, year.range, iso3c, iso3n, fish_supply_daily_g_protein_percap, percent_animal_protein_fish)
 
-write.csv(df, "Outputs/FBS_seafood_consumption_reliance.csv")
+write.csv(df, "Outputs/FBS_seafood_consumption_reliance.csv", row.names = FALSE)
 
   

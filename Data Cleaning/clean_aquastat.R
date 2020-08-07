@@ -20,4 +20,4 @@ df$year.range <- "2017"
 df <- df %>%
   select(country = Area, year.range, iso3c, iso3n, total_renewable_water = Value)
 
-write.csv(df, "Outputs/aquastat_total_renewable_water.csv")
+write.csv(df, "Outputs/aquastat_total_renewable_water.csv", row.names = FALSE)
