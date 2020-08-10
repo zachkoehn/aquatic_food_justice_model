@@ -145,7 +145,7 @@ fishstat_dat_total <- fishstat_dat %>%
   summarise(total_production_by_year = sum(quantity, na.rm = TRUE)) %>% # Calculate total production for each country for each year
   ungroup() %>%
   group_by(country_name_en, iso3n, iso3c, unit) %>%
-  summarise(mean_production = mean(total_production_by_year, na.rm = TRUE)) %>%
+  summarise(mean_total_production = mean(total_production_by_year, na.rm = TRUE)) %>%
   ungroup() %>%
   mutate_all(~str_replace_all(., ",", "")) %>% # remove commas before writing to csv
   mutate(year_range = '2006-2016') # add metadata column
@@ -164,11 +164,17 @@ fishstat_dat_by_source <- fishstat_dat %>%
   summarise(isscaap_production_by_year = sum(quantity, na.rm = TRUE)) %>% # calculate production of each production source, per country, per year
   ungroup() %>%
   group_by(country_name_en, iso3n, iso3c, source_name_en, unit) %>% # now collapse year, and calculate mean across years
-  summarise(mean_production_by_isscaap = mean(isscaap_production_by_year)) %>%
+  summarise(mean_production_by_source = mean(isscaap_production_by_year)) %>%
   ungroup() %>% 
   mutate_all(~str_replace_all(., ",", "")) %>% # remove commas before writing to csv
-  mutate(year_range = '2006-2016') # add metadata column
+  mutate(year_range = '2006-2016') %>% # add metadata column
+  pivot_wider(names_from = source_name_en, values_from = mean_production_by_source) %>%
+  rename(mean_aquaculture_production_freshwater = 'Aquaculture production (freshwater)',
+         mean_capture_production = 'Capture production',
+         mean_aquaculture_production_marine = 'Aquaculture production (marine)',
+         mean_aquaculture_production_brackish = 'Aquaculture production (brackishwater)')
 
+  
 write.csv(fishstat_dat_by_source, file.path(outdir, "production_by_source_faostat_mean_2006-2016.csv"), row.names = FALSE, quote = FALSE)
 
 # Output production split by isscaap group per country
@@ -184,7 +190,55 @@ fishstat_dat_by_isscaap <- fishstat_dat %>%
   summarise(mean_production_by_isscaap = mean(isscaap_production_by_year)) %>%
   ungroup() %>% 
   mutate_all(~str_replace_all(., ",", "")) %>% # remove commas before writing to csv
-  mutate(year_range = '2006-2016') # add metadata column
+  mutate(year_range = '2006-2016') %>% # add metadata column
+  pivot_wider(names_from = isscaap_group, values_from = mean_production_by_isscaap) %>%
+  rename(mean_prod_carps_etc = 'Carps barbels and other cyprinids',
+         mean_prod_misc_freshwater_fishes = 'Miscellaneous freshwater fishes',
+         mean_prod_salmons_etc = 'Salmons trouts smelts',
+         mean_prod_clams_etc = 'Clams cockles arkshells',
+         mean_prod_cod_etc = 'Cods hakes haddocks',
+         mean_prod_corals = 'Corals',
+         mean_prod_crabs_etc = 'Crabs sea-spiders',
+         mean_prod_flounders_etc = 'Flounders halibuts soles',
+         mean_prod_freshwater_crustacea = 'Freshwater crustaceans',
+         mean_prod_herrings_etc = 'Herrings sardines anchovies',
+         mean_prod_lobsters_etc = 'Lobsters spiny-rock lobsters',
+         mean_prod_marine_fishes_noID = 'Marine fishes not identified',
+         mean_prod_misc_coastal_fishes = 'Miscellaneous coastal fishes',
+         mean_prod_misc_demersal_fishes = 'Miscellaneous demersal fishes',
+         mean_prod_misc_pelagic_fishes = 'Miscellaneous pelagic fishes',
+         mean_prod_mussels = 'Mussels',
+         mean_prod_river_eels = 'River eels',
+         mean_prod_sea_urchins_etc = 'Sea-urchins and other echinoderms',
+         mean_prod_shads = 'Shads',
+         mean_prod_sharks_etc = 'Sharks rays chimaeras',
+         mean_prod_shrimps_etc = 'Shrimps prawns',
+         mean_prod_squids_etc = 'Squids cuttlefishes octopuses',
+         mean_prod_tunas_etc = 'Tunas bonitos billfishes',
+         mean_prod_misc_marine_crustacea = 'Miscellaneous marine crustaceans',
+         mean_prod_misc_marine_molluscs = 'Miscellaneous marine molluscs',
+         mean_prod_oysters = 'Oysters',
+         mean_prod_tilapias_etc = 'Tilapias and other cichlids',
+         mean_prod_abalones_etc = 'Abalones winkles conchs',
+         mean_prod_brown_seaweeds = 'Brown seaweeds',
+         mean_prod_frogs_etc = 'Frogs and other amphibians',
+         mean_prod_green_seaweeds = 'Green seaweeds',
+         mean_prod_king_crabs_etc = 'King crabs squat-lobsters',
+         mean_prod_krill_etc = 'Krill planktonic crustaceans',
+         mean_prod_misc_plants = 'Miscellaneous aquatic plants',
+         mean_prod_scallops_etc = 'Scallops pectens',
+         mean_prod_sturgeons_etc = 'Sturgeons paddlefishes',
+         mean_prod_misc_aqua_inverts = 'Miscellaneous aquatic invertebrates',
+         mean_prod_misc_diadromous_fishes = 'Miscellaneous diadromous fishes',
+         mean_prod_pearls_etc = 'Pearls mother-of-pearl shells',
+         mean_prod_tunicates = 'Sea-squirts and other tunicates',
+         mean_prod_sponges = 'Sponges',
+         mean_prod_turtles = 'Turtles',
+         mean_prod_red_seaweeds = 'Red seaweeds',
+         mean_prod_misc_aqua_mammals = 'Miscellaneous aquatic mammals',
+         mean_prod_freshwater_molluscs = 'Freshwater molluscs',
+         mean_pro_horeshoe_crabs_etc = 'Horseshoe crabs and other arachnoids')
+  
 
 write.csv(fishstat_dat_by_isscaap, file.path(outdir, "production_by_isccaap_faostat_mean_2006-2016.csv"), row.names = FALSE, quote = FALSE)
 
