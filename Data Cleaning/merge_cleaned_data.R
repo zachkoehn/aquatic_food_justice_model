@@ -45,6 +45,9 @@ df_merged <- df_list %>%
   ) %>%
   distinct() 
 
-
+write.csv(df_merged,
+          file.path(work_dir,"data","data_clean","all_national_indicators.csv"),
+          row.names=FALSE
+          )
 
 
