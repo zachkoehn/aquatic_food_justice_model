@@ -22,10 +22,10 @@ names(db)<-c("country.name","iso3c","iso3n")
 data(pop)
 
 #we focus here on popF and popM 
-head(popF)
-head(popM)
+head(popF) #female
+head(popM) #male
 
-#Check the first 3 columns are identical
+#Check if the first 3 columns are identical before compiling
 isTRUE(length(which(popF[,1] == popM[,1])==T) == nrow(popF))
 isTRUE(length(which(popF[,2] == popM[,2])==T) == nrow(popF))
 isTRUE(length(which(popF[,3] == popM[,3])==T) == nrow(popF))
@@ -39,6 +39,7 @@ sumtot <- popF[,-c(1:3)] + popM[,-c(1:3)]
 pop_tot <- data.frame(country_code,name,age,sumtot)
 colnames(pop_tot) <- str_replace_all(colnames(pop_tot),"X","")
 
+#Keep years 2010 - 2020
 pop_tot_2010_2020 <- pop_tot[,which(colnames(pop_tot)>2005)]
 
 #Change format
