@@ -1,5 +1,5 @@
 #######################
-# Cleaning Voice and Accountability (Kaufmann et al 2010)
+# Cleaning Voice and Accountability index (dataset from Kaufmann et al 2010)
 # Eva Maire
 # e.maire@lancaster.ac.uk
 #######################
@@ -26,7 +26,7 @@ dat_raw2 <- data.frame(lapply(dat_raw, function(x) {
 year <- which(dat_raw2[1,]>2007)
 clean_year <- dat_raw2[,c(1,2,year)]
 
-#Clean colnames that are provided on 2 separate lines
+#Combine colnames that are provided on 2 separate lines
 newcolnames <- paste(clean_year[2,], clean_year[1,], sep=".")
 newcolnames[c(1,2)] <- c("Country.Territory","Code")
 
@@ -41,7 +41,7 @@ clean_estimate <- dat_raw3[,estimate]
 #Numeric estimates
 dat_numeric <- data.frame(lapply(clean_estimate, function(x) {
   as.numeric(x)
-}))
+})) #warning message as some values are missing
 
 #Average estimates between 2008 and 2018
 Country.Territory <- dat_raw3$Country.Territory
@@ -94,7 +94,7 @@ db2 <- db[,-which(colnames(db)=="iso3n")]
 dat_final <- merge(vaa,db2,by="country.name",all.x=T,all.y=F)
 head(dat_final) 
 
-# and write the csv 
+# and write the csv file
 write.csv(dat_final,file = "voice_and_accountability_2008_2018.csv")
 
 #End of script
