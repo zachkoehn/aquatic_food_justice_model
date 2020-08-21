@@ -5,8 +5,8 @@
 # e.maire@lancaster.ac.uk
 #######################
 
-# directory <- "/Volumes/EM2T/Aquatic_Food_Justice"
-directory <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Justice/section_model/aquatic_food_justice_model"
+directory <- "/Volumes/EM2T/Aquatic_Food_Justice"
+# directory <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Justice/section_model/aquatic_food_justice_model"
 
 setwd(directory)
 
