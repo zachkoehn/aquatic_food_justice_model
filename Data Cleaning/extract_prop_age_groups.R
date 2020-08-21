@@ -97,7 +97,7 @@ dat.wide <- pivot_wider(pop_age_props, names_from = group, values_from = mean_pr
 dat.final<- dat.wide %>%
   rename(mean.prop.ageing = "ageing", mean.prop.working = "working", mean.prop.underfive = "underfive") %>%
   mutate(
-    age.dep.ratio=((mean.prop.ageing+mean.prop.underfive)/mean.prop.working) # calculate age dependency 
+    age.dep.ratio=(sum(mean.prop.ageing,mean.prop.underfive,other)/mean.prop.working) # calculate age dependency 
     ) %>%
   select(country.name,iso3n,iso3c,mean.prop.ageing,mean.prop.underfive,mean.prop.working,age.dep.ratio,year.range)
 
