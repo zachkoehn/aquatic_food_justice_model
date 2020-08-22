@@ -28,4 +28,25 @@ dat_raw <- read.csv(
 )
 
 
+dat_clean <- dat_raw %>%
+	select(AreaID,AreaName,DataValue) %>%
+	rename(
+		country_code=AreaID,
+		country_name_en=AreaName,
+		fish_relative_caloric_price=DataValue
+		) %>%
+	mutate(
+	    iso3c=countrycode(country_name_en,"country.name","iso3c"), # assign iso3c from country name
+	    iso3n=countrycode(iso3c,"iso3c","iso3n"), # assign iso3n from iso3c
+	    year_range="snapshot" #add the year_range category
+		) %>%
+	select(country_name_en,iso3c,iso3n,fish_relative_caloric_price,year_range)
 
+write.csv(dat_clean,
+	 file.path(directory,
+	    "data",
+	    "data_clean",
+	    "fish_relative_affordability_snapshot.csv"
+  	),
+  	row.names=FALSE
+	)
