@@ -36,6 +36,12 @@ df_merged <- df_list %>%
   ) %>%
   distinct() 
 
+# whole bunch of missing values from these country ISO codes
+missing_codes <- unique(df_merged[is.na(df_merged$iso3c)==TRUE,]$iso3n)
+# remove these codes with no associated countries
+df_merged <- df_merged[-(df_merged$iso3n %in% missing_codes),]
+
+
 
 write.csv(df_merged,
           file.path(work_dir,"data","data_clean","all_national_indicators.csv"),
