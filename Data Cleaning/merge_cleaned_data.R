@@ -34,12 +34,21 @@ df_merged <- df_list %>%
          -Code #removes a code value that is from the voice and accountability (just a duplicated iso3c)
          
   ) %>%
-  distinct() 
+  distinct() %>%
+  mutate( # a few of the indicators reported their proportions as 57% instead of 0.57... so transforming those
+    mean_educ=mean_educ*.01,
+    mean_pov_prop=mean_pov_prop*.01,
+    mean_women_parl_perc=mean_women_parl_perc*.01
+    ) %>%
+  rename(
+    mean_voice_account=mean.voice.and.accountability #and change variable name to underscore from period
+    )
 
 # whole bunch of missing values from these country ISO codes
 missing_codes <- unique(df_merged[is.na(df_merged$iso3c)==TRUE,]$iso3n)
 # remove these codes with no associated countries
 df_merged <- df_merged[-(df_merged$iso3n %in% missing_codes),]
+
 
 
 
