@@ -23,9 +23,12 @@ df_list <- lapply(files, read_csv)
 
 
 df_merged <- df_list %>%
-  reduce(full_join, by = c("iso3n","iso3c")) %>% #merges all by 
+  reduce(full_join, by = c("iso3n","iso3c")) %>% #merges all by the iso codes
   do(.[!duplicated(names(.))]) %>%
-  filter(is.na(iso3n)==FALSE) %>%
+  filter(
+    is.na(iso3n)==FALSE,
+    iso3c!="NA"
+    ) %>%
   select(., #selects within piped data
          -starts_with("country"), #removes country variable (duplicated in csvs)
          -starts_with("year"),#removes year category variable (duplicated in csvs)
@@ -33,7 +36,8 @@ df_merged <- df_list %>%
          -starts_with("unit"),#removes unit variable (duplicated in csvs)
          -Code #removes a code value that is from the voice and accountability (just a duplicated iso3c)
          
-  ) %>%
+  ) %>% 
+  mutate(country_name_en=countrycode(iso3n,"iso3n","country.name.en")) %>%
   distinct() %>%
   mutate( # a few of the indicators reported their proportions as 57% instead of 0.57... so transforming those
     mean_educ=mean_educ*.01,
@@ -42,12 +46,8 @@ df_merged <- df_list %>%
     ) %>%
   rename(
     mean_voice_account=mean.voice.and.accountability #and change variable name to underscore from period
-    )
-
-# whole bunch of missing values from these country ISO codes
-missing_codes <- unique(df_merged[is.na(df_merged$iso3c)==TRUE,]$iso3n)
-# remove these codes with no associated countries
-df_merged <- df_merged[-(df_merged$iso3n %in% missing_codes),]
+    ) %>%
+  select(country_name_en,iso3c,iso3n,everything())
 
 
 
