@@ -40,11 +40,11 @@ dat_final <- dat_clean %>%
     iso3n=countrycode(iso3c,"iso3c","iso3n"), # assign iso3n from iso3c
     year_range="2006-2016" #add the year_range category
   ) %>%
+  filter(is.na(iso3n) ==FALSE) %>%
   rename(country_name_en=Country.Name) %>% #rename to align with other datasets
   select(country_name_en,iso3c,iso3n,mean_pov_prop,year_range) #only select variable 
 
-dat_final
-# and write the csv 
+
 write.csv(
   dat_final,
   here(

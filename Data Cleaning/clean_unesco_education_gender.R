@@ -105,10 +105,10 @@ dat_final <- dat_clean %>%
   mutate(
     iso3c=countrycode(country_name_en,"country.name","iso3c"), # assign iso3c from country name
     iso3n=countrycode(iso3c,"iso3c","iso3n"), # assign iso3n from iso3c
-    mean_gender_gap = mean_women_educ/mean_men_educ,
+    mean_educ_gender_gap = mean_women_educ/mean_men_educ,
     year_range="2006-2016" #add the year_range category
   ) %>%
-  select(country_name_en,iso3c,iso3n,mean_gender_gap,mean_women_educ,mean_men_educ,year_range) #only select variable 
+  select(country_name_en,iso3c,iso3n,mean_educ_gender_gap,mean_women_educ,mean_men_educ,year_range) #only select variable 
 
 
 
