@@ -11,39 +11,46 @@ library(countrycode)
 
 work_dir <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Justice/section_model/aquatic_food_justice_model"
 
-setwd(file.path(work_dir))
-
-
-
-
 setwd(file.path(work_dir,"data","data_clean"))
-your_data_frame <- do.call(rbind, lapply(file.path(work_dir,"data","data_clean",file_names), read.csv, header = FALSE))
 
-files = list.files(pattern="*.csv")
-# First apply read.csv, then rbind
-myfiles = do.call(rbind, lapply(files, function(x) read.csv(x, stringsAsFactors = FALSE)))
+
 
 library(readr)
 library(dplyr)
-files = list.files(pattern="*.csv")
-
-df_list = lapply(files, read_csv) 
+files<- list.files(pattern="*.csv")
+files <- files[files!="all_national_indicators.csv"] # remove pre-existing dataset so we aren't merging the same information on infinite repeat :) 
+df_list <- lapply(files, read_csv) 
 
 
 df_merged <- df_list %>%
-  reduce(full_join, by = c("iso3n","iso3c")) %>% #merges all by 
+  reduce(full_join, by = c("iso3n","iso3c")) %>% #merges all by the iso codes
   do(.[!duplicated(names(.))]) %>%
-  filter(is.na(iso3n)==FALSE) %>%
+  filter(
+    is.na(iso3n)==FALSE,
+    iso3c!="NA"
+    ) %>%
   select(., #selects within piped data
          -starts_with("country"), #removes country variable (duplicated in csvs)
          -starts_with("year"),#removes year category variable (duplicated in csvs)
          -starts_with("geog"),#removes geog variable 
          -starts_with("unit"),#removes unit variable (duplicated in csvs)
-         -X1, #removes a column that was read in as a column
          -Code #removes a code value that is from the voice and accountability (just a duplicated iso3c)
          
-  ) %>%
-  distinct() 
+  ) %>% 
+  mutate(country_name_en=countrycode(iso3n,"iso3n","country.name.en")) %>%
+  distinct() %>%
+  mutate( # a few of the indicators reported their proportions as 57% instead of 0.57... so transforming those
+    mean_educ=mean_educ*.01,
+    mean_pov_prop=mean_pov_prop*.01,
+    mean_women_parl_perc=mean_women_parl_perc*.01
+    ) %>%
+  rename(
+    mean_voice_account=mean.voice.and.accountability #and change variable name to underscore from period
+    ) %>%
+  select(country_name_en,iso3c,iso3n,everything())
+
+
+
 
 write.csv(df_merged,
           file.path(work_dir,"data","data_clean","all_national_indicators.csv"),

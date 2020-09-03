@@ -6,6 +6,8 @@
 #######################
 
 directory <- "/Volumes/EM2T/Aquatic_Food_Justice"
+# directory <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Justice/section_model/aquatic_food_justice_model"
+
 setwd(directory)
 
 # load dataset and packages
@@ -50,7 +52,7 @@ pop.long <- pivot_longer(pop_tot_2010_2020, cols=4:6, names_to = "year", values_
 #ageing population defined as population older than 64 
 #youth defined as under 5 years old following World Bank thresholds
 
-pop_stat <- pop.long %>%
+pop_age_props <- pop.long %>%
   mutate(group = case_when(
                           age == "0-4" ~ "underfive",
                           age == "5-9" ~ "other",
@@ -85,15 +87,23 @@ pop_stat <- pop.long %>%
   rename(iso3n = "country_code", country.name = "name") %>%
   mutate(year.range = '2010-2015-2020') # add metadata column
 
+
+
+
 #Wide format
-dat.wide <- pivot_wider(pop_stat, names_from = group, values_from = mean_prop_population_group) 
+dat.wide <- pivot_wider(pop_age_props, names_from = group, values_from = mean_prop_population_group) 
+
 
 dat.final<- dat.wide %>%
   rename(mean.prop.ageing = "ageing", mean.prop.working = "working", mean.prop.underfive = "underfive") %>%
-  select(country.name,iso3n,iso3c,mean.prop.ageing,mean.prop.underfive,mean.prop.working,year.range) 
+  mutate(
+    age.dep.ratio=(sum(mean.prop.ageing,mean.prop.underfive,other)/mean.prop.working) # calculate age dependency 
+    ) %>%
+  select(country.name,iso3n,iso3c,mean.prop.ageing,mean.prop.underfive,mean.prop.working,age.dep.ratio,year.range)
+
 
 # and write the csv  
-write.csv(dat.final, file="prop_population_groups.csv")       
+write.csv(dat.final, file="prop_population_groups.csv",row.names=FALSE)       
 
 #End of script
 #
