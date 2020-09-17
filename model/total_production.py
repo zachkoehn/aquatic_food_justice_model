@@ -23,15 +23,15 @@ df['eez_total'] = np.log(df['eez_total'] + 1)
 df['total_renewable_water'] = np.log(df['total_renewable_water'] + 1)
 df['inland_water_min'] = np.log(df['inland_water_min'] + 1)
 df['inland_water_max'] = np.log(df['inland_water_max'] + 1)
-df['mean_population'] = np.log(df['mean_population'] + 1)
+df['sat_model_est_pov'] = np.log(df['sat_model_est_pov'])
 
 # prepare data
 ## response variable
 y = df['mean_total_production'] / df['mean_population']
 # scale
-y -= y.min() - 1e-5
+y -= y.min()
 y /= y.max()
-y = y[~y.isnull()].copy()
+y = y[y > 0].copy()
 
 ## predictor variables
 x_cov = df[['mean_wage_gap_all_sectors', 'female_particip_ssf', 'mean_women_parl_perc',
