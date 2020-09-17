@@ -113,26 +113,26 @@ endCluster()
 plot(rast)
 
 names(rast_pop_per_light)[1] <- "pop_per_light"
-par(mfrow=c(1,2))
-plot(
-  rast_pop_per_light$pop_per_light,
-  ylim=c(0,20),
-  xlim=c(95,115),
-  col=inferno(256)
-  )
-plot(
-  rast_pop_per_light$pop_per_light_log,
-  # ylim=c(36.886,38.087),
-  # xlim=c(-123.006,-121.677),
-  col=viridis(100)
-  )
+# par(mfrow=c(1,2))
+# plot(
+#   rast_pop_per_light$pop_per_light,
+#   ylim=c(0,20),
+#   xlim=c(95,115),
+#   col=inferno(256)
+#   )
+# plot(
+#   rast_pop_per_light$pop_per_light_log,
+#   # ylim=c(36.886,38.087),
+#   # xlim=c(-123.006,-121.677),
+#   col=viridis(100)
+#   )
 
-plot(
-  rast_pop_per_light,
-  ylim=c(36.886,38.087),
-  xlim=c(-123.006,-121.677),
-  col=inferno(256)
-  )
+# plot(
+#   rast_pop_per_light,
+#   ylim=c(36.886,38.087),
+#   xlim=c(-123.006,-121.677),
+#   col=inferno(256)
+#   )
 
 # writeRaster(rast_pop_per_light$pop_per_light, 
 #   filename=file.path(
@@ -194,22 +194,20 @@ mpi_dat_raw <- read_excel(
   sheet="5.1 MPI Region"
 )
 
-mpi_dat_raw <- mpi_dat_raw[9:dim(mpi_dat_raw)[1],1:9]
-names(mpi_dat_raw) <- c("iso3n","iso3c","country_name_en","region","data_source","data_year","subnational_region","mpi_national","mpi_subnational")
+mpi_dat_raw <- mpi_dat_raw[9:dim(mpi_dat_raw)[1],c(1,2,3,4,5,6,7,8,9,18)]
+names(mpi_dat_raw) <- c("iso3n","iso3c","country_name_en","region","data_source","data_year","subnational_region","mpi_national","mpi_subnational","subnational_pop")
 
 summary(as.factor(mpi_dat_raw$data_year))
 
 mpi_dat_country_clean <- mpi_dat_raw %>%
   mutate(
-    across(mpi_national:mpi_subnational,as.numeric),
+    across(mpi_national:subnational_pop,as.numeric),
     iso_a2=countrycode(iso3c,"iso3c","iso2c") # assign iso3n from iso3c
     ) %>%
   group_by(iso_a2) %>%
   summarize(mean_country_mpi=mean(mpi_national,na.rm=TRUE)) %>%# aggregate by mean
   dplyr::select(iso_a2,mean_country_mpi)
-summary(mpi_dat_country_clean)
 
-mpi_dat_country_clean[order(mpi_dat_country_clean$iso3c),]
 
 
 dat_validate <- merge(lumens_world,mpi_dat_country_clean,by=c("iso_a2"),all.x=TRUE) %>%
@@ -244,17 +242,6 @@ sat_nat_map <- dat_validate %>%
 
 mpi_nat_map / sat_nat_map
 
-library(ipumsr)
-
-dat_difs <- dat_validate %>%
-  mutate(
-    diffs = est_pov-un_pov
-    ) %>%
-  dplyr::select(country_name_en,diffs,un_pov,est_pov) %>%
-  mutate(
-    across(diffs:est_pov,as.numeric)
-    )
-
 
 dat_difs_df <- as.data.frame(cbind(dat_difs$country_name_en,as.numeric(dat_difs$diffs),as.numeric(dat_difs$un_pov),as.numeric(dat_difs$est_pov)))
 dat_difs_df[,2:4] <- apply(dat_difs_df[,2:4],2,function(x) as.numeric(x))
@@ -263,34 +250,125 @@ cor(dat_validate$un_pov,dat_validate$est_pov,use="complete.obs")
 plot(lm(data=dat_validate,un_pov~est_pov))
 
 
-summary(lm(data=dat_validate,est_pov~mean_country_mpi))
+summary(lm(data=dat_validate,sat_model_est_pov~mpi))
 
+nat_sat_poverty_clean <- dat_validate %>%
+  mutate( 
+    iso3c=countrycode(iso_a2,"iso2c","iso3c"),
+    iso3n=countrycode(iso3c,"iso3c","iso3n"),
+    country_name_en=countrycode(iso3c,"iso3c","country.name")
+    )%>%
+    dplyr::select(country_name_en, iso3c,iso3n,sat_model_est_pov) %>%
+    drop_na()
+st_geometry(nat_sat_poverty_clean) <- NULL
 
-# 
+write.csv(nat_sat_poverty_clean,
+  file.path(
+    directory,
+    "data",
+    "data_clean",
+    "satellite_poverty_national_ests.csv"
+    ),
+  row.names=FALSE
+  )
+
 
 library(rnaturalearth);library(rnaturalearthhires)
 
 sub_nat_boundaries <- ne_states()
-
+sub_nat_boundaries <- st_as_sf(sub_nat_boundaries)
 # sp::plot(sub_nat_boundaries)
 
-extract_lumens_subnational_stats <- function(rast_layer,i) {
+extract_subnational_stats <- function(rast_layer,i) {
   # i=7
   # rast_layer=rast
-  country_a2_code <- world$iso_a2[i]
-  country_poly <- st_geometry(world[i,])
-  country_extract <- exact_extract(
-    rast_layer,country_poly,
+  subnational_a2_code <- sub_nat_boundaries$iso_3166_2[i]
+  subnational_poly <- st_geometry(sub_nat_boundaries[i,])
+  subnational_extract <- exact_extract(
+    rast_layer,subnational_poly,
     c("sum","mean","count","variance","coefficient_of_variation")
   )
-  country_stats <- cbind(country_a2_code,country_extract)
-  return(country_stats)
+  subnational_stats <- cbind(subnational_a2_code,subnational_extract)
+  return(subnational_stats)
 }
 
 
-pop_per_light_country_stats <- t(pbsapply(1:dim(world)[1],function(c) extract_lumens_country_stats(rast_layer=rast_pop_per_light$pop_per_light,i=c)))
-lumens_country_stats_df <- data.frame(matrix(unlist(pop_per_light_country_stats), nrow=dim(world)[1], byrow=F),stringsAsFactors=FALSE)
-names(lumens_country_stats_df) <- c("iso_a2","sum","mean","count","variance","coefficient_of_variation")
 
+pop_per_light_subnational_stats <- t(
+  pbsapply(1:dim(sub_nat_boundaries)[1],function(c) extract_subnational_stats(rast_layer=rast_pop_per_light$pop_per_light,i=c))
+  )
+pop_lights_subnational_stats_df <- data.frame(matrix(unlist(pop_per_light_subnational_stats), nrow=dim(sub_nat_boundaries)[1], byrow=F),stringsAsFactors=FALSE)
+names(pop_lights_subnational_stats_df) <- c("iso_3166_2","pop_lights_sum","pop_lights_mean",
+  "pop_lights_count","pop_lights_variance","pop_lights_coefficient_of_variation")
+
+pop_subnational_stats <- t(
+  pbsapply(1:dim(sub_nat_boundaries)[1],function(c) extract_subnational_stats(rast_layer=crop_pop_2016,i=c))
+  )
+pop_subnational_stats_df <- data.frame(matrix(unlist(pop_per_light_subnational_stats), nrow=dim(sub_nat_boundaries)[1], byrow=F),stringsAsFactors=FALSE)
+names(pop_subnational_stats_df) <- c("iso_3166_2","pop_sum","pop_mean",
+  "pop_count","pop_variance","pop_coefficient_of_variation")
+
+geo_subnat %>%
+  ggplot() +
+  geom_sf(aes(fill=pop_lights_sum))
+
+
+
+dat_subnat <- merge(pop_subnational_stats_df,pop_lights_subnational_stats_df,by="iso_3166_2")
+write.csv(dat_subnat,file.path(directory,"data","temp","subnational_poverty_satellite_est.csv"))
+
+geo_subnat <- merge(sub_nat_boundaries,dat_subnat,by="iso_3166_2")
+
+
+
+
+mpi_dat_subnat_clean <- mpi_dat_raw %>%
+  mutate(
+    across(mpi_national:subnational_pop,as.numeric),
+    iso_a2=countrycode(iso3c,"iso3c","iso2c") # assign iso3n from iso3c
+    ) %>%
+  group_by(subnational_region) %>%
+  summarize( # aggregate poverty index and population by mean (if there are multiple observations)
+    mean_subnat_mpi=mean(mpi_subnational,na.rm=TRUE),
+    mean_subnat_pop=mean(subnational_pop,na.rm=TRUE)
+
+    ) %>%
+  dplyr::select(subnational_region,mean_subnat_mpi,mean_subnat_pop)
+
+
+mpi_geo_merge <- merge(geo_subnat,mpi_dat_subnat_clean,all.y=TRUE,by.y="subnational_region",by.x="name")
+
+
+
+library(ggpubr)
+
+summary(as.numeric(mpi_geo_merge$pop_lights_sum))
+summary(as.numeric(mpi_geo_merge$mean_subnat_pop))
+
+mpi_geo_merge <- mpi_geo_merge %>%
+  mutate(
+    sat_poverty_est = as.numeric(pop_lights_sum)/as.numeric(mean_subnat_pop)
+    ) 
+
+summary(lm(data=mpi_geo_merge,mean_subnat_mpi~sat_poverty_est))
+
+plot(mpi_geo_merge$mean_subnat_mpi,mpi_geo_merge$sat_poverty_est,pch=16,cex=0.4,xlim=c(0,1),ylim=c(0,1))
+
+
+plot(sfmpi_geo_merge["pop_lights_sum"])
+  mpi_geo_merge %>%
+    st_as_sf() %>%
+    ggplot(
+      # aes(
+      #   x=mean_subnat_mpi,
+      #   y=sat_poverty_est
+      #   )
+      ) +
+    # geom_point() +
+    geom_sf(aes(
+      fill=mean_subnat_mpi
+      )
+    ) + 
+    scale_fill_viridis()
 
 
