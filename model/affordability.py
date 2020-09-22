@@ -25,7 +25,7 @@ y = df['fish_relative_caloric_price']
 y -= y.min()
 y /= y.max()
 y = y[y > 0].copy()
-
+y.shape
 
 ## predictor variables
 x_cov = df[['mean_wage_gap_all_sectors', 'female_particip_ssf', 'mean_women_parl_perc',
@@ -41,6 +41,10 @@ x_cov['nb_languages_established'] = np.log(x_cov['nb_languages_established'])
 x_control = pd.DataFrame()
 x_control['unit_exports'] = df.mean_exports_USD1000 /df.mean_exports_tonnes
 x_control['unit_imports'] = df.mean_imports_USD1000 /df.mean_imports_tonnes
+
+# transform
+x_control['unit_exports'] = np.log(x_control['unit_exports'])
+x_control['unit_imports'] = np.log(x_control['unit_imports'])
 
 
 # merge
@@ -66,7 +70,7 @@ vif.to_csv('vif.csv')
 X_masked = np.ma.masked_invalid(X)
 
 #
-# X.dropna(how='any', inplace=True)
+X.dropna(how='any').shape
 # y = y.loc[X.index]
 # 211 --> 60
 
@@ -78,17 +82,28 @@ with pm.Model() as model1:
     # priors
     intercept = pm.Normal('intercept', mu=0., sigma=100.)
     beta = pm.Normal('beta', mu=0., sigma=100., shape=(X_full.shape[1],))
-    sigma = pm.HalfCauchy('sigma', beta=5.)
+    alpha = pm.HalfCauchy('alpha', beta=5.)
 
     # observation
     mu_ = intercept + tt.dot(X_full, beta)
 
     # likelihood
-    mu = mu_
-    likelihood = pm.Normal('y', mu=mu, sigma=sigma, observed=y_full)
+    mu = tt.exp(mu_)
+    likelihood = pm.Gamma('y', alpha=alpha, beta=alpha/mu, observed=y_full)
 
     # sample
     trace1 = pm.sample(3000, tune=1000, chains=2)
+
+############
+
+int = np.quantile(trace1.intercept, axis=0, q=0.5)
+coef = np.quantile(trace1.beta, axis=0, q=0.5)
+y_pred = int + np.dot(X_full, coef)
+import matplotlib.pyplot as plt
+plt.hist(y_full - y_pred, bins=30)
+
+############
+
 
 
 
@@ -100,8 +115,6 @@ summary_coeff.index = X.columns
 summary_coeff.columns = ['median', 'lower', 'upper']
 summary_coeff['significance'] = ['*' if np.logical_or(x1 > 0, x2 < 0) else '' for (x1, x2) in zip(summary_coeff.lower, summary_coeff.upper)]
 summary_coeff['rhat'] = az.rhat(trace1).beta
-summary_coeff
-
 
 summary_coeff.reset_index(inplace=True)
 summary_coeff = summary_coeff[::-1]
@@ -112,7 +125,7 @@ p = ggplot(aes(x='index', y='median'), data=summary_coeff) + \
     geom_hline(yintercept=0, colour='#cccccc') + \
     geom_point() + \
     geom_errorbar(aes(ymin='lower', ymax='upper', width=0)) + \
-    ylim([-0.3, 0.3]) + \
+    ylim([-1.2, 1]) + \
     labs(x='', y='Estimate') + \
     coord_flip() + \
     theme_classic() + \
@@ -124,9 +137,6 @@ p = ggplot(aes(x='index', y='median'), data=summary_coeff) + \
 ggsave(p, 'full.pdf', width=5, height=5)
 
 
-
-
-
 #______________________________-
 
 # model
@@ -134,7 +144,7 @@ with pm.Model() as model2:
     # priors
     intercept = pm.Normal('intercept', mu=0., sigma=100.)
     beta = pm.Normal('beta', mu=0., sigma=100., shape=(X_masked.shape[1],))
-    sigma = pm.HalfCauchy('sigma', beta=5.)
+    alpha = pm.HalfCauchy('alpha', beta=5.)
 
     # impute missing X
     X_mu = pm.Normal('X_mu', mu=0., sigma=10., shape=X_masked.shape[1])
@@ -145,8 +155,8 @@ with pm.Model() as model2:
     mu_ = intercept + tt.dot(X_modeled, beta)
 
     # likelihood
-    mu = mu_
-    likelihood = pm.Normal('y', mu=mu, sigma=sigma, observed=y)
+    mu = tt.exp(mu_)
+    likelihood = pm.Gamma('y', alpha=alpha, beta=alpha/mu, observed=y)
 
     # sample
     trace2 = pm.sample(3000, tune=1000, chains=2)
@@ -172,7 +182,7 @@ p = ggplot(aes(x='index', y='median'), data=summary_coeff) + \
     geom_hline(yintercept=0, colour='#cccccc') + \
     geom_point() + \
     geom_errorbar(aes(ymin='lower', ymax='upper', width=0)) + \
-    ylim([-0.3, 0.3]) + \
+    ylim([-1.2, 1]) + \
     labs(x='', y='Estimate') + \
     coord_flip() + \
     theme_classic() + \
@@ -190,7 +200,7 @@ with pm.Model() as model3:
     # priors
     intercept = pm.Normal('intercept', mu=0., sigma=100.)
     beta = pm.Normal('beta', mu=0., sigma=100., shape=(X_masked.shape[1],))
-    sigma = pm.HalfCauchy('sigma', beta=5.)
+    alpha = pm.HalfCauchy('alpha', beta=5.)
 
     # impute missing X
     chol, stds, corr = pm.LKJCholeskyCov('chol', n=X_masked.shape[1], eta=2., sd_dist=pm.Exponential.dist(1.), compute_corr=True)
@@ -202,8 +212,8 @@ with pm.Model() as model3:
     mu_ = intercept + tt.dot(X_modeled, beta)
 
     # likelihood
-    mu = mu_
-    likelihood = pm.Normal('y', mu=mu, sigma=sigma, observed=y)
+    mu = tt.exp(mu_)
+    likelihood = pm.Gamma('y', alpha=alpha, beta=alpha/mu, observed=y)
 
     # sample
     trace3 = pm.sample(3000, tune=1000, chains=2)
@@ -233,7 +243,7 @@ p = ggplot(aes(x='index', y='median'), data=summary_coeff) + \
     geom_hline(yintercept=0, colour='#cccccc') + \
     geom_point() + \
     geom_errorbar(aes(ymin='lower', ymax='upper', width=0)) + \
-    ylim([-0.3, 0.3]) + \
+    ylim([-1.2, 1]) + \
     labs(x='', y='Estimate') + \
     coord_flip() + \
     theme_classic() + \

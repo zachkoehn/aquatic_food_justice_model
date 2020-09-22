@@ -26,7 +26,7 @@ y = df['mean_exports_tonnes']
 y /= y.max()
 y = y[y > 0].copy()
 
-
+y.shape
 ## predictor variables
 x_cov = df[['mean_wage_gap_all_sectors', 'female_particip_ssf', 'mean_women_parl_perc',
     'sat_model_est_pov', 'mean_educ', 'mean_gdp',
@@ -40,6 +40,9 @@ x_cov['nb_languages_established'] = np.log(x_cov['nb_languages_established'])
 # control variable
 x_control = pd.DataFrame()
 x_control['total_gdp'] = df['mean_gdp'] * df['mean_population']
+
+# transform
+x_control['total_gdp'] = np.log(x_control['total_gdp'])
 
 # merge
 X = x_cov.merge(x_control, left_index=True, right_index=True)
@@ -64,7 +67,7 @@ vif.to_csv('vif.csv')
 X_masked = np.ma.masked_invalid(X)
 
 #
-# X.dropna(how='any', inplace=True)
+X.dropna(how='any').shape
 # y = y.loc[X.index]
 # 211 --> 60
 
@@ -76,14 +79,14 @@ with pm.Model() as model1:
     # priors
     intercept = pm.Normal('intercept', mu=0., sigma=100.)
     beta = pm.Normal('beta', mu=0., sigma=100., shape=(X_full.shape[1],))
-    sigma = pm.HalfCauchy('sigma', beta=5.)
+    alpha = pm.HalfCauchy('alpha', beta=5.)
 
     # observation
     mu_ = intercept + tt.dot(X_full, beta)
 
     # likelihood
-    mu = mu_
-    likelihood = pm.Normal('y', mu=mu, sigma=sigma, observed=y_full)
+    mu = tt.exp(mu_)
+    likelihood = pm.Gamma('y', alpha=alpha, beta=alpha/mu, observed=y_full)
 
     # sample
     trace1 = pm.sample(3000, tune=1000, chains=2)
@@ -110,7 +113,7 @@ p = ggplot(aes(x='index', y='median'), data=summary_coeff) + \
     geom_hline(yintercept=0, colour='#cccccc') + \
     geom_point() + \
     geom_errorbar(aes(ymin='lower', ymax='upper', width=0)) + \
-    ylim([-0.3, 0.3]) + \
+    ylim([-2, 3]) + \
     labs(x='', y='Estimate') + \
     coord_flip() + \
     theme_classic() + \
@@ -132,7 +135,7 @@ with pm.Model() as model2:
     # priors
     intercept = pm.Normal('intercept', mu=0., sigma=100.)
     beta = pm.Normal('beta', mu=0., sigma=100., shape=(X_masked.shape[1],))
-    sigma = pm.HalfCauchy('sigma', beta=5.)
+    alpha = pm.HalfCauchy('alpha', beta=5.)
 
     # impute missing X
     X_mu = pm.Normal('X_mu', mu=0., sigma=10., shape=X_masked.shape[1])
@@ -143,8 +146,8 @@ with pm.Model() as model2:
     mu_ = intercept + tt.dot(X_modeled, beta)
 
     # likelihood
-    mu = mu_
-    likelihood = pm.Normal('y', mu=mu, sigma=sigma, observed=y)
+    mu = tt.exp(mu_)
+    likelihood = pm.Gamma('y', alpha=alpha, beta=alpha/mu, observed=y)
 
     # sample
     trace2 = pm.sample(3000, tune=1000, chains=2)
@@ -170,7 +173,7 @@ p = ggplot(aes(x='index', y='median'), data=summary_coeff) + \
     geom_hline(yintercept=0, colour='#cccccc') + \
     geom_point() + \
     geom_errorbar(aes(ymin='lower', ymax='upper', width=0)) + \
-    ylim([-0.3, 0.3]) + \
+    ylim([-2, 3]) + \
     labs(x='', y='Estimate') + \
     coord_flip() + \
     theme_classic() + \
@@ -188,7 +191,7 @@ with pm.Model() as model3:
     # priors
     intercept = pm.Normal('intercept', mu=0., sigma=100.)
     beta = pm.Normal('beta', mu=0., sigma=100., shape=(X_masked.shape[1],))
-    sigma = pm.HalfCauchy('sigma', beta=5.)
+    alpha = pm.HalfCauchy('alpha', beta=5.)
 
     # impute missing X
     chol, stds, corr = pm.LKJCholeskyCov('chol', n=X_masked.shape[1], eta=2., sd_dist=pm.Exponential.dist(1.), compute_corr=True)
@@ -200,8 +203,8 @@ with pm.Model() as model3:
     mu_ = intercept + tt.dot(X_modeled, beta)
 
     # likelihood
-    mu = mu_
-    likelihood = pm.Normal('y', mu=mu, sigma=sigma, observed=y)
+    mu = tt.exp(mu_)
+    likelihood = pm.Gamma('y', alpha=alpha, beta=alpha/mu, observed=y)
 
     # sample
     trace3 = pm.sample(3000, tune=1000, chains=2)
@@ -231,7 +234,7 @@ p = ggplot(aes(x='index', y='median'), data=summary_coeff) + \
     geom_hline(yintercept=0, colour='#cccccc') + \
     geom_point() + \
     geom_errorbar(aes(ymin='lower', ymax='upper', width=0)) + \
-    ylim([-0.3, 0.3]) + \
+    ylim([-2, 3]) + \
     labs(x='', y='Estimate') + \
     coord_flip() + \
     theme_classic() + \
