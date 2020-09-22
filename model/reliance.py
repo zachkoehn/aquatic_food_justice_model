@@ -22,7 +22,7 @@ df = df[~df.iso3c.duplicated()]
 y = df['percent_animal_protein_fish']
 
 # scale
-y -= y.min()
+#y -= y.min()
 y /= y.max()
 y = y[y > 0].copy()
 
