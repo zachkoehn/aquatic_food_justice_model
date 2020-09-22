@@ -24,7 +24,7 @@ y = df['indirect_w_esitimated_ssf']
 
 
 # scale
-y -= y.min()
+#y -= y.min()
 y /= y.max()
 y = y[y > 0].copy()
 
