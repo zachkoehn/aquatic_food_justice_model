@@ -21,8 +21,9 @@ df = df[~df.iso3c.duplicated()]
 # prepare data
 ## response variable
 y = df['mean_total_production'] / df['mean_population']
+
 # scale
-y -= y.min()
+# y -= y.min()
 y /= y.max()
 y = y[y > 0].copy()
 
