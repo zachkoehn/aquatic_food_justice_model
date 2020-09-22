@@ -22,8 +22,9 @@ df = df[~df.iso3c.duplicated()]
 ## response variable
 y = df['fish_supply_daily_g_protein_percap']
 
+
 # scale
-y -= y.min()
+# y -= y.min()
 y /= y.max()
 y = y[y > 0].copy()
 
