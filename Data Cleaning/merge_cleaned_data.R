@@ -49,7 +49,7 @@ df_merged <- df_list %>%
     ) %>%
   dplyr::select(country_name_en,iso3c,iso3n,everything())
 
-
+df_merged[df_merged$iso3c=="CHN",]
 
 
 write.csv(df_merged,
@@ -57,4 +57,8 @@ write.csv(df_merged,
           row.names=FALSE
           )
 
+write.csv(df_merged,
+          file.path(work_dir,"all_national_indicators.csv"),
+          row.names=FALSE
+          )
 
