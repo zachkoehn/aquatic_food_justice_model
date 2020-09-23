@@ -34,7 +34,8 @@ df$iso3n[df$Area == "Eswatini"] <- "748"
 df$year.range <- "2014-2016"
 
 df <- df %>%
-  select(country = Area, year.range, iso3c, iso3n, fish_supply_daily_g_protein_percap, percent_animal_protein_fish)
+  select(country = Area, year.range, iso3c, iso3n, fish_supply_daily_g_protein_percap, percent_animal_protein_fish) %>%
+  filter(!(Area == "China")) # Only include China, mainland because territories report separate data
 
 write.csv(df, "Outputs/FBS_seafood_consumption_reliance.csv", row.names = FALSE)
 
