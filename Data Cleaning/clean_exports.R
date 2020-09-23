@@ -51,29 +51,35 @@ clean_fish<-function(path_to_file, dataset="value_column"){ # dataset parameter 
 }
 
 
-trade_dat <- clean_fish(path_to_file = file.path(datadir, "FAO Fisheries commodities production and trade-VALUE.csv"), dataset = "net_exports_USD1000")
+trade_dat <- clean_fish(path_to_file = file.path(datadir, "FAO Fisheries commodities production and trade-VALUE.csv"), dataset = "trade_USD1000")
 
-# Output total exports per country
+# Output total imports and exports per country
 trade_dat_total <- trade_dat %>%
   rename(iso3n = Country..Country..2,
          iso3c = Country..Country..5,
          year = YEAR,
          unit = Unit,
-         country_name_en = Country..Country.) %>%
+         country_name_en = Country..Country., 
+         trade_flow = Trade.flow..Trade.flow.) %>%
   filter(Commodity..ISSCAAP.group. %in% c("Red seaweeds", "Green seaweeds", "Brown seaweeds")==FALSE) %>%
   filter(Commodity..ISSCAAP.division. != "PLANTAE AQUATICAE") %>% 
   filter(unit == "USD 1000") %>%
   mutate(year = as.numeric(year)) %>%
   filter(year < 2017 & year > 2005) %>% # subset 2006 to 2016
-  group_by(country_name_en, iso3n, iso3c, year, unit) %>%
-  summarise(total_exports_by_year = sum(net_exports_USD1000, na.rm = TRUE)) %>% # Calculate total export for each country for each year
+  filter(trade_flow %in% c("Exports", "Imports")) %>% # Remove "re-exports"
+  group_by(country_name_en, iso3n, iso3c, year, unit, trade_flow) %>%
+  summarise(total_trade_by_year = sum(trade_USD1000, na.rm = TRUE)) %>% # Calculate total export and imports for each country for each year
   ungroup() %>%
-  group_by(country_name_en, iso3n, iso3c, unit) %>%
-  summarise(mean_exports_USD1000 = mean(total_exports_by_year, na.rm = TRUE)) %>% # now collapse year, calculate mean
+  group_by(country_name_en, iso3n, iso3c, unit, trade_flow) %>% 
+  summarise(mean_trade_USD1000 = mean(total_trade_by_year, na.rm = TRUE)) %>% # now collapse year, calculate mean
   ungroup() %>%
   mutate_all(~str_replace_all(., ",", "")) %>% # remove commas before writing to csv
-  mutate(year_range = '2006-2016') # add metadata column
+  mutate(year_range = '2006-2016') %>% # add metadata column
+  pivot_wider(names_from = trade_flow, values_from = mean_trade_USD1000) %>%
+  rename(mean_imports_USD1000 = Imports,
+         mean_exports_USD1000 = Exports)
 
+  
 # get list of unique countries for future reference:
 trade_dat_country_list <- trade_dat_total %>%
   select(country_name_en, iso3n, iso3c) %>%
@@ -83,30 +89,35 @@ trade_dat_country_list <- trade_dat_total %>%
 # OUTPUTS:
 write.csv(trade_dat_country_list, file.path(outdir, "trade_dat_country_list.csv"), quote = FALSE, row.names = FALSE)
 
-write.csv(trade_dat_total, file.path(outdir, "distribution_exports_in_USD_faostat_mean_2006-2016.csv"), row.names = FALSE, quote = FALSE)
+write.csv(trade_dat_total, file.path(outdir, "distribution_trade_in_1000USD_faostat_mean_2006-2016.csv"), row.names = FALSE, quote = FALSE)
 
-# REPEAT with trade quantities dataset:\
-trade_quantity <- clean_fish(path_to_file = file.path(datadir, "FAO Fisheries commodities production and trade-QUANTITY.csv"), dataset = "net_exports_tonnes")
+# REPEAT with trade quantities dataset:
+trade_quantity <- clean_fish(path_to_file = file.path(datadir, "FAO Fisheries commodities production and trade-QUANTITY.csv"), dataset = "trade_tonnes")
 
 trade_quantity_total <- trade_quantity %>%
   rename(iso3n = Country..Country..2,
          iso3c = Country..Country..5,
          year = YEAR,
          unit = Unit,
-         country_name_en = Country..Country.) %>%
+         country_name_en = Country..Country., 
+         trade_flow = Trade.flow..Trade.flow.) %>%
   filter(Commodity..ISSCAAP.group. %in% c("Red seaweeds", "Green seaweeds", "Brown seaweeds")==FALSE) %>%
   filter(Commodity..ISSCAAP.division. != "PLANTAE AQUATICAE") %>% 
   mutate(unit = str_remove(unit, " \x96")) %>%
   filter(unit == "Tonnes net product weight") %>%
   mutate(year = as.numeric(year)) %>%
   filter(year < 2017 & year > 2005) %>% # subset 2006 to 2016
-  group_by(country_name_en, iso3n, iso3c, year, unit) %>%
-  summarise(total_exports_by_year = sum(net_exports_tonnes, na.rm = TRUE)) %>% # Calculate total export for each country for each year
+  filter(trade_flow %in% c("Exports", "Imports")) %>%
+  group_by(country_name_en, iso3n, iso3c, year, unit, trade_flow) %>%
+  summarise(total_trade_by_year = sum(trade_tonnes, na.rm = TRUE)) %>% # Calculate total export for each country for each year
   ungroup() %>%
-  group_by(country_name_en, iso3n, iso3c, unit) %>%
-  summarise(mean_exports_tonnes = mean(total_exports_by_year, na.rm = TRUE)) %>% # now collapse year, calculate mean
+  group_by(country_name_en, iso3n, iso3c, unit, trade_flow) %>%
+  summarise(mean_trade_tonnes = mean(total_trade_by_year, na.rm = TRUE)) %>% # now collapse year, calculate mean
   ungroup() %>%
   mutate_all(~str_replace_all(., ",", "")) %>% # remove commas before writing to csv
-  mutate(year_range = '2006-2016') # add metadata column
+  mutate(year_range = '2006-2016') %>% # add metadata column
+  pivot_wider(names_from = trade_flow, values_from = mean_trade_tonnes) %>%
+  rename(mean_imports_USD1000 = Imports,
+         mean_exports_USD1000 = Exports)
 
-write.csv(trade_quantity_total, file.path(outdir, "distribution_exports_in_tonnes_faostat_mean_2006-2016.csv"), row.names = FALSE, quote = FALSE)
+write.csv(trade_quantity_total, file.path(outdir, "distribution_trade_in_tonnes_faostat_mean_2006-2016.csv"), row.names = FALSE, quote = FALSE)

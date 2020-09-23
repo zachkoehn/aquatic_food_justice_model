@@ -29,7 +29,7 @@ df_merged <- df_list %>%
     is.na(iso3n)==FALSE,
     iso3c!="NA"
     ) %>%
-  select(., #selects within piped data
+  dplyr::select(., #selects within piped data
          -starts_with("country"), #removes country variable (duplicated in csvs)
          -starts_with("year"),#removes year category variable (duplicated in csvs)
          -starts_with("geog"),#removes geog variable 
@@ -47,7 +47,7 @@ df_merged <- df_list %>%
   rename(
     mean_voice_account=mean.voice.and.accountability #and change variable name to underscore from period
     ) %>%
-  select(country_name_en,iso3c,iso3n,everything())
+  dplyr::select(country_name_en,iso3c,iso3n,everything())
 
 
 
