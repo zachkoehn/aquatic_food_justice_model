@@ -8,9 +8,9 @@ library(tidyverse)
 # note: Change outdir to the filepath where you want outputs to go
 outdir <- "Outputs"
 # for MacOS
-#datadir <- "/Volumes/jgephart/FishStatR/Data/CommoditiesAndTrade/FishStatJFiles"
+datadir <- "/Volumes/jgephart/FishStatR/Data/CommoditiesAndTrade/FishStatJFiles"
 # for Windows:
-datadir <- "K:/FishStatR/Data/CommoditiesAndTrade/FishStatJFiles"
+#datadir <- "K:/FishStatR/Data/CommoditiesAndTrade/FishStatJFiles"
 
 # First load function for rebuilding from FishStat ZIP file:
 
@@ -117,7 +117,7 @@ trade_quantity_total <- trade_quantity %>%
   mutate_all(~str_replace_all(., ",", "")) %>% # remove commas before writing to csv
   mutate(year_range = '2006-2016') %>% # add metadata column
   pivot_wider(names_from = trade_flow, values_from = mean_trade_tonnes) %>%
-  rename(mean_imports_USD1000 = Imports,
-         mean_exports_USD1000 = Exports)
+  rename(mean_imports_tonnes = Imports,
+         mean_exports_tonnes = Exports)
 
 write.csv(trade_quantity_total, file.path(outdir, "distribution_trade_in_tonnes_faostat_mean_2006-2016.csv"), row.names = FALSE, quote = FALSE)
