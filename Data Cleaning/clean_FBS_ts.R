@@ -31,14 +31,19 @@ df_hist <- df_hist %>%
 
 df <- bind_rows(df_new, df_hist) %>%
   pivot_wider(names_from = Item, values_from = value, names_repair = "universal") %>%
-  mutate(fish_supply_daily_g_protein_percap = sum(c(Fish..Seafood, Aquatic.Products..Other, -1*Aquatic.Plants), na.rm = TRUE)) %>%
-  mutate(percent_animal_protein_fish = 100*(fish_supply_daily_g_protein_percap/sum(fish_supply_daily_g_protein_percap + Animal.Products, na.rm = TRUE)))
-
-# Format for full analysis
-df$iso3c <- countrycode(df$Area, origin = "country.name", destination = "iso3c")
+  mutate(iso3c = countrycode(Area, origin = "country.name", destination = "iso3c"),
+         iso3n = countrycode(Area, origin = "country.name", destination = "iso3n")) %>%
+  filter(!(Area == "China")) # Only include China, mainland because territories report separate data
+# Clean codes
 df$iso3c[df$Area == "Eswatini"] <- "SWZ"
-df$iso3n <- countrycode(df$Area, origin = "country.name", destination = "iso3n")
 df$iso3n[df$Area == "Eswatini"] <- "748"
+
+# Group to calculate reliance
+df <- df %>%
+  group_by(year, Area, iso3c, iso3n) %>%
+  summarise(fish_supply_daily_g_protein_percap = sum(c(Fish..Seafood, Aquatic.Products..Other, -1*Aquatic.Plants), na.rm = TRUE),
+            percent_animal_protein_fish = 100*(fish_supply_daily_g_protein_percap/sum(fish_supply_daily_g_protein_percap + Animal.Products, na.rm = TRUE)))
+
 
 df <- df %>%
   select(country = Area, iso3c, iso3n, year, fish_supply_daily_g_protein_percap, percent_animal_protein_fish)
