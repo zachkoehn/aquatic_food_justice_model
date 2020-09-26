@@ -70,8 +70,8 @@ for(k in 1:nrow(tot)){
   if(nrow(subdata)==0){
     
     tot$cultural_hegemony[k] <- "NA"
-    
-  }else{
+  
+    }else{
     
     #Identify if Chinese, English or Spanish are considered as institutional language in the country
     keep <- MostSpoken[which((MostSpoken%in%subdata$Language_Name[which(subdata$Institutional==1)])==T)]
