@@ -17,34 +17,31 @@ df.columns = df.columns.str.replace('.', '_')
 # remove small territories
 df = df[df.mean_population >= 1000]
 
-## transform highly skewed variables
-df['eez_total'] = np.log(x_control['eez_total'])
-df['inland_water_max'] = np.log(x_control['inland_water_max'] + 1)
-df['pp_eez_weighted'] = np.log(x_control['pp_eez_weighted'])
-
 # prepare data for analysis
-# predictor & control variables of inetrest
+## predictor variables of inetrest
 cov_names = ['mean_wage_gap_all_sectors', 'female_particip_ssf', 'mean_women_parl_perc',
     'sat_model_est_pov', 'mean_educ',
     'cultural_hegemony', 'language_diversity', 'prop_pop_l1_inst',
     'age_dep_ratio', 'mean_voice_account']
+
+cov_names2 = ['Gender wealth gap', 'Women in fisheries', 'Women in leadership',
+    'Poverty', 'Education',
+    'Cultural hegemony', 'Language diversity', 'Institutional language',
+    'Age dependency', 'Voice accountability']
+
+## control variables of inetrest
 control_names = ['eez_total', 'inland_water_max', 'pp_eez_weighted']
 
-# response variable
+## response variable
 y = df['mean_total_production'] / df['direct_w_esitimated_ssf']
 
 # scale
 # y -= y.min()
 y /= y.max()
-# y = y[y > 0].copy()
+y = y[~y.isnull()].copy()
 
 ## predictor variables
 x_cov = df[cov_names].copy()
-
-# interactions
-x_cov['mean_wage_gap_all_sectors:sat_model_est_pov'] = x_cov['mean_wage_gap_all_sectors'] * x_cov['sat_model_est_pov']
-x_cov['mean_educ:mean_wage_gap_all_sectors'] = x_cov['mean_educ'] * x_cov['mean_wage_gap_all_sectors']
-x_cov['cultural_hegemony:sat_model_est_pov'] = x_cov['cultural_hegemony'] * x_cov['sat_model_est_pov']
 
 ## control variables
 x_control = df[control_names].copy()
@@ -52,6 +49,16 @@ x_control = df[control_names].copy()
 ## merge
 X = x_cov.merge(x_control, left_index=True, right_index=True)
 X = X.loc[y.index, :].copy()
+
+## transform highly skewed variables
+# X['sat_model_est_pov'] = scipy.special.logit(X['sat_model_est_pov'])
+X['eez_total'] = np.log(X['eez_total'])
+X['inland_water_max'] = np.log(X['inland_water_max'] + 1)
+
+# interactions
+# X['mean_wage_gap_all_sectors:sat_model_est_pov'] = X['mean_wage_gap_all_sectors'] * X['sat_model_est_pov']
+# X['mean_educ:mean_wage_gap_all_sectors'] = X['mean_educ'] * X['mean_wage_gap_all_sectors']
+# X['cultural_hegemony:sat_model_est_pov'] = X['cultural_hegemony'] * X['sat_model_est_pov']
 
 # standardize all
 def standardize(x):
@@ -95,30 +102,40 @@ with pm.Model() as model:
     trace = pm.sample(3000, tune=1000, chains=2)
 
 # summarize results
-summary_coeff = np.quantile(trace.beta, axis=0, q=[0.5, 0.025, 0.975])
+summary_coeff = np.quantile(trace.beta, axis=0, q=[0.5, 0.025, 0.25, 0.75, 0.975])
 summary_coeff = pd.DataFrame(np.transpose(summary_coeff))
 summary_coeff.index = X.columns
-summary_coeff.columns = ['median', 'lower', 'upper']
-summary_coeff['significance'] = ['*' if np.logical_or(x1 > 0, x2 < 0) else '' for (x1, x2) in zip(summary_coeff.lower, summary_coeff.upper)]
-summary_coeff['rhat'] = az.rhat(trace3).beta
-summary_coeff = summary.drop(index=control_names)
+summary_coeff.columns = ['median', 'lower95', 'lower50', 'upper50', 'upper95']
+summary_coeff['P(x > 0)'] = [(trace.beta[:,i] > 0).sum()/trace.beta.shape[0] for i in range(trace.beta.shape[1])]
+summary_coeff['rhat'] = az.rhat(trace).beta
+summary_coeff = summary_coeff.drop(index=control_names)
+
+# az.plot_trace(trace, var_names=['intercept', 'beta', 'alpha'])
 
 # plot
-summary_coeff.reset_index(inplace=True)
+summary_coeff['var_name'] = cov_names2
 summary_coeff = summary_coeff[::-1]
-summary_coeff['index'] = pd.Categorical(summary_coeff['index'], categories=summary_coeff['index'])
+summary_coeff['var_name'] = pd.Categorical(summary_coeff['var_name'], categories=summary_coeff['var_name'])
 
-p = ggplot(aes(x='index', y='median'), data=summary_coeff) + \
-    geom_hline(yintercept=0, colour='#cccccc') + \
-    geom_point() + \
-    geom_errorbar(aes(ymin='lower', ymax='upper', width=0)) + \
-    ylim([-1.5, 2.2]) + \
+min_val = summary_coeff.lower95.min()
+max_val = summary_coeff.upper95.max()
+min_range = min_val - (max_val - min_val) * 0.1
+max_range = max_val + (max_val - min_val) * 0.1
+
+p = ggplot(aes(x='var_name', y='median'), data=summary_coeff) + \
+    geom_hline(yintercept=0, colour='#cccccc', size=0.3) + \
+    geom_errorbar(aes(ymin='lower95', ymax='upper95', size=1, width=0)) + \
+    geom_errorbar(aes(ymin='lower50', ymax='upper50', size=2, width=0)) + \
+    scale_size_continuous(range=[0.3,1]) + \
+    geom_point(size=1.5) + \
+    ylim([min_range, max_range]) + \
     labs(x='', y='Estimate') + \
     coord_flip() + \
     theme_classic() + \
-    theme(axis_text=element_text(size=6, colour='black', family='Helvetica'), \
-        axis_title=element_text(size=8, colour='black', family='Helvetica'), \
+    theme(axis_text=element_text(size=6, colour='black', family='Helvetica'),
+        axis_title=element_text(size=8, colour='black', family='Helvetica'),
         axis_line=element_line(color='black'),
-        axis_ticks=element_line(color='black'))
+        axis_ticks=element_line(color='black'),
+        legend_position='none')
 
-# ggsave(p, 'total_production.pdf', width=5, height=5)
+ggsave(p, 'plots/total_production.pdf', width=3, height=3)
