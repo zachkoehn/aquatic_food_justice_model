@@ -18,6 +18,14 @@ df.columns = df.columns.str.replace('.', '_')
 df = df[df.mean_population >= 1000]
 
 # prepare data for analysis
+## response variable
+y = df['mean_total_production'] / df['direct_w_esitimated_ssf']
+
+# scale
+# y -= y.min()
+y /= y.max()
+y = y[~y.isnull()].copy()
+
 ## predictor variables of inetrest
 cov_names = ['mean_wage_gap_all_sectors', 'female_particip_ssf', 'mean_women_parl_perc',
     'sat_model_est_pov', 'mean_educ',
@@ -29,30 +37,21 @@ cov_names2 = ['Gender wealth gap', 'Women in fisheries', 'Women in leadership',
     'Cultural hegemony', 'Language diversity', 'Institutional language',
     'Age dependency', 'Voice accountability']
 
-## control variables of inetrest
-control_names = ['eez_total', 'inland_water_max', 'pp_eez_weighted']
-
-## response variable
-y = df['mean_total_production'] / df['direct_w_esitimated_ssf']
-
-# scale
-# y -= y.min()
-y /= y.max()
-y = y[~y.isnull()].copy()
-
 ## predictor variables
 x_cov = df[cov_names].copy()
 
 ## control variables
-x_control = df[control_names].copy()
+x_control = pd.DataFrame()
+x_control['eez_total'] = df['eez_total']
+x_control['inland_water_max'] = df['inland_water_max']
+x_control['pp_eez_weighted'] = df['pp_eez_weighted']
 
 ## merge
 X = x_cov.merge(x_control, left_index=True, right_index=True)
 X = X.loc[y.index, :].copy()
 
 ## transform highly skewed variables
-# X['sat_model_est_pov'] = scipy.special.logit(X['sat_model_est_pov'])
-X['eez_total'] = np.log(X['eez_total'])
+X['eez_total'] = np.log(X['eez_total'] + 1)
 X['inland_water_max'] = np.log(X['inland_water_max'] + 1)
 
 # interactions
@@ -108,7 +107,7 @@ summary_coeff.index = X.columns
 summary_coeff.columns = ['median', 'lower95', 'lower50', 'upper50', 'upper95']
 summary_coeff['P(x > 0)'] = [(trace.beta[:,i] > 0).sum()/trace.beta.shape[0] for i in range(trace.beta.shape[1])]
 summary_coeff['rhat'] = az.rhat(trace).beta
-summary_coeff = summary_coeff.drop(index=control_names)
+summary_coeff = summary_coeff.drop(index=x_control.columns)
 
 # az.plot_trace(trace, var_names=['intercept', 'beta', 'alpha'])
 
