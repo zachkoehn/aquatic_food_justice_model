@@ -23,7 +23,7 @@ y = df['percent_animal_protein_fish']
 
 # scale
 # y -= y.min()
-y /= y.max()
+y /= 100
 y = y[~y.isnull()].copy()
 
 ## predictor variables of inetrest
@@ -76,7 +76,7 @@ with pm.Model() as model:
     # priors
     intercept = pm.Normal('intercept', mu=0., sigma=100.)
     beta = pm.Normal('beta', mu=0., sigma=100., shape=(X_masked.shape[1],))
-    sigma = pm.HalfCauchy('alpha', beta=5.)
+    kappa = pm.HalfCauchy('kappa', beta=5.)
 
     # impute missing X
     chol, stds, corr = pm.LKJCholeskyCov('chol', n=X_masked.shape[1], eta=2., sd_dist=pm.Exponential.dist(1.), compute_corr=True)
@@ -88,8 +88,8 @@ with pm.Model() as model:
     mu_ = intercept + tt.dot(X_modeled, beta)
 
     # likelihood
-    mu = mu_
-    likelihood = pm.Normal('y', mu=mu, sigma=sigma, observed=y)
+    mu = pm.math.invlogit(mu_)
+    likelihood = pm.Beta('y', alpha=mu*kappa, beta=(1-mu)*kappa, observed=y)
 
     # sample
     trace = pm.sample(3000, tune=1000, chains=2)
