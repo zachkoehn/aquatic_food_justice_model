@@ -81,7 +81,7 @@ with pm.Model() as model:
     # priors
     intercept = pm.Normal('intercept', mu=0., sigma=100.)
     beta = pm.Normal('beta', mu=0., sigma=100., shape=(X_masked.shape[1],))
-    sigma = pm.HalfCauchy('alpha', beta=5.)
+    alpha = pm.HalfCauchy('alpha', beta=5.)
 
     # impute missing X
     chol, stds, corr = pm.LKJCholeskyCov('chol', n=X_masked.shape[1], eta=2., sd_dist=pm.Exponential.dist(1.), compute_corr=True)
@@ -93,8 +93,8 @@ with pm.Model() as model:
     mu_ = intercept + tt.dot(X_modeled, beta)
 
     # likelihood
-    mu = mu_
-    likelihood = pm.Normal('y', mu=mu, sigma=sigma, observed=y)
+    mu = tt.exp(mu_)
+    likelihood = pm.Gamma('y', alpha=alpha, beta=alpha/mu, observed=y)
 
     # sample
     trace = pm.sample(3000, tune=1000, chains=2)
