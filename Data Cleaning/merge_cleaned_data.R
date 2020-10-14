@@ -21,6 +21,7 @@ files<- list.files(pattern="*.csv")
 files <- files[files!="all_national_indicators.csv"] # remove pre-existing dataset so we aren't merging the same information on infinite repeat :) 
 df_list <- lapply(files, read_csv) 
 
+head(df_list$nutrition_score_Fish_Invert.csv)
 
 df_merged <- df_list %>%
   reduce(full_join, by = c("iso3n","iso3c")) %>% #merges all by the iso codes
@@ -49,7 +50,7 @@ df_merged <- df_list %>%
     ) %>%
   dplyr::select(country_name_en,iso3c,iso3n,everything())
 
-df_merged[df_merged$iso3c=="CHN",]
+
 
 
 write.csv(df_merged,
