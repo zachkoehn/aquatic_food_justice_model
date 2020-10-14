@@ -31,7 +31,8 @@ dat_clean <- dat_raw %>%
     iso3c=country_code,
     mean_catch_nutrition_quality=mean_nutrition_score
     ) %>%
-  mutate(iso3n= countrycode(iso3c,"iso3c","iso3n"))
+  mutate(iso3n= countrycode(iso3c,"iso3c","iso3n")) %>%
+  select(country_name_en,iso3c,iso3n,mean_catch_nutrition_quality)
 # now add necessary country information using {countrycode}
 
 # and write the csv 
