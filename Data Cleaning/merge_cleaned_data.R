@@ -15,12 +15,13 @@ setwd(file.path(work_dir,"data","data_clean"))
 
 
 
-library(readr)
+library(readr)  
 library(dplyr)
 files<- list.files(pattern="*.csv")
 files <- files[files!="all_national_indicators.csv"] # remove pre-existing dataset so we aren't merging the same information on infinite repeat :) 
 df_list <- lapply(files, read_csv) 
 
+head(df_list$nutrition_score_Fish_Invert.csv)
 
 df_merged <- df_list %>%
   reduce(full_join, by = c("iso3n","iso3c")) %>% #merges all by the iso codes
@@ -57,4 +58,8 @@ write.csv(df_merged,
           row.names=FALSE
           )
 
+write.csv(df_merged,
+          file.path(work_dir,"all_national_indicators.csv"),
+          row.names=FALSE
+          )
 

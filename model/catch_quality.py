@@ -1,4 +1,5 @@
 from scipy import stats
+import geopandas
 import numpy as np
 import pandas as pd
 import pymc3 as pm
@@ -6,7 +7,6 @@ import theano.tensor as tt
 from plotnine import *
 import arviz as az
 from statsmodels.stats.outliers_influence import variance_inflation_factor
-import geopandas
 import matplotlib
 matplotlib.rcParams['pdf.fonttype'] = 42
 matplotlib.rcParams['ps.fonttype'] = 42
@@ -20,7 +20,7 @@ df = df[df.mean_population >= 1000]
 
 # prepare data for analysis
 ## response variable
-y = df['mean_total_production'] / df['direct_w_esitimated_ssf']
+y = df['mean_catch_nutrition_quality']
 
 # scale
 # y -= y.min()
@@ -40,31 +40,7 @@ cov_names2 = ['Gender wealth gap', 'Women in fisheries', 'Women in leadership',
 
 ## predictor variables
 x_cov = df[cov_names].copy()
-
-## control variables
-x_control = pd.DataFrame()
-x_control['eez_total'] = df['eez_total']
-x_control['inland_water_max'] = df['inland_water_max']
-x_control['pp_eez_weighted'] = df['pp_eez_weighted']
-
-## merge
-X = x_cov.merge(x_control, left_index=True, right_index=True)
-X = X.loc[y.index, :].copy()
-
-## transform highly skewed variables
-X['eez_total'] = np.log(X['eez_total'] + 1)
-X['inland_water_max'] = np.log(X['inland_water_max'] + 1)
-
-# interactions
-# X['mean_wage_gap_all_sectors:sat_model_est_pov'] = X['mean_wage_gap_all_sectors'] * X['sat_model_est_pov']
-# X['mean_educ:mean_wage_gap_all_sectors'] = X['mean_educ'] * X['mean_wage_gap_all_sectors']
-# X['cultural_hegemony:sat_model_est_pov'] = X['cultural_hegemony'] * X['sat_model_est_pov']
-
-# standardize all
-def standardize(x):
-    return (x-np.mean(x))/np.std(x)
-
-X = X.apply(standardize, axis=0)
+X = x_cov.loc[y.index, :].copy()
 
 # variance inflation factor
 # X_ = X[cov_names].copy()
@@ -83,7 +59,7 @@ with pm.Model() as model:
     # priors
     intercept = pm.Normal('intercept', mu=0., sigma=100.)
     beta = pm.Normal('beta', mu=0., sigma=100., shape=(X_masked.shape[1],))
-    alpha = pm.HalfCauchy('alpha', beta=5.) # common skewness
+    alpha = pm.HalfCauchy('alpha', beta=5.)
 
     # impute missing X
     chol, stds, corr = pm.LKJCholeskyCov('chol', n=X_masked.shape[1], eta=2., sd_dist=pm.Exponential.dist(1.), compute_corr=True)
@@ -108,7 +84,6 @@ summary_coef.index = X.columns
 summary_coef.columns = ['median', 'lower95', 'lower50', 'upper50', 'upper95']
 summary_coef['P(x > 0)'] = [(trace.beta[:,i] > 0).sum()/trace.beta.shape[0] for i in range(trace.beta.shape[1])]
 summary_coef['rhat'] = az.rhat(trace).beta
-summary_coef = summary_coef.drop(index=x_control.columns)
 
 # az.plot_trace(trace, var_names=['intercept', 'beta', 'alpha'])
 
@@ -138,7 +113,7 @@ p = ggplot(aes(x='var_name', y='median'), data=summary_coef) + \
         axis_ticks=element_line(color='black'),
         legend_position='none')
 
-ggsave(p, 'plots/total_production.pdf', width=3, height=3)
+ggsave(p, 'plots/catch_quality.pdf', width=3, height=3)
 
 
 #_______________________________
@@ -170,7 +145,7 @@ map['n_missing'] = X.isnull().sum(axis=1)
 
 # plot quantile vs. n_missing
 p = ggplot(aes(x='quantile', y='n_missing'), data=map) + geom_point() + \
-    labs(title='Production/worker (t)', x='Quantile', y='Number of missing predictors') + \
+    labs(title='Catch quality', x='Quantile', y='Number of missing predictors') + \
     scale_y_continuous(breaks=[0,2,4,6,8,10], labels=[0,2,4,6,8,10], limits=[0,10]) + \
     theme(plot_title=element_text(face=2, size=8, colour='black', family='Helvetica'),
     axis_title=element_text(size=8, colour='black', family='Helvetica'),
@@ -188,7 +163,7 @@ p = ggplot() + \
     scale_y_continuous(limits=[-70, 90], expand=[0,0]) + \
     scale_fill_continuous(name='Quantile') + \
     guides(fill=guide_colourbar(barwidth=3, barheight=6)) + \
-    labs(title='Production/worker (t)') + \
+    labs(title='Catch quality') + \
     theme(plot_title=element_text(hjust=0, face=2, size=8, colour='black', family='Helvetica'),
         legend_title=element_text(size=6, colour='black', family='Helvetica'),
         legend_text=element_text(size=6, colour='black', family='Helvetica'),

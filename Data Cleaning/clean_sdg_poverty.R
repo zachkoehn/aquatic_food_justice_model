@@ -10,13 +10,16 @@ library(tidyverse)
 library(here)
 library(countrycode)
 
-# data from https://data.worldbank.org/indicator/SI.POV.DDAY?view=map
+directory <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Justice/section_model/aquatic_food_justice_model"
+
+# data from https://data.worldbank.org/indicator/SI.POV.NAHC
 dat_raw <- read.csv(
-  here(
+  file.path(
+    directory,
     "data",
     "data_raw",
     "world_bank_poverty",
-    "API_SI.POV.DDAY_DS2_en_csv_v2_1217581.csv"
+    "API_SI.POV.NAHC_DS2_en_csv_v2_1345136.csv"
   ),
   skip = 4,
   header=TRUE
@@ -25,7 +28,7 @@ dat_raw <- read.csv(
 # now aggregate annual pov values by year and take the mean across 2006:2016
 
 dat_clean <- dat_raw %>% 
-  select(-c(Indicator.Name,Indicator.Code)) %>%
+  dplyr::select(-c(Indicator.Name,Indicator.Code)) %>%
   gather(key="year",value="povprop_annual",-Country.Name,-Country.Code) %>% #gathers all pov-year combinations into two columns (year and gdp_annual)
   mutate(year=as.numeric(str_replace_all(year,"X",""))) %>% # cleans string to remove leading X....
   filter(year > 2005 & year < 2017 ) %>% # subset annual sequence we are currently using 2006:2016
@@ -42,7 +45,7 @@ dat_final <- dat_clean %>%
   ) %>%
   filter(is.na(iso3n) ==FALSE) %>%
   rename(country_name_en=Country.Name) %>% #rename to align with other datasets
-  select(country_name_en,iso3c,iso3n,mean_pov_prop,year_range) #only select variable 
+  dplyr::select(country_name_en,iso3c,iso3n,mean_pov_prop,year_range) #only select variable 
 
 
 write.csv(

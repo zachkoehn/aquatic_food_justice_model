@@ -51,14 +51,52 @@ tot$prop_pop_l1_inst <- rep(-999,nrow(tot))
 
 for(k in 1:nrow(tot)){
   subdata <- lic[which(lic$Country_Code==tot$iso2c[k]),]
-  if(nrow(subdata)>0 & length(countries$Population[which(countries$Country_Code==tot$iso2c[k])])>0 ){
-    tot$prop_pop_l1_inst[k] <- sum(subdata[which(subdata$Institutional==1),"L1_Users"],na.rm=T) / sum(subdata[,"All_Users"],na.rm=T)
+  if(nrow(subdata)>0){
+    tot$prop_pop_l1_inst[k] <- sum(subdata[which(subdata$Institutional==1),"L1_Users"],na.rm=T) / sum(subdata[,"L1_Users"],na.rm=T)
   }else{
     tot$prop_pop_l1_inst[k] <- "NA"
   }#end of else
 }#end of k
 
 tot$prop_pop_l1_inst<-as.numeric(tot$prop_pop_l1_inst)
+
+
+# Add cultural hegemony defined as 1 - number of L1 users of Chinese, English or Spanish / sum of L1 users
+tot$cultural_hegemony <- rep(-999,nrow(tot))
+MostSpoken <- c("Chinese","English","Spanish")
+
+for(k in 1:nrow(tot)){
+  subdata <- lic[which(lic$Country_Code==tot$iso2c[k]),]
+  if(nrow(subdata)==0){
+    
+    tot$cultural_hegemony[k] <- "NA"
+  
+    }else{
+    
+    #Identify if Chinese, English or Spanish are considered as institutional language in the country
+    keep <- MostSpoken[which((MostSpoken%in%subdata$Language_Name[which(subdata$Institutional==1)])==T)]
+    
+    #Keep the most spoken
+    if(length(keep)>1){ 
+      keep <- keep[which.max(subdata$L1_Users[which(subdata$Language_Name%in%keep)])]  
+    }else{
+      keep <- keep
+    }
+    
+    if( length(keep)==0 ){
+      tot$cultural_hegemony[k] <- 0 # 0 means that cultural hegemony is not measured because English, Spanish or Chinese are not spoken in those countries
+    }else{
+      if( is.na(subdata$L1_Users[which(subdata$Language_Name==keep)])==T & is.na(subdata$All_Users[which(subdata$Language_Name==keep)])==F ) {
+        tot$cultural_hegemony[k] <- 1 # cultural hegemony is maximal because no one speak English, Spanish or Chinese as 1st language while those are spoken
+      }else{
+        tot$cultural_hegemony[k] <- 1 - ( subdata$L1_Users[which(subdata$Language_Name==keep)] / sum(subdata[,"L1_Users"],na.rm=T) )
+      }
+    }#end of else
+  }
+}#end of k
+
+tot$cultural_hegemony<-as.numeric(tot$cultural_hegemony)
+
 dat.final <- tot
 names(dat.final)
 
@@ -67,7 +105,7 @@ names(dat.final)[which(names(dat.final)=="Diversity")] <- "language_diversity"
 summary(dat.final)
 
 # and write the csv  
-write.csv(dat.final, file="Ethnicity.csv")       
+write.csv(dat.final, file="EthnicityV2.csv")       
 
 #End of script
 #
