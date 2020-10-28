@@ -1,3 +1,5 @@
+from scipy import stats
+import geopandas
 import scipy
 import numpy as np
 import pandas as pd
@@ -30,7 +32,7 @@ y = y[~y.isnull()].copy()
 cov_names = ['mean_wage_gap_all_sectors', 'female_particip_ssf', 'mean_women_parl_perc',
     'sat_model_est_pov', 'mean_educ',
     'cultural_hegemony', 'language_diversity', 'prop_pop_l1_inst',
-    'age_dep_ratio', 'mean_voice_account']
+    'age_dep_ratio_sat_mean', 'mean_voice_account']
 
 cov_names2 = ['Gender wealth gap', 'Women in fisheries', 'Women in leadership',
     'Poverty', 'Education',
@@ -67,12 +69,12 @@ def standardize(x):
 X = X.apply(standardize, axis=0)
 
 # variance inflation factor
-X_ = X[cov_names].copy()
-X_ = X_.dropna(how='any')
-vif = pd.DataFrame()
-vif['features'] = X_.columns
-vif['VIF'] = [variance_inflation_factor(X_.values, i) for i in range(X_.shape[1])]
-vif['R2'] = 1 - 1/vif.VIF
+# X_ = X[cov_names].copy()
+# X_ = X_.dropna(how='any')
+# vif = pd.DataFrame()
+# vif['features'] = X_.columns
+# vif['VIF'] = [variance_inflation_factor(X_.values, i) for i in range(X_.shape[1])]
+# vif['R2'] = 1 - 1/vif.VIF
 #vif
 
 # mask NA
@@ -139,3 +141,62 @@ p = ggplot(aes(x='var_name', y='median'), data=summary_coeff) + \
         legend_position='none')
 
 ggsave(p, 'plots/exports_tonnes.pdf', width=3, height=3)
+
+
+#_______________________________
+# bright/dark spots
+
+# fill in posterior estmates of the missing predictors
+X_missing = np.quantile(trace.X_missing, axis=0, q=0.5)
+idx = np.where(X_masked.mask)
+X_imputed = X.copy()
+for i in range(X_missing.shape[0]):
+    X_imputed.iloc[idx[0][i], idx[1][i]] = X_missing[i]
+
+# predicted values
+int = np.quantile(trace.intercept, q=0.5)
+coef = np.quantile(trace.beta, axis=0, q=0.5)
+mu = np.exp(int + np.dot(X_imputed, coef))
+
+# quantiles
+alpha = np.quantile(trace.alpha, axis=0, q=0.5)
+scale = alpha/mu
+quantile = stats.gamma.cdf(np.asarray(y), a=alpha, scale=mu/alpha)
+
+map = pd.DataFrame(index=y.index)
+map['country'] = df.country_name_en
+map['iso3'] = df.iso3c
+map['quantile'] = quantile
+map['n_missing'] = X.isnull().sum(axis=1)
+
+
+# plot quantile vs. n_missing
+p = ggplot(aes(x='quantile', y='n_missing'), data=map) + geom_point() + \
+    labs(title='Export (t)', x='Quantile', y='Number of missing predictors') + \
+    scale_y_continuous(breaks=[0,2,4,6,8,10], labels=[0,2,4,6,8,10], limits=[0,10]) + \
+    theme(plot_title=element_text(face=2, size=8, colour='black', family='Helvetica'),
+    axis_title=element_text(size=8, colour='black', family='Helvetica'),
+    axis_text=element_text(size=6, colour='black', family='Helvetica'))
+
+# plot map
+world = geopandas.read_file(geopandas.datasets.get_path('naturalearth_lowres'))
+world = world.merge(map, how='left', left_on='iso_a3', right_on='iso3')
+world.drop(world[world.iso_a3=='ATA'].index, inplace=True)
+
+p = ggplot() + \
+    geom_map(aes(fill='quantile'), world, stroke=0, size=0) + \
+    coord_equal() + \
+    scale_x_continuous(limits=[-180, 180], expand=[0,0]) + \
+    scale_y_continuous(limits=[-70, 90], expand=[0,0]) + \
+    scale_fill_continuous(name='Quantile') + \
+    guides(fill=guide_colourbar(barwidth=3, barheight=6)) + \
+    labs(title='Export (t)') + \
+    theme(plot_title=element_text(hjust=0, face=2, size=8, colour='black', family='Helvetica'),
+        legend_title=element_text(size=6, colour='black', family='Helvetica'),
+        legend_text=element_text(size=6, colour='black', family='Helvetica'),
+        panel_grid_major=element_blank(),
+        panel_grid_minor=element_blank(),
+        axis_ticks=element_blank(),
+        axis_text=element_blank(),
+        axis_title=element_blank(),
+        panel_background=element_rect(color='none', fill='none'))

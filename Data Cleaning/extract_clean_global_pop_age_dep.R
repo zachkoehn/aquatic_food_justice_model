@@ -5,6 +5,8 @@ library(spDataLarge)
 library(sf)
 library(pbapply)
 library(exactextractr)
+library(viridis)
+library(countrycode)
 setwd("/Users/zachkoehn/Documents/worldpop/age_pop_rasters")
 
 
@@ -136,12 +138,15 @@ names(global_2016) <- c("underworking","overworking","working")
 
 global_2016$age_dep <- (global_2016$underworking+global_2016$overworking)/global_2016$working
 
-
+plot(global_2016$age_dep)
 
 
 endCluster()
 
-
+stackSave(global_2016,file.path(work_dir,"global_2016"))
+writeRaster(global_2006,file.path(work_dir,"global_2006.grd"), format="raster")
+writeRaster(global_2016,file.path(work_dir,"global_2016.grd"), format="raster")
+work_dir
 
 extract_country_stats <- function(rast_layer,i) {
   # i=7
@@ -174,24 +179,15 @@ age_06_16_country_stats_df <- merge(age_2006_country_stats_df,age_2016_country_s
 
 age_06_16_country_stats_df <- age_06_16_country_stats_df %>%
 	mutate(
-		across(age_2006_sum:age_2016_var,as.numeric),
+		across(age_2006_sum:age_2016_cv,as.numeric),
 		age_dep_year_mean=((age_2006_mean+age_2016_mean)/2)*100
 		)
+write.csv(age_06_16_country_stats_df,file.path(work_dir,"national_age_dep_satellite_stats.csv"),row.names=FALSE)
 
-
-age_geo <- merge(world,age_06_16_country_stats_df,by="iso_a2")
+age_nat_geo <- merge(world,age_06_16_country_stats_df,by="iso_a2")
 
 
 library(ggpubr)
-
-  age_geo %>%
-  ggplot(
-    aes(
-      # x=gdp_percap_prop,
-      # y=pop_perlight_prop
-      )
-    ) +
-  geom_sf(aes(fill=age_dep_year_mean))
 
 
 
@@ -215,14 +211,92 @@ extract_subnational_stats <- function(rast_layer,i) {
 }
 
 
-age_2006_country_stats <- t(pbsapply(1:dim(world)[1],function(c) extract_subnational_stats(rast_layer=global_2006$age_dep,i=c)))
-age_2006_country_stats_df <- data.frame(matrix(unlist(age_2006_country_stats), nrow=dim(world)[1], byrow=F),stringsAsFactors=FALSE)
-names(age_2006_country_stats_df) <- c("iso_a2","age_2006_sum","age_2006_mean","age_2006_n","age_2006_var","age_2006_cv")
+
+age_2006_subnational_stats <- t(pbsapply(1:dim(sub_nat_boundaries)[1],function(c) extract_subnational_stats(rast_layer=global_2006$age_dep,i=c)))
+age_2006_subnational_stats_df <- data.frame(matrix(unlist(age_2006_subnational_stats), nrow=dim(sub_nat_boundaries)[1], byrow=F),stringsAsFactors=FALSE)
+names(age_2006_subnational_stats_df) <- c("iso_3166_2","age_2006_sum","age_2006_mean","age_2006_n","age_2006_var","age_2006_cv")
 
 
 
-age_2016_country_stats <- t(pbsapply(1:dim(world)[1],function(c) extract_subnational_stats(rast_layer=global_2016$age_dep,i=c)))
-age_2016_country_stats_df <- data.frame(matrix(unlist(age_2016_country_stats), nrow=dim(world)[1], byrow=F),stringsAsFactors=FALSE)
-names(age_2016_country_stats_df) <- c("iso_a2","age_2016_sum","age_2016_mean","age_2016_n","age_2016_var","age_2016_cv")
+age_2016_subnational_stats <- t(pbsapply(1:dim(sub_nat_boundaries)[1],function(c) extract_subnational_stats(rast_layer=global_2016$age_dep,i=c)))
+age_2016_subnational_stats_df <- data.frame(matrix(unlist(age_2016_subnational_stats), nrow=dim(sub_nat_boundaries)[1], byrow=F),stringsAsFactors=FALSE)
+names(age_2016_subnational_stats_df) <- c("iso_3166_2","age_2016_sum","age_2016_mean","age_2016_n","age_2016_var","age_2016_cv")
+
+
+age_06_16_subnational_stats_df <- merge(age_2006_subnational_stats_df,age_2016_subnational_stats_df,by="iso_3166_2")
+
+
+age_06_16_subnational_stats_df <- age_06_16_subnational_stats_df %>%
+	mutate(
+		across(age_2006_sum:age_2016_cv,as.numeric),
+		age_dep_year_mean=((age_2006_mean+age_2016_mean)/2)*100
+		)
+
+
+work_dir
+
+write.csv(age_06_16_subnational_stats_df,file.path(work_dir,"subnational_age_dep_satellite_stats.csv"),row.names=FALSE)
+
+geo_subnat <- merge(sub_nat_boundaries,age_06_16_subnational_stats_df,by="iso_3166_2")
+geo_subnat$age_dep_year_mean
+
+
+all_dat <- read.csv("/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Justice/section_model/aquatic_food_justice_model/data/data_clean/all_national_indicators.csv",header=TRUE)
+
+age_validate_dat <- all_dat %>%
+	dplyr::select(iso3c,age.dep.ratio) %>%
+	mutate(iso_a2=countrycode(iso3c,"iso3c","iso2c"))
+
+
+nat_validate <- merge(age_06_16_country_stats_df,age_validate_dat,by="iso_a2")
+
+nat_validate %>%
+	ggplot() +
+	geom_point(aes(x=age.dep.ratio,y=age_dep_year_mean))+
+	ggtitle("Observed vs Raster estimate (Adjusted r2=0.87)")+
+	xlab("Age Dep. calculated from World Population Prospects") +
+	ylab("Age Dep. calculated from Worldpop rasters")
+
+
+summary(lm(data=nat_validate,age.dep.ratio~age_dep_year_mean))
+
+
+# pretty plots :) 
+
+plot(global_2016$age_dep,col=plasma(100))
+  
+ age_nat_geo %>%
+  ggplot(
+    aes(
+      # x=gdp_percap_prop,
+      # y=pop_perlight_prop
+      )
+    ) +
+  geom_sf(aes(fill=age_dep_year_mean)) +
+  scale_fill_viridis(option="plasma")+
+
+  ggtitle("National age dependency ratios")
+
+
+
+
+
+  geo_subnat %>%
+    st_as_sf() %>%
+    ggplot(
+      # aes(
+      #   x=mean_subnat_mpi,
+      #   y=sat_poverty_est
+      #   )
+      ) +
+    # geom_point() +
+    geom_sf(aes(
+      fill=age_dep_year_mean
+      ),
+    lwd=0.1
+    ) + 
+    scale_fill_viridis(option="plasma")+
+    ggtitle("Sub-national age dependency ratios")
+
 
 
