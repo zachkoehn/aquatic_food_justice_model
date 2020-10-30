@@ -22,17 +22,37 @@ files <- files[files!="all_national_indicators.csv"] # remove pre-existing datas
 df_list <- lapply(files, read_csv) 
 names(df_list) <- files
 
+oecd_categories <- read.csv(
+  file.path(work_dir,"data","data_raw","oecd_country_grouping_categories.csv"),
+  header=TRUE,
+  nrows=193
+  ) 
+
+
+
+oecd_categories <- oecd_categories %>%
+  select(X...ISO.Code,Geographic.access..5.) %>%
+  rename(
+    iso3c=X...ISO.Code,
+    geographic_access=Geographic.access..5.
+    ) %>%
+  mutate(
+    geographic_access=str_trim(geographic_access,"both")) %>%
+  filter(geographic_access=="Landlocked")
+landlocked_countries <- oecd_categories$iso3c
 
 # substitute 0 for NA values in all produciton data (no need to do this for total)
 df_list[["production_by_isccaap_faostat_mean_2006-2016.csv"]] <- df_list[["production_by_isccaap_faostat_mean_2006-2016.csv"]] %>%
   mutate(
     across(mean_prod_carps_etc:mean_pro_horeshoe_crabs_etc, ~replace_na(.x,0))
     )
-
 df_list[["production_by_source_faostat_mean_2006-2016.csv"]] <- df_list[["production_by_source_faostat_mean_2006-2016.csv"]] %>%
   mutate(
     across(mean_aquaculture_production_freshwater:mean_aquaculture_production_brackish, ~replace_na(.x,0))
     )
+
+  # and now do the same thing for the SAU based variables that do not have landlocked countries
+
 
 # now collapse the list into a single data frame in order to export to CSV
 df_merged <- df_list %>%
@@ -66,8 +86,11 @@ df_merged <- df_list %>%
     ) %>%
   dplyr::select(country_name_en,iso3c,iso3n,everything())
 
-summary(df_merged)
- 
+
+# ok, now we need to replace  NA's for landlocked countries coming from SAU data with 0s (because SAU doesn't include any information on landlocked countries
+df_merged$eez_total[df_merged$iso3c %in% landlocked_countries] <- 0
+df_merged$ifa_total[df_merged$iso3c %in% landlocked_countries] <- 0
+df_merged$pp_eez_weighted[df_merged$iso3c %in% landlocked_countries] <- 0 
 
 write.csv(df_merged,
           file.path(work_dir,"data","data_clean","all_national_indicators.csv"),
