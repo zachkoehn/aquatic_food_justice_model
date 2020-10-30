@@ -8,12 +8,13 @@ library(countrycode)
 # note: Change outdir to the filepath where you want outputs to go
 outdir <- "Outputs"
 # for Mac:
-#datadir <- "/Volumes/jgephart/FishStatR/Data/CommoditiesAndTrade/FishStatJFiles"
+datadir <- "/Volumes/jgephart/BFA Justice/Data/SAU"
 # for Windows:
-datadir <- "K:/Blue Foods/Data/SAU"
+#datadir <- "K:/BFA Justice/Data/SAU"
 
+# FIX IT - need to recreate trade_dat_country_list.csv file - not sure where this went (I think it's just the list of countries and iso3c from baci data?)
 sau_dat <- read.csv(file = file.path(datadir, "SAU_EEZ_IFA_PP.csv"))
-country_list <- read.csv(file = file.path(outdir, "trade_dat_country_list.csv"))
+country_list <- read.csv(file = file.path(datadir, "trade_dat_country_list.csv"))
 
 sau_clean <- sau_dat %>%
   rename(eez = EEZ..km2.,
@@ -26,6 +27,8 @@ sau_clean <- sau_dat %>%
   mutate(sau_name = str_trim(sau_name, side = "both")) %>%
   # use countrycodes to attempt matching with both sau_parenth and sau_name
   mutate(iso3c_sau_parenth = countrycode(sau_parenth, origin = "country.name", destination = "iso3c")) %>%
+  # Issue with Mac vs Windows? Deal with UTF-8 in sau_name column
+  mutate(sau_name = iconv(sau_name, from = "UTF-8", to = "ASCII", sub = "")) %>%
   mutate(iso3c_sau_name = countrycode(sau_name, origin = "country.name", destination = "iso3c"))
   
 # Inspect cases where countrycodes was able to match BOTH sau_parenth and sau_name

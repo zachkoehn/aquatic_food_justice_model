@@ -7,6 +7,9 @@ library(tidyverse)
 library(ggplot2)
 library(countrycode)
 library(REAT)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
 
 #____________________________________________________________________________________________________#
 # Load data
@@ -15,7 +18,7 @@ prod <- read.csv("Outputs/production_by_source_faostat_ts.csv")
 exports_usd <- read.csv("Outputs/distribution_exports_in_USD_ts.csv")
 exports_t <- read.csv("Outputs/distribution_exports_in_tonnes_ts.csv")
 supply <- read.csv("Outputs/FBS_seafood_consumption_reliance_ts.csv")
-pop <- read.csv("population_worldbank_all_years.csv")
+pop <- read.csv("Outputs/population_worldbank_all_years.csv")
 
 #____________________________________________________________________________________________________#
 # Filter population and join to df
@@ -25,8 +28,11 @@ pop <- pop %>%
   select(iso3c, year, pop = total_population)
 
 prod <- prod %>%
-  left_join(pop, by = c("iso3c", "year"))
+  left_join(pop, by = c("iso3c", "year")) 
 prod[is.na(prod)] <- 0
+prod$mean_aquaculture <- prod$mean_aquaculture_production_freshwater + 
+  prod$mean_aquaculture_production_brackish + 
+  prod$mean_aquaculture_production_marine
 
 exports_usd$year <- as.numeric(as.character(exports_usd$year))
 exports_usd <- exports_usd %>%
@@ -120,16 +126,20 @@ gini_all <- gini_capture %>%
 #____________________________________________________________________________________________________#
 # Plot across years
 #____________________________________________________________________________________________________#
-ggplot(gini_all %>% filter(variable %in% c("Capture (t)", "Aquaculture (t)", "Exports (t)", "Supply (g protein)")), 
+g <- ggplot(gini_all %>% filter(variable %in% c("Capture (t)", "Aquaculture (t)", "Exports (t)", "Supply (g protein)")), 
        aes(x = year, y = gini, color = variable)) +
   geom_line(size = 1.25) +
   labs(x = "", y = "Gini coefficient") +
   theme_minimal()
 
+png("Outputs/gini_ts.png", width = 6, height = 4, units = 'in', res = 300)
+g
+dev.off()
+
 #____________________________________________________________________________________________________#
 # Plot Lorenz curves 
 #____________________________________________________________________________________________________#
-plot.lc <- function(plot.df, plot.col, plot.year){
+plot.lc <- function(plot.df, plot.col, plot.year, hist.color = "white", lorenz.color = "black"){
   colnames(plot.df)[colnames(plot.df) == plot.col] <- "value"
   
   plot.df <- plot.df %>%
@@ -139,29 +149,46 @@ plot.lc <- function(plot.df, plot.col, plot.year){
   
   par(mfrow=c(2,1))
   hist(plot.df$value_percap, breaks = 25, main = paste(plot.col, "\n Histogram"), 
-       xlab = "Benefit per capita")
+       xlab = "Benefit per capita", col = hist.color)
   gini(plot.df$value_percap, weighting=plot.df$pop, lc = TRUE, 
        lctitle = paste("Lorenz Curve, Gini =", round(gini(plot.df$value_percap, weighting=plot.df$pop), 2)),
        lcx = "% of population", lcy = "% of benefit",
-       le.col = "black", lc.col = "black",
+       le.col = "black", lc.col = lorenz.color,
        lsize = 1, ltype = "solid",
        bg.col = "white", bgrid = FALSE)
 }
 
 
 # Prodcution
-plot.year <- 2000
-plot.lc(plot.df = prod, plot.col = "mean_capture_production", plot.year = plot.year)
+plot.year <- 2010
+
+png("Outputs/capture_hist_lorenz.png", width = 3, height = 6, units = 'in', res = 300)
+plot.lc(plot.df = prod, plot.col = "mean_capture_production", plot.year = plot.year, 
+        lorenz.color = "aquamarine3", hist.color = "aquamarine3")
+dev.off()
+
 plot.lc(plot.df = prod, plot.col = "mean_aquaculture_production_freshwater", plot.year = plot.year)
 plot.lc(plot.df = prod, plot.col = "mean_aquaculture_production_brackish", plot.year = plot.year)
 plot.lc(plot.df = prod, plot.col = "mean_aquaculture_production_marine", plot.year = plot.year)
 
+png("Outputs/aquaculture_hist_lorenz.png", width = 3, height = 6, units = 'in', res = 300)
+plot.lc(plot.df = prod, plot.col = "mean_aquaculture", plot.year = plot.year,
+        lorenz.color = "cyan4", hist.color = "cyan4")
+dev.off()
+
 # Distribution
-plot.lc(plot.df = exports_t, plot.col = "total_exports_by_year", plot.year = plot.year)
+png("Outputs/export_t_hist_lorenz.png", width = 3, height = 6, units = 'in', res = 300)
+plot.lc(plot.df = exports_t, plot.col = "total_exports_by_year", plot.year = plot.year, 
+        lorenz.color = "deepskyblue3", hist.color = "deepskyblue3")
+dev.off()
+
 plot.lc(plot.df = exports_usd, plot.col = "total_exports_by_year", plot.year = plot.year)
 
 # Consumption
-plot.lc(plot.df = supply, plot.col = "total_supply_gprotein", plot.year = plot.year)
+png("Outputs/supply_hist_lorenz.png", width = 3, height = 6, units = 'in', res = 300)
+plot.lc(plot.df = supply, plot.col = "total_supply_gprotein", plot.year = plot.year, 
+        lorenz.color = "mediumpurple4", hist.color = "mediumpurple4")
+dev.off()
 
 # Test of the function
 income <- c(10, 20)
@@ -169,3 +196,11 @@ groups <- c(1, 3)
 income_indiv <- c(10, 20, 20, 20)
 gini(income, weighting = groups)
 gini(income_indiv)
+
+#____________________________________________________________________________________________________#
+# Plot maps
+#____________________________________________________________________________________________________#
+
+#world <- ne_countries(scale = "medium", returnclass = "sf")
+
+
