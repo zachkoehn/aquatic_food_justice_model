@@ -6,11 +6,9 @@
 .DS_Store
 Outputs/
 
-# virtualenv
 venv/
-
-# plots
 plots/
+scratch/
 
 
 # Byte-compiled / optimized / DLL files

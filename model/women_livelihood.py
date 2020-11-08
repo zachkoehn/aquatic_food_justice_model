@@ -19,9 +19,10 @@ df.columns = df.columns.str.replace('.', '_')
 # remove small territories
 df = df[df.mean_population >= 1000]
 
+
 # prepare data for analysis
 ## response variable
-y = df['fish_supply_daily_g_protein_percap']
+y = df['direct_w_esitimated_ssf'] * (df['female_particip_ssf'] + 1e-6)
 
 # scale
 # y -= y.min()
@@ -40,11 +41,16 @@ x_cov = df[cov].copy()
 
 ## control variables
 x_control = pd.DataFrame()
-x_control['fish_relative_caloric_price'] = df['fish_relative_caloric_price']
+x_control['mean_capture_production'] = df['mean_capture_production']
+x_control['mean_aquaculture_production'] = df[['mean_aquaculture_production_freshwater','mean_aquaculture_production_marine','mean_aquaculture_production_brackish']].sum(axis=1)
 
 ## merge
 X = x_cov.merge(x_control, left_index=True, right_index=True)
 X = X.loc[y.index, :].copy()
+
+## transform highly skewed variables
+X['mean_capture_production'] = np.log(X['mean_capture_production'] + 1)
+X['mean_aquaculture_production'] = np.log(X['mean_aquaculture_production'] + 1)
 
 # standardize all
 def standardize(x):
@@ -76,7 +82,7 @@ with pm.Model() as model:
     likelihood = pm.Gamma('y', alpha=alpha, beta=alpha/mu, observed=y)
 
     # sample
-    trace = pm.sample(4000, tune=1000, chains=2)
+    trace = pm.sample(34000, tune=1000, chains=2)
 
 # summarize results
 summary_coeff = np.quantile(trace.beta, axis=0, q=[0.5, 0.025, 0.25, 0.75, 0.975])
@@ -113,4 +119,4 @@ p = ggplot(aes(x='var_name', y='median'), data=summary_coeff) + \
         axis_ticks=element_line(color='black'),
         legend_position='none')
 
-ggsave(p, 'plots/national/consumption.pdf', width=1.5, height=3)
+ggsave(p, 'plots/national/women_livelihood.pdf', width=1.5, height=3)

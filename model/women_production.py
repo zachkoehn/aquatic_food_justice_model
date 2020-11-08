@@ -1,6 +1,4 @@
 from scipy import stats
-import geopandas
-import scipy
 import numpy as np
 import pandas as pd
 import pymc3 as pm
@@ -8,6 +6,7 @@ import theano.tensor as tt
 from plotnine import *
 import arviz as az
 from statsmodels.stats.outliers_influence import variance_inflation_factor
+import geopandas
 import matplotlib
 matplotlib.rcParams['pdf.fonttype'] = 42
 matplotlib.rcParams['ps.fonttype'] = 42
@@ -21,7 +20,7 @@ df = df[df.mean_population >= 1000]
 
 # prepare data for analysis
 ## response variable
-y = df['fish_supply_daily_g_protein_percap']
+y = df['mean_total_production'] * (df['female_particip_ssf'] + 1e-6) / df['direct_w_esitimated_ssf']
 
 # scale
 # y -= y.min()
@@ -39,18 +38,31 @@ cov_name = ['Education', 'Poverty', 'Language diversity', 'Cultural hegemony',
 x_cov = df[cov].copy()
 
 ## control variables
-x_control = pd.DataFrame()
-x_control['fish_relative_caloric_price'] = df['fish_relative_caloric_price']
+control = ['eez_total', 'inland_water_max', 'pp_eez_weighted']
+x_control = df[control].copy()
 
 ## merge
 X = x_cov.merge(x_control, left_index=True, right_index=True)
 X = X.loc[y.index, :].copy()
+
+## transform highly skewed variables
+X['eez_total'] = np.log(X['eez_total'] + 1)
+X['inland_water_max'] = np.log(X['inland_water_max'] + 1)
 
 # standardize all
 def standardize(x):
     return (x-np.mean(x))/np.std(x)
 
 X = X.apply(standardize, axis=0)
+
+# variance inflation factor
+# X_ = X[cov_names].copy()
+# X_ = X_.dropna(how='any')
+# vif = pd.DataFrame()
+# vif['features'] = X_.columns
+# vif['VIF'] = [variance_inflation_factor(X_.values, i) for i in range(X_.shape[1])]
+# vif['R2'] = 1 - 1/vif.VIF
+# vif
 
 # mask NA
 X_masked = np.ma.masked_invalid(X)
@@ -60,7 +72,7 @@ with pm.Model() as model:
     # priors
     intercept = pm.Normal('intercept', mu=0, sigma=100)
     beta = pm.Normal('beta', mu=0, sigma=100, shape=X_masked.shape[1])
-    alpha = pm.HalfCauchy('alpha', beta=5)
+    alpha = pm.HalfCauchy('alpha', beta=5) # common skewness
 
     # impute missing X
     chol, stds, corr = pm.LKJCholeskyCov('chol', n=X_masked.shape[1], eta=2, sd_dist=pm.Exponential.dist(1), compute_corr=True)
@@ -78,26 +90,39 @@ with pm.Model() as model:
     # sample
     trace = pm.sample(4000, tune=1000, chains=2)
 
+
+## plot posterior
+# az.plot_trace(trace, var_names=['intercept', 'beta', 'alpha'])
+
+## posterior predictive distribution
+# with model:
+#     ppc = pm.sample_posterior_predictive(trace, var_names=['y'])
+
+# import matplotlib.pyplot as plt
+# _, ax = plt.subplots(figsize=(12, 6))
+# plt.hist([i.mean() for i in ppc['y']], bins=50, alpha=0.5)
+# ax.axvline(y.mean())
+
 # summarize results
-summary_coeff = np.quantile(trace.beta, axis=0, q=[0.5, 0.025, 0.25, 0.75, 0.975])
-summary_coeff = pd.DataFrame(np.transpose(summary_coeff))
-summary_coeff.index = X.columns
-summary_coeff.columns = ['median', 'lower95', 'lower50', 'upper50', 'upper95']
-summary_coeff['P(x > 0)'] = [(trace.beta[:,i] > 0).sum()/trace.beta.shape[0] for i in range(trace.beta.shape[1])]
-summary_coeff['rhat'] = az.rhat(trace).beta
-summary_coeff = summary_coeff.drop(index=x_control.columns)
+summary_coef = np.quantile(trace.beta, axis=0, q=[0.5, 0.025, 0.25, 0.75, 0.975])
+summary_coef = pd.DataFrame(np.transpose(summary_coef))
+summary_coef.index = X.columns
+summary_coef.columns = ['median', 'lower95', 'lower50', 'upper50', 'upper95']
+summary_coef['P(x > 0)'] = [(trace.beta[:,i] > 0).sum()/trace.beta.shape[0] for i in range(trace.beta.shape[1])]
+summary_coef['rhat'] = az.rhat(trace).beta
+summary_coef = summary_coef.drop(index=x_control.columns)
 
 # plot
-summary_coeff['var_name'] = cov_name
-summary_coeff = summary_coeff[::-1]
-summary_coeff['var_name'] = pd.Categorical(summary_coeff['var_name'], categories=summary_coeff['var_name'])
+summary_coef['var_name'] = cov_name
+summary_coef = summary_coef[::-1]
+summary_coef['var_name'] = pd.Categorical(summary_coef['var_name'], categories=summary_coef['var_name'])
 
-min_val = summary_coeff.lower95.min()
-max_val = summary_coeff.upper95.max()
+min_val = summary_coef.lower95.min()
+max_val = summary_coef.upper95.max()
 min_range = min_val - (max_val - min_val) * 0.1
 max_range = max_val + (max_val - min_val) * 0.1
 
-p = ggplot(aes(x='var_name', y='median'), data=summary_coeff) + \
+p = ggplot(aes(x='var_name', y='median'), data=summary_coef) + \
     geom_hline(yintercept=0, colour='#cccccc', size=0.3) + \
     geom_errorbar(aes(ymin='lower95', ymax='upper95', size=1, width=0)) + \
     geom_errorbar(aes(ymin='lower50', ymax='upper50', size=2, width=0)) + \
@@ -113,4 +138,5 @@ p = ggplot(aes(x='var_name', y='median'), data=summary_coeff) + \
         axis_ticks=element_line(color='black'),
         legend_position='none')
 
-ggsave(p, 'plots/national/consumption.pdf', width=1.5, height=3)
+
+ggsave(p, 'plots/national/women_production.pdf', width=1.5, height=3)
