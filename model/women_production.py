@@ -111,7 +111,7 @@ summary_coef.columns = ['median', 'lower95', 'lower50', 'upper50', 'upper95']
 summary_coef['P(x > 0)'] = [(trace.beta[:,i] > 0).sum()/trace.beta.shape[0] for i in range(trace.beta.shape[1])]
 summary_coef['rhat'] = az.rhat(trace).beta
 summary_coef = summary_coef.drop(index=x_control.columns)
-
+summary_coef
 # plot
 summary_coef['var_name'] = cov_name
 summary_coef = summary_coef[::-1]
