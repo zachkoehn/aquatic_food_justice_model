@@ -72,6 +72,7 @@ summary_coef.index = X.columns
 summary_coef.columns = ['median', 'lower95', 'lower50', 'upper50', 'upper95']
 summary_coef['P(x > 0)'] = [(trace.beta[:,i] > 0).sum()/trace.beta.shape[0] for i in range(trace.beta.shape[1])]
 summary_coef['rhat'] = az.rhat(trace).beta
+#summary_coef = summary_coef.drop(index=x_control.columns)
 
 # plot
 summary_coef['var_name'] = cov_name
@@ -83,12 +84,16 @@ max_val = summary_coef.upper95.max()
 min_range = min_val - (max_val - min_val) * 0.1
 max_range = max_val + (max_val - min_val) * 0.1
 
+# point color
+foo = zip(summary_coef.lower95 * summary_coef.upper95, summary_coef.lower50 * summary_coef.upper50)
+col = ['#000000' if x1 > 0 else '#aaaaaa' if x2 > 0 else '#ffffff' for (x1, x2) in foo]
+
 p = ggplot(aes(x='var_name', y='median'), data=summary_coef) + \
     geom_hline(yintercept=0, colour='#cccccc', size=0.3) + \
     geom_errorbar(aes(ymin='lower95', ymax='upper95', size=1, width=0)) + \
     geom_errorbar(aes(ymin='lower50', ymax='upper50', size=2, width=0)) + \
     scale_size_continuous(range=[0.3,1]) + \
-    geom_point(size=1.5) + \
+    geom_point(size=1.5, fill=col) + \
     ylim([min_range, max_range]) + \
     labs(x='', y='Estimate') + \
     coord_flip() + \
@@ -99,4 +104,4 @@ p = ggplot(aes(x='var_name', y='median'), data=summary_coef) + \
         axis_ticks=element_line(color='black'),
         legend_position='none')
 
-ggsave(p, 'plots/national/catch_quality.pdf', width=1.5, height=3)
+ggsave(p, 'plots/national/catch_quality.pdf', width=1.5, height=2.5)
