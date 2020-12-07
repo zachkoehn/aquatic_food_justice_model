@@ -1,6 +1,7 @@
 #######################
-# Cleaning national age dependency ratios extracted from Worldpop
-# from Worldpop dataset
+# Cleaning % working population from 
+# or (national age dependency ratios) extracted from Worldpop
+
 # Zach Koehn
 # zkoehn@stanford.edu
 #######################
@@ -30,22 +31,22 @@ dat_raw <- read.csv(
 
 
 dat_clean <- dat_raw %>%
-	select(iso_a2,age_2006_mean,age_2016_mean) %>%
-	rowwise() %>%
+	# dplyr::select(iso_a2,age_2006_mean,age_2016_mean) %>%
+	rename(working_percent_sat_mean=working_perc_mean) %>%
+	# rowwise() %>%
 	mutate(
 	    iso3c=countrycode(iso_a2,"iso2c","iso3c"),
 	    country_name_en=countrycode(iso3c,"iso3c","country.name"), # assign iso3c from country name
 	    iso3n=countrycode(iso3c,"iso3c","iso3n"), # assign iso3n from iso3c
-	    year_range="2016and2006_mean", #add the year_range category
-	    age_dep_ratio_sat_mean=mean(age_2016_mean,age_2006_mean,na.rm=TRUE)
+	    year_range="2016and2006_mean"
 		) %>%
-	select(country_name_en,iso3c,iso3n,age_dep_ratio_sat_mean,year_range)
+	dplyr::select(country_name_en,iso3c,iso3n,working_percent_sat_mean,year_range)
 
 write.csv(dat_clean,
 	 file.path(directory,
 	    "data",
 	    "data_clean",
-	    "age_dependency_ratio_worldpop_satellite.csv"
+	    "working_percent_sat_mean_worldpop_satellite.csv"
   	),
   	row.names=FALSE
 	)
