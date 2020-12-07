@@ -277,7 +277,7 @@ library(rnaturalearth);library(rnaturalearthhires)
 
 sub_nat_boundaries <- ne_states()
 sub_nat_boundaries <- st_as_sf(sub_nat_boundaries)
-# sp::plot(sub_nat_boundaries)
+sp::plot(sub_nat_boundaries[1])
 
 extract_subnational_stats <- function(rast_layer,i) {
   # i=7
@@ -316,6 +316,8 @@ geo_subnat %>%
 
 dat_subnat <- merge(pop_subnational_stats_df,pop_lights_subnational_stats_df,by="iso_3166_2")
 write.csv(dat_subnat,file.path(directory,"data","temp","subnational_poverty_satellite_est.csv"))
+write.csv(dat_subnat,file.path(directory,"data","temp","subnational_poverty_satellite_est.csv"))
+
 
 geo_subnat <- merge(sub_nat_boundaries,dat_subnat,by="iso_3166_2")
 
