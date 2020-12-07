@@ -1,3 +1,16 @@
+# ===============================================================================
+# Extracting age data from the World Pop global age population mosaics
+# 
+# Note this was originally to calculate age dependency ratios (young plus elderly/working age pop)
+#
+# Name: J. Zachary (Zach) Koehn
+# Email: zkoehn@gmail.com
+# For: BFA Justice
+# Date started: 08/17/2017
+# Revised: 09/14/2020
+# ===============================================================================
+
+
 library(tidyverse)
 library(readr)
 library(raster)
@@ -85,7 +98,8 @@ global_2006_working <- sum(
 global_2006 <- stack(global_2006_underworking,global_2006_overworking,global_2006_working)
 names(global_2006) <- c("underworking","overworking","working")
 
-global_2006$age_dep <- (global_2006$underworking+global_2006$overworking)/global_2006$working
+# global_2006$age_dep <- (global_2006$underworking+global_2006$overworking)/global_2006$working
+global_2006$working_percent_pop <- global_2006$working/(global_2006$working+global_2006$underworking+global_2006$overworking)
 
 
 global_2016_underworking <- sum(
@@ -136,9 +150,9 @@ global_2016_working <- sum(
 global_2016 <- stack(global_2016_underworking,global_2016_overworking,global_2016_working)
 names(global_2016) <- c("underworking","overworking","working")
 
-global_2016$age_dep <- (global_2016$underworking+global_2016$overworking)/global_2016$working
+global_2016$working_percent_pop <- global_2016$working/(global_2016$working+global_2016$underworking+global_2016$overworking)
 
-plot(global_2016$age_dep)
+
 
 
 endCluster()
@@ -146,16 +160,23 @@ endCluster()
 stackSave(global_2016,file.path(work_dir,"global_2016"))
 writeRaster(global_2006,file.path(work_dir,"global_2006.grd"), format="raster")
 writeRaster(global_2016,file.path(work_dir,"global_2016.grd"), format="raster")
-work_dir
+
+
+global_2006 <- raster(file.path(work_dir,"global_2006.grd"), format="raster")
+
+global_2016 <- stack(file.path(work_dir,"global_2016"), format="raster")
+
+library(rnaturalearth)
+world <- ne_countries()
 
 extract_country_stats <- function(rast_layer,i) {
   # i=7
-  # rast_layer=rast
+  # rast_layer=global_2006$working_percent_pop
   country_a2_code <- world$iso_a2[i]
-  country_poly <- st_geometry(world[i,])
+  country_poly <- st_as_sf(world[i,])
   country_extract <- exact_extract(
     rast_layer,country_poly,
-    c("sum","mean","count","variance","coefficient_of_variation")
+    c("sum","mean","count","coefficient_of_variation")
   )
   country_stats <- cbind(country_a2_code,country_extract)
   return(country_stats)
@@ -164,15 +185,15 @@ extract_country_stats <- function(rast_layer,i) {
 
 
 
-age_2006_country_stats <- t(pbsapply(1:dim(world)[1],function(c) extract_country_stats(rast_layer=global_2006$age_dep,i=c)))
+age_2006_country_stats <- t(pbsapply(1:dim(world)[1],function(c) extract_country_stats(rast_layer=global_2006$working_percent_pop,i=c)))
 age_2006_country_stats_df <- data.frame(matrix(unlist(age_2006_country_stats), nrow=dim(world)[1], byrow=F),stringsAsFactors=FALSE)
-names(age_2006_country_stats_df) <- c("iso_a2","age_2006_sum","age_2006_mean","age_2006_n","age_2006_var","age_2006_cv")
+names(age_2006_country_stats_df) <- c("iso_a2","age_2006_sum","age_2006_mean","age_2006_n","age_2006_cv")
 
 
 
-age_2016_country_stats <- t(pbsapply(1:dim(world)[1],function(c) extract_country_stats(rast_layer=global_2016$age_dep,i=c)))
+age_2016_country_stats <- t(pbsapply(1:dim(world)[1],function(c) extract_country_stats(rast_layer=global_2016$working_percent_pop,i=c)))
 age_2016_country_stats_df <- data.frame(matrix(unlist(age_2016_country_stats), nrow=dim(world)[1], byrow=F),stringsAsFactors=FALSE)
-names(age_2016_country_stats_df) <- c("iso_a2","age_2016_sum","age_2016_mean","age_2016_n","age_2016_var","age_2016_cv")
+names(age_2016_country_stats_df) <- c("iso_a2","age_2016_sum","age_2016_mean","age_2016_n","age_2016_cv")
 
 age_06_16_country_stats_df <- merge(age_2006_country_stats_df,age_2016_country_stats_df,by="iso_a2")
 
@@ -180,7 +201,7 @@ age_06_16_country_stats_df <- merge(age_2006_country_stats_df,age_2016_country_s
 age_06_16_country_stats_df <- age_06_16_country_stats_df %>%
 	mutate(
 		across(age_2006_sum:age_2016_cv,as.numeric),
-		age_dep_year_mean=((age_2006_mean+age_2016_mean)/2)*100
+		working_perc_mean=((age_2006_mean+age_2016_mean)/2)*100
 		)
 write.csv(age_06_16_country_stats_df,file.path(work_dir,"national_age_dep_satellite_stats.csv"),row.names=FALSE)
 
