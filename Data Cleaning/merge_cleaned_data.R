@@ -106,7 +106,6 @@ df_merged <- df_list %>%
     mean_pov_prop=mean_pov_prop*.01,
     mean_women_parl_perc=mean_women_parl_perc*.01,
     sat_model_est_wealth=1/sat_model_est_pov,
-    cultural_autonomy=1-cultural_hegemony,
     gender_equality=1-mean_sigi,
     fish_affordability=1/fish_relative_caloric_price,
     un_subregion_2=ifelse(un_subregion_1=="Latin America and the Caribbean",un_subregion_finer_name,un_subregion_1), 
