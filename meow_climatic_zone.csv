@@ -1,0 +1,247 @@
+iso3c;iso3n;country.name;NAME;LON;LAT;ECO_CODE;ECOREGION;PROV_CODE;PROVINCE;RLM_CODE;REALM;LAT_ZONE;EnvTemp
+ABW;533;Aruba;Aruba;-69.977;12.517;20066;Southern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+AFG;4;Afghanistan;Afghanistan;65.216;33.677;20091;Gulf of Oman;19;Somali/Arabian;5;Western Indo-Pacific;Tropical;subtropical
+AGO;24;Angola;Angola;17.544;-12.296;25190;Namib;50;Benguela;10;Temperate Southern Africa;Temperate;tropical
+AIA;660;Anguilla;Anguilla;-63.032;18.237;20064;Eastern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+ALA;248;Åland Islands;Åland Islands;19.952;60.198;20024;Baltic Sea;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+ALB;8;Albania;Albania;20.068;41.143;20030;Adriatic Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+AND;20;Andorra;Andorra;1.576;42.549;25035;Western Mediterranean;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+ANT;NA;NA;Netherlands Antilles;-68.87;12.123;20064;Eastern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+ARE;784;United Arab Emirates;United Arab Emirates;54.163;23.549;20090;Arabian (Persian) Gulf;19;Somali/Arabian;5;Western Indo-Pacific;Tropical;subtropical
+ARG;32;Argentina;Argentina;-65.167;-35.377;20178;Araucanian;45;Warm Temperate Southeastern Pacific;9;Temperate South America;Temperate;temperate
+ARM;51;Armenia;Armenia;44.563;40.534;20044;Black Sea;7;Black Sea;2;Temperate Northern Atlantic;Temperate;temperate
+ASM;16;American Samoa;American Samoa;-170.73;-14.318;20157;Samoa Islands;39;Central Polynesia;7;Eastern Indo-Pacific;Tropical;tropical
+ATA;10;Antarctica;Antarctica;21.304;-80.446;20228;Amundsen/Bellingshausen Sea;61;Continental High Antarctic;12;Southern Ocean;Polar;polar
+ATF;260;French Southern Territories;French Southern and Antarctic Lands;69.117;-49.302;20194;Amsterdam-St Paul;52;Amsterdam-St Paul;10;Temperate Southern Africa;Temperate;temperate
+ATG;28;Antigua & Barbuda;Antigua and Barbuda;-61.783;17.078;20064;Eastern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+AUS;36;Australia;Australia;136.189;-24.973;20140;Arnhem Coast to Gulf of Carpenteria;32;Sahul Shelf;6;Central Indo-Pacific;Tropical;subtropical
+AUT;40;Austria;Austria;14.912;47.683;20030;Adriatic Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+AZE;31;Azerbaijan;Azerbaijan;47.395;40.43;NA;NA;NA;NA;NA;NA;NA;temperate
+BDI;108;Burundi;Burundi;29.887;-3.356;NA;NA;NA;NA;NA;NA;NA;tropical
+BEL;56;Belgium;Belgium;4.664;50.643;20025;North Sea;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+BEN;204;Benin;Benin;2.469;10.541;20083;Gulf of Guinea Central;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+BFA;854;Burkina Faso;Burkina Faso;-1.74;12.278;NA;NA;NA;NA;NA;NA;NA;tropical
+BGD;50;Bangladesh;Bangladesh;89.941;24.218;20108;Northern Bay of Bengal;23;Bay of Bengal;5;Western Indo-Pacific;Tropical;subtropical
+BGR;100;Bulgaria;Bulgaria;25.231;42.761;20044;Black Sea;7;Black Sea;2;Temperate Northern Atlantic;Temperate;temperate
+BHR;48;Bahrain;Bahrain;50.562;26.019;20090;Arabian (Persian) Gulf;19;Somali/Arabian;5;Western Indo-Pacific;Tropical;subtropical
+BHS;44;Bahamas;Bahamas;-78.014;24.628;20063;Bahamian;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;subtropical
+BIH;70;Bosnia & Herzegovina;Bosnia and Herzegovina;17.786;44.169;20030;Adriatic Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+BLM;652;St. Barthélemy;Saint Barthelemy;-63.043;18.04;20064;Eastern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+BLR;112;Belarus;Belarus;28.047;53.54;20024;Baltic Sea;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+BLZ;84;Belize;Belize;-88.602;17.219;20068;Western Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+BMU;60;Bermuda;Bermuda;-64.709;32.336;20062;Bermuda;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;subtropical
+BOL;68;Bolivia;Bolivia;-64.671;-16.715;20176;Humboldtian;45;Warm Temperate Southeastern Pacific;9;Temperate South America;Temperate;tropical
+BRA;76;Brazil;Brazil;-53.089;-10.772;20072;Amazonia;13;North Brazil Shelf;4;Tropical Atlantic;Tropical;tropical
+BRB;52;Barbados;Barbados;-59.559;13.153;20064;Eastern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+BRN;96;Brunei;Brunei Darussalam;114.591;4.468;20126;Palawan/North Borneo;30;Western Coral Triangle;6;Central Indo-Pacific;Tropical;tropical
+BTN;64;Bhutan;Bhutan;90.429;27.415;NA;NA;NA;NA;NA;NA;NA;subtropical
+BVT;74;Bouvet Island;Bouvet Island;3.412;-54.422;20217;Bouvet Island;59;Subantarctic Islands;12;Southern Ocean;Polar;temperate
+BWA;72;Botswana;Botswana;23.815;-22.182;NA;NA;NA;NA;NA;NA;NA;tropical
+CAF;140;Central African Republic;Central African Republic;20.483;6.571;NA;NA;NA;NA;NA;NA;NA;tropical
+CAN;124;Canada;Canada;-109.433;59.081;25007;Baffin Bay - Davis Strait;1;Arctic;1;Arctic;Polar;temperate
+CCK;166;Cocos (Keeling) Islands;Cocos (Keeling) Islands;96.839;-12.173;20120;Cocos-Keeling/Christmas Island;27;Java Transitional;6;Central Indo-Pacific;Tropical;tropical
+CHE;756;Switzerland;Switzerland;7.908;46.861;NA;NA;NA;NA;NA;NA;NA;temperate
+CHL;152;Chile;Chile;-69.433;-23.389;20178;Araucanian;45;Warm Temperate Southeastern Pacific;9;Temperate South America;Temperate;tropical
+CHN;156;China;China;106.514;33.42;20052;East China Sea;9;Warm Temperate Northwest Pacific;3;Temperate Northern Pacific;Temperate;subtropical
+CIV;384;Côte d’Ivoire;Cote d'Ivoire;-5.556;7.632;20082;Gulf of Guinea Upwelling;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+CMR;120;Cameroon;Cameroon;12.277;5.133;20083;Gulf of Guinea Central;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+COD;180;Congo - Kinshasa;Democratic Republic of the Congo;23.654;-2.876;25085;Gulf of Guinea South;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+COG;178;Congo - Brazzaville;Congo;15.986;-0.055;25085;Gulf of Guinea South;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+COK;184;Cook Islands;Cook Islands;-159.782;-21.219;20156;Phoenix/Tokelau/Northern Cook Islands;39;Central Polynesia;7;Eastern Indo-Pacific;Tropical;tropical
+COL;170;Colombia;Colombia;-73.076;3.9;20170;Panama Bight;43;Tropical East Pacific;8;Tropical Eastern Pacific;Tropical;tropical
+COM;174;Comoros;Comoros;43.337;-11.758;20100;Western and Northern Madagascar;20;Western Indian Ocean;5;Western Indo-Pacific;Tropical;tropical
+CPV;132;Cape Verde;Cape Verde;-23.634;15.071;20079;Cape Verde;16;West African Transition;4;Tropical Atlantic;Tropical;tropical
+CRI;188;Costa Rica;Costa Rica;-83.946;9.971;20167;Chiapas-Nicaragua;43;Tropical East Pacific;8;Tropical Eastern Pacific;Tropical;tropical
+CUB;192;Cuba;Cuba;-77.781;21.297;20065;Greater Antilles;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+CXR;162;Christmas Island;Christmas Island;105.704;-10.444;20120;Cocos-Keeling/Christmas Island;27;Java Transitional;6;Central Indo-Pacific;Tropical;tropical
+CYM;136;Cayman Islands;Cayman Islands;-81.198;19.314;20065;Greater Antilles;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+CYP;196;Cyprus;Cyprus;33.219;35.043;25032;Levantine Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+CZE;203;Czechia;Czech Republic;15.338;49.743;NA;NA;NA;NA;NA;NA;NA;temperate
+DEU;276;Germany;Germany;9.851;51.11;20024;Baltic Sea;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+DJI;262;Djibouti;Djibouti;42.516;11.9;20089;Gulf of Aden;18;Red Sea and Gulf of Aden;5;Western Indo-Pacific;Tropical;tropical
+DMA;212;Dominica;Dominica;-61.356;15.475;20064;Eastern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+DNK;208;Denmark;Denmark;9.264;56.058;20024;Baltic Sea;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+DOM;214;Dominican Republic;Dominican Republic;-70.729;19.015;20065;Greater Antilles;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+DZA;12;Algeria;Algeria;2.632;28.163;20028;Saharan Upwelling;3;Lusitanian;2;Temperate Northern Atlantic;Temperate;subtropical
+ECU;218;Ecuador;Ecuador;-78.497;-1.385;20173;Eastern Galapagos Islands;44;Galapagos;8;Tropical Eastern Pacific;Tropical;tropical
+EGY;818;Egypt;Egypt;29.872;26.494;20087;Northern and Central Red Sea;18;Red Sea and Gulf of Aden;5;Western Indo-Pacific;Tropical;subtropical
+ERI;232;Eritrea;Eritrea;38.219;16.045;20089;Gulf of Aden;18;Red Sea and Gulf of Aden;5;Western Indo-Pacific;Tropical;tropical
+ESH;732;Western Sahara;Western Sahara;-13.706;24.554;20028;Saharan Upwelling;3;Lusitanian;2;Temperate Northern Atlantic;Temperate;subtropical
+ESP;724;Spain;Spain;-3.649;40.227;20029;Azores Canaries Madeira;3;Lusitanian;2;Temperate Northern Atlantic;Temperate;temperate
+EST;233;Estonia;Estonia;25.793;58.674;20024;Baltic Sea;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+ETH;231;Ethiopia;Ethiopia;39.616;8.626;20093;Central Somali Coast;19;Somali/Arabian;5;Western Indo-Pacific;Tropical;tropical
+FIN;246;Finland;Finland;26.272;64.504;20024;Baltic Sea;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+FJI;242;Fiji;Fiji;177.974;-17.819;25147;Fiji Islands;35;Tropical Southwestern Pacific;6;Central Indo-Pacific;Tropical;tropical
+FLK;238;Falkland Islands;Falkland Islands (Malvinas);-58.694;-51.665;20186;Malvinas/Falklands;48;Magellanic;9;Temperate South America;Temperate;temperate
+FRA;250;France;France;2.55;46.565;20026;Celtic Seas;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+FRO;234;Faroe Islands;Faroe Islands;-6.864;62.05;20021;Faroe Plateau;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+FSM;583;Micronesia (Federated States of);Micronesia, Federated States of;158.235;6.883;20124;East Caroline Islands;29;Tropical Northwestern Pacific;6;Central Indo-Pacific;Tropical;tropical
+GAB;266;Gabon;Gabon;11.797;-0.591;20083;Gulf of Guinea Central;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+GBR;826;United Kingdom;United Kingdom;-1.6;53;20026;Celtic Seas;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+GEO;268;Georgia;Georgia;43.518;42.176;20044;Black Sea;7;Black Sea;2;Temperate Northern Atlantic;Temperate;temperate
+GGY;831;Guernsey;Guernsey;-2.576;49.459;20026;Celtic Seas;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+GHA;288;Ghana;Ghana;-1.207;7.96;20083;Gulf of Guinea Central;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+GIB;292;Gibraltar;Gibraltar;-5.345;36.138;25036;Alboran Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+GIN;324;Guinea;Guinea;-10.942;10.439;25081;Gulf of Guinea West;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+GLP;312;Guadeloupe;Guadeloupe;-61.441;16.286;20064;Eastern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+GMB;270;Gambia;Gambia;-15.386;13.453;25080;Sahelian Upwelling;16;West African Transition;4;Tropical Atlantic;Tropical;tropical
+GNB;624;Guinea-Bissau;Guinea-Bissau;-14.651;12.125;25081;Gulf of Guinea West;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+GNQ;226;Equatorial Guinea;Equatorial Guinea;10.488;1.607;20083;Gulf of Guinea Central;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+GRC;300;Greece;Greece;21.766;39.666;25034;Ionian Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+GRD;308;Grenada;Grenada;-61.678;12.118;20064;Eastern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+GRL;304;Greenland;Greenland;-41.391;74.719;20003;East Greenland Shelf;1;Arctic;1;Arctic;Polar;polar
+GTM;320;Guatemala;Guatemala;-90.398;15.256;20167;Chiapas-Nicaragua;43;Tropical East Pacific;8;Tropical Eastern Pacific;Tropical;tropical
+GUF;254;French Guiana;French Guiana;-53.241;3.924;20072;Amazonia;13;North Brazil Shelf;4;Tropical Atlantic;Tropical;tropical
+GUM;316;Guam;Guam;144.707;13.385;20123;Mariana Islands;29;Tropical Northwestern Pacific;6;Central Indo-Pacific;Tropical;tropical
+GUY;328;Guyana;Guyana;-58.974;4.792;20071;Guianan;13;North Brazil Shelf;4;Tropical Atlantic;Tropical;tropical
+HKG;344;Hong Kong SAR China;Hong Kong;114.129;22.423;20113;Southern China;25;South China Sea;6;Central Indo-Pacific;Tropical;tropical
+HMD;334;Heard & McDonald Islands;Heard Island and McDonald Islands;73.507;-53.111;20213;Heard and Macdonald Islands;59;Subantarctic Islands;12;Southern Ocean;Polar;temperate
+HND;340;Honduras;Honduras;-86.863;14.819;20167;Chiapas-Nicaragua;43;Tropical East Pacific;8;Tropical Eastern Pacific;Tropical;tropical
+HRV;191;Croatia;Croatia;16.693;45.723;20030;Adriatic Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+HTI;332;Haiti;Haiti;-72.278;19.142;20065;Greater Antilles;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+HUN;348;Hungary;Hungary;19.134;47.07;NA;NA;NA;NA;NA;NA;NA;temperate
+IDN;360;Indonesia;Indonesia;114.252;-0.976;20139;Arafura Sea;32;Sahul Shelf;6;Central Indo-Pacific;Tropical;tropical
+IMN;833;Isle of Man;Isle of Man;-4.527;54.229;20026;Celtic Seas;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+IND;356;India;India;78.5;21;20109;Andaman and Nicobar Islands;24;Andaman;5;Western Indo-Pacific;Tropical;tropical
+IOT;86;British Indian Ocean Territory;British Indian Ocean Territory;72.416;-7.335;20106;Chagos;22;Central Indian Ocean Islands;5;Western Indo-Pacific;Tropical;tropical
+IRL;372;Ireland;Ireland;-8.152;53.177;20026;Celtic Seas;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+IRN;364;Iran;Iran (Islamic Republic of);54.301;32.565;20090;Arabian (Persian) Gulf;19;Somali/Arabian;5;Western Indo-Pacific;Tropical;subtropical
+IRQ;368;Iraq;Iraq;43.772;33.048;20090;Arabian (Persian) Gulf;19;Somali/Arabian;5;Western Indo-Pacific;Tropical;subtropical
+ISL;352;Iceland;Iceland;-18.48;64.764;20002;North and East Iceland;1;Arctic;1;Arctic;Polar;temperate
+ISR;376;Israel;Israel;34.851;31.026;20087;Northern and Central Red Sea;18;Red Sea and Gulf of Aden;5;Western Indo-Pacific;Tropical;subtropical
+ITA;380;Italy;Italy;12.8;42.7;20030;Adriatic Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+JAM;388;Jamaica;Jamaica;-77.32;18.151;20065;Greater Antilles;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+JEY;832;Jersey;Jersey;-2.129;49.219;20026;Celtic Seas;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+JOR;400;Jordan;Jordan;36.319;30.703;20087;Northern and Central Red Sea;18;Red Sea and Gulf of Aden;5;Western Indo-Pacific;Tropical;subtropical
+JPN;392;Japan;Japan;139.068;36.491;20051;Central Kuroshio Current;9;Warm Temperate Northwest Pacific;3;Temperate Northern Pacific;Temperate;temperate
+KAZ;398;Kazakhstan;Kazakhstan;67.301;48.16;NA;NA;NA;NA;NA;NA;NA;temperate
+KEN;404;Kenya;Kenya;37.858;0.53;20095;East African Coral Coast;20;Western Indian Ocean;5;Western Indo-Pacific;Tropical;tropical
+KGZ;417;Kyrgyzstan;Kyrgyzstan;74.555;41.465;NA;NA;NA;NA;NA;NA;NA;temperate
+KHM;116;Cambodia;Cambodia;104.564;12.714;20115;Gulf of Thailand;26;Sunda Shelf;6;Central Indo-Pacific;Tropical;tropical
+KIR;296;Kiribati;Kiribati;175.036;-1.508;25154;Gilbert/Ellis Islands;38;Marshall, Gilbert and Ellis Islands;7;Eastern Indo-Pacific;Tropical;tropical
+KNA;659;St. Kitts & Nevis;Saint Kitts and Nevis;-62.769;17.34;20064;Eastern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+KOR;410;South Korea;Korea, Republic of;128.103;36.504;20052;East China Sea;9;Warm Temperate Northwest Pacific;3;Temperate Northern Pacific;Temperate;temperate
+KWT;414;Kuwait;Kuwait;47.376;29.476;20090;Arabian (Persian) Gulf;19;Somali/Arabian;5;Western Indo-Pacific;Tropical;subtropical
+LAO;418;Laos;Lao People's Democratic Republic;102.471;19.905;20115;Gulf of Thailand;26;Sunda Shelf;6;Central Indo-Pacific;Tropical;tropical
+LBN;422;Lebanon;Lebanon;35.888;33.92;25032;Levantine Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;subtropical
+LBR;430;Liberia;Liberia;-9.657;6.682;20082;Gulf of Guinea Upwelling;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+LBY;434;Libya;Libyan Arab Jamahiriya;18.023;27.044;25032;Levantine Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;subtropical
+LCA;662;St. Lucia;Saint Lucia;-60.969;13.898;20064;Eastern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+LIE;438;Liechtenstein;Liechtenstein;9.555;47.153;NA;NA;NA;NA;NA;NA;NA;temperate
+LKA;144;Sri Lanka;Sri Lanka;80.704;7.612;20104;South India and Sri Lanka;21;West and South Indian Shelf;5;Western Indo-Pacific;Tropical;tropical
+LSO;426;Lesotho;Lesotho;28.243;-29.581;20193;Natal;51;Agulhas;10;Temperate Southern Africa;Temperate;subtropical
+LTU;440;Lithuania;Lithuania;23.897;55.336;20024;Baltic Sea;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+LUX;442;Luxembourg;Luxembourg;6.088;49.771;20025;North Sea;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+LVA;428;Latvia;Latvia;25.641;56.858;20024;Baltic Sea;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+MAC;446;Macao SAR China;Macau;113.545;22.2;20113;Southern China;25;South China Sea;6;Central Indo-Pacific;Tropical;tropical
+MAF;663;Saint Martin (French part);Saint Martin;-63.041;18.094;20064;Eastern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+MAR;504;Morocco;Morocco;-5.758;32.706;20028;Saharan Upwelling;3;Lusitanian;2;Temperate Northern Atlantic;Temperate;subtropical
+MCO;492;Monaco;Monaco;7.412;43.75;25035;Western Mediterranean;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+MDA;498;Moldova;Republic of Moldova;28.599;47.193;20044;Black Sea;7;Black Sea;2;Temperate Northern Atlantic;Temperate;temperate
+MDG;450;Madagascar;Madagascar;46.706;-19.374;20099;Southeast Madagascar;20;Western Indian Ocean;5;Western Indo-Pacific;Tropical;tropical
+MDV;462;Maldives;Maldives;72.92;3.548;20105;Maldives;22;Central Indian Ocean Islands;5;Western Indo-Pacific;Tropical;tropical
+MEX;484;Mexico;Mexico;-102.535;23.951;20167;Chiapas-Nicaragua;43;Tropical East Pacific;8;Tropical Eastern Pacific;Tropical;subtropical
+MHL;584;Marshall Islands;Marshall Islands;168.963;7.595;20153;Marshall Islands;38;Marshall, Gilbert and Ellis Islands;7;Eastern Indo-Pacific;Tropical;tropical
+MKD;807;North Macedonia;The former Yugoslav Republic of Macedonia;21.698;41.6;20030;Adriatic Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+MLI;466;Mali;Mali;-3.524;17.35;25081;Gulf of Guinea West;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+MLT;470;Malta;Malta;14.442;35.89;25034;Ionian Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+MMR;104;Myanmar (Burma);Burma;96.041;21.718;20109;Andaman and Nicobar Islands;24;Andaman;5;Western Indo-Pacific;Tropical;tropical
+MNE;499;Montenegro;Montenegro;19.254;42.792;20030;Adriatic Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+MNG;496;Mongolia;Mongolia;102.876;46.056;NA;NA;NA;NA;NA;NA;NA;temperate
+MNP;580;Northern Mariana Islands;Northern Mariana Islands;145.623;15.005;20123;Mariana Islands;29;Tropical Northwestern Pacific;6;Central Indo-Pacific;Tropical;tropical
+MOZ;508;Mozambique;Mozambique;37.923;-14.422;20102;Delagoa;20;Western Indian Ocean;5;Western Indo-Pacific;Tropical;tropical
+MRT;478;Mauritania;Mauritania;-10.332;20.26;20028;Saharan Upwelling;3;Lusitanian;2;Temperate Northern Atlantic;Temperate;tropical
+MSR;500;Montserrat;Montserrat;-62.187;16.736;20064;Eastern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+MTQ;474;Martinique;Martinique;-61.021;14.653;20064;Eastern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+MUS;480;Mauritius;Mauritius;57.583;-20.255;20097;Cargados Carajos/Tromelin Island;20;Western Indian Ocean;5;Western Indo-Pacific;Tropical;tropical
+MWI;454;Malawi;Malawi;33.808;-13.4;20101;Bight of Sofala/Swamp Coast;20;Western Indian Ocean;5;Western Indo-Pacific;Tropical;tropical
+MYS;458;Malaysia;Malaysia;102.195;4.201;20110;Andaman Sea Coral Coast;24;Andaman;5;Western Indo-Pacific;Tropical;tropical
+MYT;175;Mayotte;Mayotte;45.155;-12.777;20100;Western and Northern Madagascar;20;Western Indian Ocean;5;Western Indo-Pacific;Tropical;tropical
+NAM;516;Namibia;Namibia;17.218;-22.133;20191;Namaqua;50;Benguela;10;Temperate Southern Africa;Temperate;tropical
+NCL;540;New Caledonia;New Caledonia;165.447;-21.359;20149;New Caledonia;35;Tropical Southwestern Pacific;6;Central Indo-Pacific;Tropical;tropical
+NER;562;Niger;Niger;9.398;17.426;NA;NA;NA;NA;NA;NA;NA;tropical
+NFK;574;Norfolk Island;Norfolk Island;167.953;-29.037;20151;Lord Howe and Norfolk Islands;36;Lord Howe and Norfolk Islands;6;Central Indo-Pacific;Tropical;subtropical
+NGA;566;Nigeria;Nigeria;8.105;9.594;20083;Gulf of Guinea Central;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+NIC;558;Nicaragua;Nicaragua;-85.034;12.84;20167;Chiapas-Nicaragua;43;Tropical East Pacific;8;Tropical Eastern Pacific;Tropical;tropical
+NIU;570;Niue;Niue;-169.869;-19.052;20146;Tonga Islands;35;Tropical Southwestern Pacific;6;Central Indo-Pacific;Tropical;tropical
+NLD;528;Netherlands;Netherlands;5.389;52.077;20025;North Sea;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+NOR;578;Norway;Norway;8.74;61.152;20025;North Sea;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+NPL;524;Nepal;Nepal;83.939;28.253;NA;NA;NA;NA;NA;NA;NA;subtropical
+NRU;520;Nauru;Nauru;166.93;-0.522;25154;Gilbert/Ellis Islands;38;Marshall, Gilbert and Ellis Islands;7;Eastern Indo-Pacific;Tropical;tropical
+NZL;554;New Zealand;New Zealand;172.235;-42.634;20232;Auckland Island;62;Subantarctic New Zealand;12;Southern Ocean;Polar;temperate
+OMN;512;Oman;Oman;57.407;21.656;20090;Arabian (Persian) Gulf;19;Somali/Arabian;5;Western Indo-Pacific;Tropical;tropical
+PAK;586;Pakistan;Pakistan;69.386;29.967;20091;Gulf of Oman;19;Somali/Arabian;5;Western Indo-Pacific;Tropical;subtropical
+PAN;591;Panama;Panama;-80.92;8.384;20168;Nicoya;43;Tropical East Pacific;8;Tropical Eastern Pacific;Tropical;tropical
+PCN;612;Pitcairn Islands;Pitcairn Islands;-128.316;-24.366;20159;Rapa-Pitcairn;40;Southeast Polynesia;7;Eastern Indo-Pacific;Tropical;subtropical
+PER;604;Peru;Peru;-75.552;-9.326;20175;Central Peru;45;Warm Temperate Southeastern Pacific;9;Temperate South America;Temperate;tropical
+PHL;608;Philippines;Philippines;122.466;11.118;20127;Eastern Philippines;30;Western Coral Triangle;6;Central Indo-Pacific;Tropical;tropical
+PLW;585;Palau;Palau;134.57;7.501;20125;West Caroline Islands;29;Tropical Northwestern Pacific;6;Central Indo-Pacific;Tropical;tropical
+PNG;598;Papua New Guinea;Papua New Guinea;143.459;-5.949;20139;Arafura Sea;32;Sahul Shelf;6;Central Indo-Pacific;Tropical;tropical
+POL;616;Poland;Poland;19.401;52.125;20024;Baltic Sea;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+PRI;630;Puerto Rico;Puerto Rico;-66.466;18.221;20065;Greater Antilles;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+PRK;408;North Korea;Korea, Democratic People's Republic of;126.451;39.778;20049;Sea of Japan/East Sea;8;Cold Temperate Northwest Pacific;3;Temperate Northern Pacific;Temperate;temperate
+PRT;620;Portugal;Portugal;-8.058;40.309;20029;Azores Canaries Madeira;3;Lusitanian;2;Temperate Northern Atlantic;Temperate;temperate
+PRY;600;Paraguay;Paraguay;-58.391;-23.236;NA;NA;NA;NA;NA;NA;NA;tropical
+PSE;275;Palestinian Territories;Palestine;35.278;32.037;25032;Levantine Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;subtropical
+PYF;258;French Polynesia;French Polynesia;-149.462;-17.626;20158;Tuamotus;40;Southeast Polynesia;7;Eastern Indo-Pacific;Tropical;tropical
+QAT;634;Qatar;Qatar;51.191;25.316;20090;Arabian (Persian) Gulf;19;Somali/Arabian;5;Western Indo-Pacific;Tropical;subtropical
+REU;638;Réunion;Reunion;55.538;-21.122;20098;Mascarene Islands;20;Western Indian Ocean;5;Western Indo-Pacific;Tropical;tropical
+ROU;642;Romania;Romania;24.969;45.844;20044;Black Sea;7;Black Sea;2;Temperate Northern Atlantic;Temperate;temperate
+RUS;643;Russia;Russia;96.689;61.988;20024;Baltic Sea;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+RWA;646;Rwanda;Rwanda;29.917;-1.998;NA;NA;NA;NA;NA;NA;NA;tropical
+SAU;682;Saudi Arabia;Saudi Arabia;44.585;24.023;20090;Arabian (Persian) Gulf;19;Somali/Arabian;5;Western Indo-Pacific;Tropical;subtropical
+SDN;729;Sudan;Sudan;30.05;13.832;20087;Northern and Central Red Sea;18;Red Sea and Gulf of Aden;5;Western Indo-Pacific;Tropical;tropical
+SEN;686;Senegal;Senegal;-14.881;15.013;25081;Gulf of Guinea West;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+SGP;702;Singapore;Singapore;103.808;1.351;20118;Malacca Strait;26;Sunda Shelf;6;Central Indo-Pacific;Tropical;tropical
+SGS;239;South Georgia & South Sandwich Islands;South Georgia South Sandwich Islands;-36.891;-54.209;20220;South Georgia;60;Scotia Sea;12;Southern Ocean;Polar;temperate
+SHN;654;St. Helena;Saint Helena;-5.71;-15.953;20078;St. Helena and Ascension Islands;15;St. Helena and Ascension Islands;4;Tropical Atlantic;Tropical;tropical
+SJM;744;Svalbard & Jan Mayen;Svalbard;18.374;78.83;20002;North and East Iceland;1;Arctic;1;Arctic;Polar;polar
+SLB;90;Solomon Islands;Solomon Islands;160.109;-9.611;20135;Solomon Archipelago;31;Eastern Coral Triangle;6;Central Indo-Pacific;Tropical;tropical
+SLE;694;Sierra Leone;Sierra Leone;-11.792;8.56;25081;Gulf of Guinea West;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+SLV;222;El Salvador;El Salvador;-88.866;13.736;20167;Chiapas-Nicaragua;43;Tropical East Pacific;8;Tropical Eastern Pacific;Tropical;tropical
+SMR;674;San Marino;San Marino;12.46;43.942;20030;Adriatic Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+SOM;706;Somalia;Somalia;48.316;9.774;20093;Central Somali Coast;19;Somali/Arabian;5;Western Indo-Pacific;Tropical;tropical
+SPM;666;St. Pierre & Miquelon;Saint Pierre and Miquelon;-56.325;47.042;20038;Southern Grand Banks - South Newfoundland;5;Cold Temperate Northwest Atlantic;2;Temperate Northern Atlantic;Temperate;temperate
+SRB;688;Serbia;Serbia;20.806;44.032;20030;Adriatic Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+STP;678;São Tomé & Príncipe;Sao Tome and Principe;6.629;0.201;20084;Gulf of Guinea Islands;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+SUR;740;Suriname;Suriname;-55.912;4.127;20071;Guianan;13;North Brazil Shelf;4;Tropical Atlantic;Tropical;tropical
+SVK;703;Slovakia;Slovakia;19.491;48.707;NA;NA;NA;NA;NA;NA;NA;temperate
+SVN;705;Slovenia;Slovenia;14.827;46.124;20030;Adriatic Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+SWE;752;Sweden;Sweden;15.27;62.011;20024;Baltic Sea;2;Northern European Seas;2;Temperate Northern Atlantic;Temperate;temperate
+SWZ;748;Eswatini;Swaziland;31.497;-26.562;20102;Delagoa;20;Western Indian Ocean;5;Western Indo-Pacific;Tropical;subtropical
+SYC;690;Seychelles;Seychelles;55.474;-4.647;20096;Seychelles;20;Western Indian Ocean;5;Western Indo-Pacific;Tropical;tropical
+SYR;760;Syria;Syrian Arab Republic;38.506;35.013;25032;Levantine Sea;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+TCA;796;Turks & Caicos Islands;Turks and Caicos Islands;-71.95;21.902;20063;Bahamian;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+TCD;148;Chad;Chad;18.665;15.361;NA;NA;NA;NA;NA;NA;NA;tropical
+TGO;768;Togo;Togo;1.081;8.799;20083;Gulf of Guinea Central;17;Gulf of Guinea;4;Tropical Atlantic;Tropical;tropical
+THA;764;Thailand;Thailand;100.844;15.7;20110;Andaman Sea Coral Coast;24;Andaman;5;Western Indo-Pacific;Tropical;tropical
+TJK;762;Tajikistan;Tajikistan;69.42;38.665;NA;NA;NA;NA;NA;NA;NA;temperate
+TKL;772;Tokelau;Tokelau;-171.853;-9.193;20156;Phoenix/Tokelau/Northern Cook Islands;39;Central Polynesia;7;Eastern Indo-Pacific;Tropical;tropical
+TKM;795;Turkmenistan;Turkmenistan;59.384;39.122;NA;NA;NA;NA;NA;NA;NA;temperate
+TLS;626;Timor-Leste;Timor-Leste;125.878;-8.822;20132;Lesser Sunda;30;Western Coral Triangle;6;Central Indo-Pacific;Tropical;tropical
+TON;776;Tonga;Tonga;-175.185;-21.202;20157;Samoa Islands;39;Central Polynesia;7;Eastern Indo-Pacific;Tropical;tropical
+TTO;780;Trinidad & Tobago;Trinidad and Tobago;-61.253;10.468;20071;Guianan;13;North Brazil Shelf;4;Tropical Atlantic;Tropical;tropical
+TUN;788;Tunisia;Tunisia;9.596;35.383;25033;Tunisian Plateau/Gulf of Sidra;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+TUR;792;Turkey;Turkey;35.179;39.061;20044;Black Sea;7;Black Sea;2;Temperate Northern Atlantic;Temperate;temperate
+TUV;798;Tuvalu;Tuvalu;179.219;-8.514;25154;Gilbert/Ellis Islands;38;Marshall, Gilbert and Ellis Islands;7;Eastern Indo-Pacific;Tropical;tropical
+TWN;158;Taiwan;Taiwan;120.946;23.754;20052;East China Sea;9;Warm Temperate Northwest Pacific;3;Temperate Northern Pacific;Temperate;subtropical
+TZA;834;Tanzania;United Republic of Tanzania;34.823;-6.27;20095;East African Coral Coast;20;Western Indian Ocean;5;Western Indo-Pacific;Tropical;tropical
+UGA;800;Uganda;Uganda;32.386;1.28;NA;NA;NA;NA;NA;NA;NA;tropical
+UKR;804;Ukraine;Ukraine;31.388;49.016;20044;Black Sea;7;Black Sea;2;Temperate Northern Atlantic;Temperate;temperate
+UMI;581;United States Minor Outlying Islands (the);United States Minor Outlying Islands;-160.027;-0.385;25152;Hawaii;37;Hawaii;7;Eastern Indo-Pacific;Tropical;tropical
+URY;858;Uruguay;Uruguay;-56.012;-32.8;20182;Rio de la Plata;47;Warm Temperate Southwestern Atlantic;9;Temperate South America;Temperate;subtropical
+USA;840;United States;United States;-98.606;39.622;20053;Aleutian Islands;10;Cold Temperate Northeast Pacific;3;Temperate Northern Pacific;Temperate;temperate
+UZB;860;Uzbekistan;Uzbekistan;63.17;41.75;NA;NA;NA;NA;NA;NA;NA;temperate
+VAT;336;Vatican City;Holy See (Vatican City);12.451;41.904;25035;Western Mediterranean;4;Mediterranean Sea;2;Temperate Northern Atlantic;Temperate;temperate
+VCT;670;St. Vincent & Grenadines;Saint Vincent and the Grenadines;-61.194;13.248;20064;Eastern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+VEN;862;Venezuela;Venezuela;-66.166;7.125;20071;Guianan;13;North Brazil Shelf;4;Tropical Atlantic;Tropical;tropical
+VGB;92;British Virgin Islands;British Virgin Islands;-64.39;18.483;20064;Eastern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+VIR;850;U.S. Virgin Islands;United States Virgin Islands;-64.785;17.741;20064;Eastern Caribbean;12;Tropical Northwestern Atlantic;4;Tropical Atlantic;Tropical;tropical
+VNM;704;Vietnam;Viet Nam;105.314;21.491;20115;Gulf of Thailand;26;Sunda Shelf;6;Central Indo-Pacific;Tropical;tropical
+VUT;548;Vanuatu;Vanuatu;166.899;-15.376;20148;Vanuatu;35;Tropical Southwestern Pacific;6;Central Indo-Pacific;Tropical;tropical
+WLF;876;Wallis & Futuna;Wallis and Futuna Islands;-178.131;-14.289;20157;Samoa Islands;39;Central Polynesia;7;Eastern Indo-Pacific;Tropical;tropical
+WSM;882;Samoa;Samoa;-172.414;-13.652;20157;Samoa Islands;39;Central Polynesia;7;Eastern Indo-Pacific;Tropical;tropical
+YEM;887;Yemen;Yemen;48.355;15.807;20089;Gulf of Aden;18;Red Sea and Gulf of Aden;5;Western Indo-Pacific;Tropical;tropical
+ZAF;710;South Africa;South Africa;23.121;-30.558;20192;Agulhas Bank;51;Agulhas;10;Temperate Southern Africa;Temperate;subtropical
+ZMB;894;Zambia;Zambia;26.32;-14.614;NA;NA;NA;NA;NA;NA;NA;tropical
+ZWE;716;Zimbabwe;Zimbabwe;29.872;-19;20102;Delagoa;20;Western Indian Ocean;5;Western Indo-Pacific;Tropical;tropical
