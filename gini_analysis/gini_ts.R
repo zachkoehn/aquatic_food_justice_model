@@ -20,6 +20,19 @@ exports_t <- read.csv("Outputs/distribution_exports_in_tonnes_ts.csv")
 supply <- read.csv("Outputs/FBS_seafood_consumption_reliance_ts.csv")
 pop <- read.csv("Outputs/population_worldbank_all_years.csv")
 
+df <- read.csv("all_national_indicators.csv")
+
+df <- df %>%
+  mutate(mean_aquaculture = sum(mean_aquaculture_production_freshwater, 
+                                mean_aquaculture_production_marine, 
+                                mean_aquaculture_production_brackish, na.rm = TRUE),
+         women_livelihoods = direct_w_esitimated_ssf*female_particip_ssf) %>%
+  select(country_name_en, iso3c, iso3n, mean_population,
+         fish_supply_daily_g_protein_percap, mean_catch_nutrition_quality, 
+         mean_exports_USD1000, mean_exports_tonnes, fish_relative_caloric_price, fish_affordability,
+         mean_gdp, direct_w_esitimated_ssf, indirect_w_esitimated_ssf, women_livelihoods, 
+         mean_total_production, mean_aquaculture, mean_capture_production)
+              
 #____________________________________________________________________________________________________#
 # Filter population and join to df
 #____________________________________________________________________________________________________#
