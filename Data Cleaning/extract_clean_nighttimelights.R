@@ -17,7 +17,6 @@ library(readxl)
 library(rnaturalearth)
 library(rnaturalearthhires)
 
-# data from Table S2 in https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0228912#sec010
 directory <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Justice/section_model/aquatic_food_justice_model"
 
 rasterOptions(progress = 'text',timer=TRUE) #allows for progress timer... helps multitask :) 
