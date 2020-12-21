@@ -42,6 +42,61 @@ oecd_categories <- oecd_categories %>%
   filter(geographic_access=="Landlocked")
 landlocked_countries <- oecd_categories$iso3c
 
+# vector of territories to exclude from the model
+territories <-c(
+  "VIR", #Virgin Islands United States
+  "UMI", #Minor outlying islands United States
+  "PRI", #Puerto Rico United States
+  "MNP", #N Mariana islands United States
+  "GUM", #Guam United States
+  "ASM", #American Samoa United States
+  "VGB", #Virgin islands UK
+  "TCA", #Turks and Caicos UK
+  "SGS", #South Georgia and South Sandwich Islands UK
+  "SHN", # Saint Helena, Ascension and Tristan da Cunha UK
+  "PCN", #Pitcairn UK
+  "MSR", #Montserrat UK
+  "GIB", #Gibraltar UK
+  "FLK", #Falkland Islands UK
+  "CYM", #Cayman Islands UK
+  "IOT", #British Indian Ocean Territory UK
+  "BMU", #Bermuda UK
+  "AIA", #Anguilla UK
+  "SJM", #Svalbard and Jan Mayen Norway
+  "BVT",#Bouvet Island Norway
+  "TKL", #Tokelau New Zealand
+  "NIU", #Niue New Zealand
+  "COK", #Cook Islands New Zealand
+  "SXM", #Sint Maarten Netherlands
+  "CUW", #Curacao Netherlands
+  "BES", #Bonaire, Sint Eustatius and Saba Netherlands
+  "ABW", #Aruba Netherlands
+  "WLF", #Wallis and Fortuna France
+  "SPM", #Saint Pierre and Miquelon France
+  "MAF", #Saint Martin France
+  "BLM", #Saint Barthelemy France
+  "REU", #Reunion France
+  "NCL", #New Caledonia France
+  "MYT", #Mayotte France
+  "MTQ", #Martinique France
+  "GLP", #Guadeloupe France
+  "ATF", #French Southern Territories
+  "PYF", #French Polynesia France
+  "GUF", #French Guiana France
+  "ALA", #Aland Finland
+  "GRL", #Greenland Denmark
+  "FRO", #Faroe Islands Denmark
+  "MAC", #Macao China
+  "HKG", #Hong Kong China
+  "JEY", #Jersey UK
+  "IMN", #Isle of Man UK
+  "GGY", #Guernsey UK
+  "NFK", #Norfolk Island Australia
+  "HMD", #Heard and McDonald Islands Australia
+  "CCK", #Cocos Islands Australia
+  "CXR" #Christmas island Australia
+  )
+
 # substitute 0 for NA values in all produciton data (no need to do this for total)
 df_list[["production_by_isccaap_faostat_mean_2006-2016.csv"]] <- df_list[["production_by_isccaap_faostat_mean_2006-2016.csv"]] %>%
   mutate(
@@ -82,6 +137,7 @@ df_merged <- df_list %>%
   do(.[!duplicated(names(.))]) %>%
   filter(
     is.na(iso3n)==FALSE,
+    !iso3c %in% territories, #excludes territories
     iso3c!="NA"
     ) %>%
   dplyr::select(., #selects within piped data
@@ -123,7 +179,7 @@ df_merged <- df_list %>%
 df_merged$eez_total[df_merged$iso3c %in% landlocked_countries] <- 0
 df_merged$ifa_total[df_merged$iso3c %in% landlocked_countries] <- 0
 df_merged$pp_eez_weighted[df_merged$iso3c %in% landlocked_countries] <- 0 
-
+dim(df_merged)
 
 
 write.csv(df_merged,
