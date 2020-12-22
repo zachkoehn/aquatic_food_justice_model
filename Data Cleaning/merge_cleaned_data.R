@@ -138,6 +138,7 @@ df_merged <- df_list %>%
   filter(
     is.na(iso3n)==FALSE,
     !iso3c %in% territories, #excludes territories
+    country_name_en!="NA",
     iso3c!="NA"
     ) %>%
   dplyr::select(., #selects within piped data
