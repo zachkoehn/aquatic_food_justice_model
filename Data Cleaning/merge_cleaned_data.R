@@ -94,7 +94,8 @@ territories <-c(
   "NFK", #Norfolk Island Australia
   "HMD", #Heard and McDonald Islands Australia
   "CCK", #Cocos Islands Australia
-  "CXR" #Christmas island Australia
+  "CXR", #Christmas island Australia
+  "VAT"  #Vatican City
   )
 
 # substitute 0 for NA values in all produciton data (no need to do this for total)
@@ -125,7 +126,6 @@ df_list[["voice_and_accountability_2008_2018.csv"]] <- df_list[["voice_and_accou
     rename(year_range=year.range) %>%
     mutate(year_range=as.character(year_range))
 
-livelihoods_direct_indirect.csv
 df_list[["livelihoods_direct_indirect.csv"]] <- df_list[["livelihoods_direct_indirect.csv"]] %>%  # name needs to be changed from year.range to year_range, also double 
     rename(year_range=year.range) %>%
     mutate(year_range=as.character(year_range))
@@ -135,20 +135,21 @@ df_list[["livelihoods_direct_indirect.csv"]] <- df_list[["livelihoods_direct_ind
 df_merged <- df_list %>%
   reduce(full_join,by=c("iso3c","iso3n")) %>% #merges all by the iso codes
   do(.[!duplicated(names(.))]) %>%
-  filter(
-    is.na(iso3n)==FALSE,
-    !iso3c %in% territories, #excludes territories
-    country_name_en!="NA",
-    iso3c!="NA"
+  select(
+    -(mean_prod_carps_etc:mean_pro_horeshoe_crabs_etc)
     ) %>%
-  dplyr::select(., #selects within piped data
+  select(., #selects within piped data
          -starts_with("country"), #removes country variable (duplicated in csvs)
          -starts_with("year"),#removes year category variable (duplicated in csvs)
          -starts_with("geog"),#removes geog variable 
          -starts_with("unit"),#removes unit variable (duplicated in csvs)
-         -Code #removes a code value that is from the voice and accountability (just a duplicated iso3c)
-         
+         -Code #removes a code value that is from the voice and accountability (just a duplicated iso3c)      
   ) %>% 
+  filter(
+    is.na(iso3n)==FALSE,
+    !iso3c %in% territories, #excludes territories
+    iso3c!="NA"
+    ) %>%
   mutate(
     country_name_en=countrycode(iso3n,"iso3n","country.name.en"),
     un_region_name=countrycode(iso3n,"iso3n","un.region.name"),
@@ -171,6 +172,9 @@ df_merged <- df_list %>%
     ) %>%
   rename(
     mean_voice_account=mean.voice.and.accountability #and change variable name to underscore from period
+    ) %>%
+  filter(
+    country_name_en!="NA"
     ) %>%
   dplyr::select(country_name_en,iso3c,iso3n,everything())
 
