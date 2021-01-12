@@ -95,7 +95,8 @@ territories <-c(
   "HMD", #Heard and McDonald Islands Australia
   "CCK", #Cocos Islands Australia
   "CXR", #Christmas island Australia
-  "VAT"  #Vatican City
+  "VAT",  #Vatican City
+  "ATA"   #Antarctica
   )
 
 # substitute 0 for NA values in all produciton data (no need to do this for total)
