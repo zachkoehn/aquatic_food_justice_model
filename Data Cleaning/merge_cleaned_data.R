@@ -144,6 +144,7 @@ df_merged <- df_list %>%
          -starts_with("year"),#removes year category variable (duplicated in csvs)
          -starts_with("geog"),#removes geog variable 
          -starts_with("unit"),#removes unit variable (duplicated in csvs)
+         -X1, #removes blank column of rownames (from one CSV)
          -Code #removes a code value that is from the voice and accountability (just a duplicated iso3c)      
   ) %>% 
   filter(
