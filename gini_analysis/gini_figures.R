@@ -130,7 +130,8 @@ plot.dist <- function(dat.col, variable.title, log.dat.col = NULL, log.variable.
   # Create map
   g_map <- ggplot(data = map.world) +
     geom_sf(aes_string(fill = map.dat.col)) +
-    scale_fill_gradient(low = "white", high = "#70468C") +
+    #scale_fill_gradient(low = "white", high = "#70468C") +
+    scale_fill_gradientn(colours = c("#FFD947", "#FFE78B", "#FFF3C4", "#FFFBEC", "#F3F5F6", "#C3CAD3", "#758699", "#364F6B")) +
     labs(fill = paste(map.lab)) +
     coord_sf(ylim = c(-50, 90), datum = NA) +
     theme(axis.line = element_blank(), axis.text = element_blank(), 
@@ -144,15 +145,31 @@ plot.dist <- function(dat.col, variable.title, log.dat.col = NULL, log.variable.
   #              layout_matrix = rbind(c(1, 3, 3, 3),
   #                                    c(2, 3, 3, 3)))
   
+  # # Layout for with histogram
+  # ggdraw() +
+  #   draw_plot(
+  #     g_map, x=0, y=0.5, hjust = 0, vjust=0.5, height = .8, width=.8
+  #   ) +
+  #   draw_plot(
+  #     g_hist, x=.68, y = .65, height = .28, width = .28, hjust = 0, vjust=0.5
+  #   ) +
+  #   draw_plot(
+  #     g_lorenz, x=.68, y = .35, height = .28, width = .28, hjust = 0, vjust=0.5
+  #   ) + 
+  #   geom_text(data = data.frame(x = 0.05, y = .86, label = paste(main.title)),
+  #             aes(x, y, label = label),
+  #             hjust = 0, vjust = 0, angle = 0, size = .5*base_size, fontface="bold",
+  #             color = "black",
+  #             inherit.aes = FALSE,
+  #             family= base_family)
+  
+  # Layout without histogram
   ggdraw() +
     draw_plot(
-      g_map, x=0, y=0.5, hjust = 0, vjust=0.5, height = .8, width=.8
+      g_map, x=0, y=0.5, hjust = 0, vjust=0.5, height = 0.9, width = 1
     ) +
     draw_plot(
-      g_hist, x=.68, y = .65, height = .28, width = .28, hjust = 0, vjust=0.5
-    ) + 
-    draw_plot(
-      g_lorenz, x=.68, y = .35, height = .28, width = .28, hjust = 0, vjust=0.5
+      g_lorenz, x=0.05, y = 0.45, height = .4, width = .25, hjust = 0, vjust=0.55
     ) + 
     geom_text(data = data.frame(x = 0.05, y = .86, label = paste(main.title)),
               aes(x, y, label = label),
@@ -172,7 +189,7 @@ dev.off()
 png("Outputs/mean_total_production_perworker.png", width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "mean_total_production_perworker", variable.title = "Production (t/worker)",
           log.dat.col = "log_mean_total_production_perworker", 
-          log.variable.title = "log(t/worker)", main.title = "A. Production per worker")
+          log.variable.title = "log(t/worker)", main.title = "a")
 dev.off()
 
 png("Outputs/mean_capture_production_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
@@ -212,7 +229,7 @@ dev.off()
 png("Outputs/mean_exports_tonnes_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "mean_exports_tonnes_percap", variable.title = "Per cap exports (t)",
           log.dat.col = "log_mean_exports_tonnes_percap", 
-          log.variable.title = "Per cap exports (log(t))", main.title = "B. Exports per capita (t)")
+          log.variable.title = "Per cap exports (log(t))", main.title = "b")
 dev.off()
 
 png("Outputs/mean_exports_USD1000_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
@@ -226,7 +243,7 @@ plot.dist(dat.col = "mean_catch_nutrition_quality", variable.title = "Mean catch
 dev.off()
 
 png("Outputs/fish_supply_daily_g_protein_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
-plot.dist(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Per cap supply (g protein)", main.title = "C. Protein supply per capita")
+plot.dist(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Per cap supply (g protein)", main.title = "c")
 dev.off()
 
 png("Outputs/mean_gdp.png", width = 8, height = 3.5, units = 'in', res = 300)
