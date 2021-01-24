@@ -15,6 +15,7 @@ library(rnaturalearth)
 library(rnaturalearthdata)
 library(cowplot)
 library(colortools)
+library(ggpubr)
 
 
 #____________________________________________________________________________________________________#
@@ -55,7 +56,9 @@ df <- df %>%
     
     mean_total_production_perworker = 
       mean_total_production/(direct_w_esitimated_ssf+indirect_w_esitimated_ssf_percap),
-    log_mean_total_production_perworker = log(mean_total_production_perworker)
+    log_mean_total_production_perworker = log(mean_total_production_perworker),
+    
+    log_fish_supply_daily_g_protein_percap = log(fish_supply_daily_g_protein_percap)
   )
 
 # Bind data with world data for mapping
@@ -129,7 +132,7 @@ plot.dist <- function(dat.col, variable.title, log.dat.col = NULL, log.variable.
   
   # Create map
   g_map <- ggplot(data = map.world) +
-    geom_sf(aes_string(fill = map.dat.col)) +
+    geom_sf(aes_string(fill = map.dat.col), size = 0.1) +
     #scale_fill_gradient(low = "white", high = "#70468C") +
     scale_fill_gradientn(colours = c("#FFD947", "#FFE78B", "#FFF3C4", "#FFFBEC", "#F3F5F6", "#C3CAD3", "#758699", "#364F6B")) +
     labs(fill = paste(map.lab)) +
@@ -246,11 +249,191 @@ png("Outputs/fish_supply_daily_g_protein_percap.png", width = 8, height = 3.5, u
 plot.dist(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Per cap supply (g protein)", main.title = "c")
 dev.off()
 
+png("Outputs/log_fish_supply_daily_g_protein_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
+plot.dist(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Per cap supply (g protein)",
+          log.dat.col = "log_fish_supply_daily_g_protein_percap", 
+          log.variable.title = "Per cap supply (log(g protein))", main.title = "c")
+dev.off()
+
 png("Outputs/mean_gdp.png", width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "mean_gdp", variable.title = "GDP", main.title = "GDP")
 dev.off()
 
 
+#____________________________________________________________________________________________________#
+# Create function for map with embedded Gini with log scale
+#____________________________________________________________________________________________________#
+
+base_size <- 10
+base_family <- "Helvetica Neue"
+
+plot.dist.log <- function(dat.col, variable.title, log.dat.col = NULL, log.variable.title = NULL, main.title = ""){
+  # Calculate Gini
+  df.world <- as.data.frame(map.world)
+  df.world <- data.frame(gini.col = c(df.world[[dat.col]]), 
+                         pop = df.world$mean_population)
+  df.world <- df.world %>%
+    drop_na()
+  # Can add population weighting, but https://doi.org/10.1080/17421772.2017.1343491 argues against
+  gini <- gini(x = df.world$gini.col, weights = df.world$pop) 
+  gini(x = df.world$gini.col) 
+  
+  # Create histogram
+  g_hist <- ggplot(df.world, aes(x = gini.col)) +
+    geom_histogram(bins = 50) +
+    labs(x = paste(variable.title), y = "No. of countries") + 
+    theme(axis.line.x = element_line(colour = "black", size = 0.5, linetype = "solid"), 
+          axis.line.y = element_line(colour = "black", size = 0.5, linetype = "solid"), 
+          axis.text = element_text(size = ceiling(base_size*0.7), colour = "black"),
+          axis.title = element_text(size = ceiling(base_size*0.8)), 
+          panel.grid.minor = element_blank(), 
+          panel.grid.major.y = element_blank(), 
+          panel.grid.major.x = element_blank(), 
+          panel.background = element_blank(), panel.border = element_blank(), 
+          strip.background = element_rect(linetype = 0), strip.text = element_text(), 
+          strip.text.x = element_text(vjust = 0.5), strip.text.y = element_text(angle = -90), 
+          legend.text = element_text(size = ceiling(base_size*0.9), family = "sans"), 
+          legend.title = element_blank(), 
+          legend.key = element_rect(fill = "white", colour = NA), 
+          legend.position="bottom",
+          plot.title = element_text(size = ceiling(base_size*1.1), face = "bold"), 
+          plot.subtitle = element_text(size = ceiling(base_size*1.05)))
+  
+  # Create unweighted Lorenz
+  g_lorenz <- ggplot(df.world, aes(gini.col)) +
+    stat_lorenz() +
+    annotate_ineq(df.world$gini.col, x = .15, size = 2.5) +
+    geom_abline(linetype = "dashed") +
+    labs(x = paste(variable.title), y = "Proportion of benefit") + 
+    theme(axis.line.x = element_line(colour = "black", size = 0.5, linetype = "solid"), 
+          axis.line.y = element_line(colour = "black", size = 0.5, linetype = "solid"), 
+          axis.text = element_text(size = ceiling(base_size*0.7), colour = "black"),
+          axis.title = element_text(size = ceiling(base_size*0.8)), 
+          panel.grid.minor = element_blank(), 
+          panel.grid.major.y = element_blank(), 
+          panel.grid.major.x = element_blank(), 
+          panel.background = element_blank(), panel.border = element_blank(), 
+          strip.background = element_rect(linetype = 0), strip.text = element_text(), 
+          strip.text.x = element_text(vjust = 0.5), strip.text.y = element_text(angle = -90), 
+          legend.text = element_text(size = ceiling(base_size*0.9), family = "sans"), 
+          legend.title = element_blank(), 
+          legend.key = element_rect(fill = "white", colour = NA), 
+          legend.position="bottom",
+          plot.title = element_text(size = ceiling(base_size*1.1), face = "bold"), 
+          plot.subtitle = element_text(size = ceiling(base_size*1.05)))
+  
+  map.dat.col <- ifelse(is.null(log.dat.col) == TRUE, paste(dat.col), paste(log.dat.col))
+  map.lab <- ifelse(is.null(log.variable.title) == TRUE, paste(variable.title), paste(log.variable.title))
+  
+  # Create map
+  g_map <- ggplot(data = map.world) +
+    geom_sf(aes_string(fill = map.dat.col), size = 0.1) +
+    #scale_fill_gradient(low = "white", high = "#70468C") +
+    scale_fill_gradientn(colours = c("#FFD947", "#FFE78B", "#FFF3C4", "#FFFBEC", "#F3F5F6", "#C3CAD3", "#758699", "#364F6B"),
+                         trans = "log10") +
+    labs(fill = paste(map.lab)) +
+    coord_sf(ylim = c(-50, 90), datum = NA) +
+    guides(fill = guide_colourbar(barwidth = 10, barheight = 0.5)) +
+    theme(axis.line = element_blank(), axis.text = element_blank(), 
+          axis.ticks = element_blank(), axis.title = element_blank(), 
+          panel.background = element_blank(), panel.border = element_blank(), 
+          panel.grid = element_blank(), panel.spacing = unit(0, 
+                                                             "lines"), plot.background = element_blank(), 
+          legend.justification = c(0, 0), legend.position = "bottom")
+  
+  # Layout without histogram
+  ggdraw() +
+    draw_plot(
+      g_map, x=0.05, y=0.5, hjust = 0, vjust=0.5,
+    ) +
+    draw_plot(
+      g_lorenz, x=0.05, y = 0.45, height = .4, width = .25, hjust = 0, vjust=0.55
+    ) + 
+    geom_text(data = data.frame(x = 0.05, y = .86, label = paste(main.title)),
+              aes(x, y, label = label),
+              hjust = 0, vjust = 0, angle = 0, size = .5*base_size, fontface="bold",
+              color = "black",
+              inherit.aes = FALSE,
+              family= base_family)
+  
+}
+
+png("Outputs/Fig_1.png", width = 7, height = 10, units = 'in', res = 300)
+a <- plot.dist.log(dat.col = "mean_total_production_perworker", variable.title = "Production (t/worker)",
+          main.title = "")
+b <- plot.dist.log(dat.col = "mean_exports_tonnes_percap", variable.title = "Exports (t/cap)",
+               main.title = "")
+c <- plot.dist.log(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Protein Supply (g/cap)",
+               main.title = "")
+ggarrange(a, b, c, labels = c("a", "b", "c"), ncol = 1)
+dev.off()
+
+pdf("Outputs/Fig_1.pdf")
+a <- plot.dist.log(dat.col = "mean_total_production_perworker", variable.title = "Production (t/worker)",
+                   main.title = "")
+b <- plot.dist.log(dat.col = "mean_exports_tonnes_percap", variable.title = "Exports (t/cap)",
+                   main.title = "")
+c <- plot.dist.log(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Protein Supply (g/cap)",
+                   main.title = "")
+ggarrange(a, b, c, labels = c("a", "b", "c"), ncol = 1)
+dev.off()
+
+png("Outputs/SIFig_inequality_maps.png", width = 7, height = 10, units = 'in', res = 300)
+a <- plot.dist.log(dat.col = "mean_total_production_percap", variable.title = "Production (t/capita)",
+               main.title = "")
+b <- plot.dist.log(dat.col = "direct_w_esitimated_ssf_percap", variable.title = "Per cap direct livelihoods",
+                   main.title = "")
+c <- plot.dist.log(dat.col = "indirect_w_esitimated_ssf_percap", variable.title = "Per cap indirect livelihoods",
+               main.title = "")
+d <- plot.dist.log(dat.col = "women_livelihoods_percap", variable.title = "Per cap women's livelihoods",
+               main.title = "")
+e <- plot.dist.log(dat.col = "mean_exports_USD1000_percap", variable.title = "Per cap exports (1000 USD)",
+               main.title = "")
+ggarrange(a, b, c, d, e, labels = c("a", "b", "c", "d", "e"), ncol = 1)
+dev.off()
+
+pdf("Outputs/SIFig_inequality_maps.pdf")
+a <- plot.dist.log(dat.col = "mean_total_production_percap", variable.title = "Production (t/capita)",
+                   main.title = "")
+b <- plot.dist.log(dat.col = "direct_w_esitimated_ssf_percap", variable.title = "Per cap direct livelihoods",
+                   main.title = "")
+c <- plot.dist.log(dat.col = "indirect_w_esitimated_ssf_percap", variable.title = "Per cap indirect livelihoods",
+                   main.title = "")
+d <- plot.dist.log(dat.col = "women_livelihoods_percap", variable.title = "Per cap women's livelihoods",
+                   main.title = "")
+e <- plot.dist.log(dat.col = "mean_exports_USD1000_percap", variable.title = "Per cap exports (1000 USD)",
+                   main.title = "")
+ggarrange(a, b, c, d, e, labels = c("a", "b", "c", "d", "e"), ncol = 1)
+dev.off()
+
+# Extra plots
+png("Outputs/mean_capture_production_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
+plot.dist.log(dat.col = "mean_capture_production_percap", variable.title = "Per cap capture production (t)",
+          main.title = "Capture production per capita")
+dev.off()
+
+png("Outputs/mean_aquaculture_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
+plot.dist.log(dat.col = "mean_aquaculture_percap", variable.title = "Per cap aquaculture production (t)",
+          main.title = "Aquaculture production per capita")
+dev.off()
+
+png("Outputs/fish_affordability.png", width = 8, height = 3.5, units = 'in', res = 300)
+plot.dist.log(dat.col = "fish_affordability", variable.title = "Relative affordability", 
+          main.title = "Relative affordability")
+dev.off()
+
+png("Outputs/mean_catch_nutrition_quality.png", width = 8, height = 3.5, units = 'in', res = 300)
+plot.dist.log(dat.col = "mean_catch_nutrition_quality", variable.title = "Mean catch quality", main.title = "Catch quality")
+dev.off()
+
+png("Outputs/mean_gdp.png", width = 8, height = 3.5, units = 'in', res = 300)
+plot.dist.log(dat.col = "mean_gdp", variable.title = "GDP", main.title = "GDP")
+dev.off()
+
+
+#____________________________________________________________________________________________________#
+# Summary stats
+#____________________________________________________________________________________________________#
 df_export <- df %>% 
   select(country_name_en, mean_exports_USD1000) %>%
   filter(!is.na(mean_exports_USD1000)) %>%
@@ -258,5 +441,11 @@ df_export <- df %>%
   mutate(cum_sum = cumsum(mean_exports_USD1000)) %>%
   mutate(cum_per = 100*cum_sum/sum(mean_exports_USD1000))
 
+df %>% 
+  select(country_name_en, mean_total_production_perworker) %>%
+  arrange(desc(mean_total_production_perworker))
 
 
+df %>% 
+  select(country_name_en, mean_total_production_percap) %>%
+  arrange(desc(mean_total_production_percap))
