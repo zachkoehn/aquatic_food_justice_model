@@ -96,6 +96,7 @@ territories <-c(
   "CCK", #Cocos Islands Australia
   "CXR", #Christmas island Australia
   "VAT",  #Vatican City
+  "ESH",
   "ATA"   #Antarctica
   )
 
@@ -187,7 +188,6 @@ df_merged$eez_total[df_merged$iso3c %in% landlocked_countries] <- 0
 df_merged$ifa_total[df_merged$iso3c %in% landlocked_countries] <- 0
 df_merged$pp_eez_weighted[df_merged$iso3c %in% landlocked_countries] <- 0 
 dim(df_merged)
-
 
 write.csv(df_merged,
           file.path(work_dir,"data","data_clean","all_national_indicators.csv"),
