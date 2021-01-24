@@ -28,6 +28,9 @@ df <- df %>%
                                 mean_aquaculture_production_marine, 
                                 mean_aquaculture_production_brackish, na.rm = TRUE),
          women_livelihoods = direct_w_esitimated_ssf*female_particip_ssf) %>%
+  # Remove when all_indicators is updated
+  mutate(direct_w_esitimated_ssf = 1000*direct_w_esitimated_ssf,
+         indirect_w_esitimated_ssf = 1000*indirect_w_esitimated_ssf) %>%
   # Mutate all variables to per capita, as necessary
   mutate(
     mean_exports_USD1000_percap = mean_exports_USD1000/mean_population,
