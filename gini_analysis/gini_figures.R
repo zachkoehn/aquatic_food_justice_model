@@ -39,6 +39,9 @@ df <- df %>%
     mean_exports_tonnes_percap = mean_exports_tonnes/mean_population,
     log_mean_exports_tonnes_percap = log(mean_exports_tonnes_percap),
     
+    mean_imports_tonnes_percap = mean_imports_tonnes/mean_population,
+    log_mean_imports_tonnes_percap = log(mean_imports_tonnes_percap),
+    
     direct_w_esitimated_ssf_percap = direct_w_esitimated_ssf/mean_population, 
     log_direct_w_esitimated_ssf_percap = log(direct_w_esitimated_ssf_percap),
     
