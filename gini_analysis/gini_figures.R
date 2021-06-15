@@ -368,7 +368,7 @@ png("Outputs/Fig_1.png", width = 7, height = 10, units = 'in', res = 300)
 a <- plot.dist.log(dat.col = "mean_total_production_perworker", variable.title = "Production (t/worker)",
           main.title = "")
 b <- plot.dist.log(dat.col = "mean_exports_tonnes_percap", variable.title = "Exports (t/cap)",
-               main.title = "")
+                   main.title = "")
 c <- plot.dist.log(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Protein Supply (g/cap)",
                main.title = "")
 ggarrange(a, b, c, labels = c("a", "b", "c"), ncol = 1)
@@ -394,7 +394,7 @@ c <- plot.dist.log(dat.col = "indirect_w_esitimated_ssf_percap", variable.title 
 d <- plot.dist.log(dat.col = "women_livelihoods_percap", variable.title = "Per cap women's livelihoods",
                main.title = "")
 e <- plot.dist.log(dat.col = "mean_exports_USD1000_percap", variable.title = "Per cap exports (1000 USD)",
-               main.title = "")
+                   main.title = "")
 ggarrange(a, b, c, d, e, labels = c("a", "b", "c", "d", "e"), ncol = 1)
 dev.off()
 
