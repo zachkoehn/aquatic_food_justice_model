@@ -157,7 +157,7 @@ df_merged <- df_list %>%
     -(mean_prod_carps_etc:mean_pro_horeshoe_crabs_etc)
     ) %>%
   select(., #selects within piped data
-         -working_percent_sat_mean, #removes WorldPop dataset to address reviewer concern
+         # -working_percent_sat_mean, #removes WorldPop dataset to address reviewer concern
          -starts_with("country"), #removes country variable (duplicated in csvs)
          -starts_with("year"),#removes year category variable (duplicated in csvs)
          -starts_with("geog"),#removes geog variable 
