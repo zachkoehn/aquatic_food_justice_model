@@ -100,6 +100,7 @@ territories <-c(
   "ATA"   #Antarctica
   )
 
+lapply(df_list,function(x)names(x))
 # substitute 0 for NA values in all produciton data (no need to do this for total)
 df_list[["production_by_isccaap_faostat_mean_2006-2016.csv"]] <- df_list[["production_by_isccaap_faostat_mean_2006-2016.csv"]] %>%
   mutate(
@@ -125,13 +126,28 @@ df_list[["FBS_seafood_consumption_reliance.csv"]] <- df_list[["FBS_seafood_consu
     mutate(year_range=as.character(year_range))
 
 df_list[["voice_and_accountability_2008_2018.csv"]] <- df_list[["voice_and_accountability_2008_2018.csv"]] %>%  # name needs to be changed from year.range to year_range, also double 
-    rename(year_range=year.range) %>%
-    mutate(year_range=as.character(year_range))
+    rename(
+      year_range=year.range
+      ) %>%
+    mutate(year_range=as.character(year_range)) %>%
+  select(-Code)
 
 df_list[["livelihoods_direct_indirect.csv"]] <- df_list[["livelihoods_direct_indirect.csv"]] %>%  # name needs to be changed from year.range to year_range, also double 
     rename(year_range=year.range) %>%
     mutate(year_range=as.character(year_range))
   # and now do the same thing for the SAU based variables that do not have landlocked countries
+
+df_list[["gdp_mean_annual_2006-2016.csv"]] <- df_list[["gdp_mean_annual_2006-2016.csv"]] %>%  # name needs to be changed from year.range to year_range, also double 
+  rename(year_range=year,
+         iso3c=Country.Code) %>%
+  mutate(
+    year_range=as.character(year_range),
+    iso3n=countrycode(iso3c,"iso3c","iso3n")
+    )
+# and now do the same thing for the SAU based variables that do not have landlocked countries
+
+
+
 
 # now collapse the list into a single data frame in order to export to CSV
 df_merged <- df_list %>%
@@ -141,12 +157,12 @@ df_merged <- df_list %>%
     -(mean_prod_carps_etc:mean_pro_horeshoe_crabs_etc)
     ) %>%
   select(., #selects within piped data
+         -working_percent_sat_mean, #removes WorldPop dataset to address reviewer concern
          -starts_with("country"), #removes country variable (duplicated in csvs)
          -starts_with("year"),#removes year category variable (duplicated in csvs)
          -starts_with("geog"),#removes geog variable 
          -starts_with("unit"),#removes unit variable (duplicated in csvs)
-         -X1, #removes blank column of rownames (from one CSV)
-         -Code #removes a code value that is from the voice and accountability (just a duplicated iso3c)      
+         -X1 #removes blank column of rownames (from one CSV)
   ) %>% 
   filter(
     is.na(iso3n)==FALSE,
