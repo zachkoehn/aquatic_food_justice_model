@@ -10,9 +10,11 @@ library(tidyverse)
 library(here)
 library(countrycode)
 
+wk_dir <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Justice/section_model/aquatic_food_justice_model"
 # data from https://data.worldbank.org/indicator/NY.GDP.PCAP.PP.CD?view=map
 dat_raw <- read.csv(
-  here(
+  file.path(
+    wk_dir,
     "data",
     "data_raw",
     "world_bank_gdp",
@@ -55,4 +57,26 @@ write.csv(
   )
 
 
+# time series for Liz
 
+dat_clean_ts <- dat_raw %>% 
+  select(-c(Indicator.Name,Indicator.Code)) %>%
+  gather(key="year",value="gdp_annual",-Country.Name,-Country.Code) %>% #gathers all GDP-year combinations into two columns (year and gdp_annual)
+  mutate(year=as.numeric(str_replace_all(year,"X",""))) %>% # cleans string to remove leading X....
+  filter(year > 2007 ) 
+# now add necessary country information using {countrycode}
+
+dat_final_ts <- dat_clean_ts %>%
+  rename(country_name_en=Country.Name)  #rename to align with other datasets
+  
+
+# and write the csv 
+write.csv(
+  dat_final_ts,
+  here(
+    "data",
+    "data_clean",
+    "gdp_mean_annual_2006-2016.csv"
+  ),
+  row.names = FALSE
+  )
