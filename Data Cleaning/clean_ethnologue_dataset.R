@@ -61,9 +61,9 @@ for(k in 1:nrow(tot)){
 tot$prop_pop_l1_inst<-as.numeric(tot$prop_pop_l1_inst)
 
 
-# Add cultural hegemony defined as 1 - number of L1 users of Chinese, English or Spanish / sum of L1 users
+# Add cultural hegemony defined as 1 - number of L1 users of Arabic, English, French or Spanish / sum of L1 users
 tot$cultural_hegemony <- rep(-999,nrow(tot))
-MostSpoken <- c("Chinese","English","Spanish")
+MostSpoken <- c("English","French","Spanish","Arabic")
 
 for(k in 1:nrow(tot)){
   subdata <- lic[which(lic$Country_Code==tot$iso2c[k]),]
@@ -105,7 +105,7 @@ names(dat.final)[which(names(dat.final)=="Diversity")] <- "language_diversity"
 summary(dat.final)
 
 # and write the csv  
-write.csv(dat.final, file="EthnicityV2.csv")       
+write.csv(dat.final, file="Ethnicity_revisions.csv")       
 
 #End of script
 #
