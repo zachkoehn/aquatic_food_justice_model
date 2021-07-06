@@ -65,13 +65,12 @@ tot$prop_pop_l1_inst<-as.numeric(tot$prop_pop_l1_inst)
 tot$cultural_hegemony <- rep(-999,nrow(tot))
 
 l <- unique(lic$Language_Name)
-english <- l[grep("English",l)]
-french <- l[grep("French",l)]
-spanish <- l[grep("Spanish",l)]
+english <- "English"
+french <- c("French","French, Cajun")
+spanish <- c("Spanish","Spanish, Charapa")
 arabic <- l[grep("Arabic",l)]
 
 MostSpoken <- unique(c(english,french,spanish,arabic))
-MostSpoken <- MostSpoken[-grep("Sign",MostSpoken)] #remove sign languages
 
 for(k in 1:nrow(tot)){
   subdata <- lic[which(lic$Country_Code==tot$iso2c[k]),]
