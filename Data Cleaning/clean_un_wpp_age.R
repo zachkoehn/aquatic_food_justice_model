@@ -11,9 +11,13 @@ library(here)
 library(countrycode)
 library(readxl)
 
+directory <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Justice/section_model/aquatic_food_justice_model"
+
+
 # data from http://data.uis.unesco.org/#
 dat_raw <- read_excel(
-  here(
+  file.path(
+    directory,
     "data",
     "data_raw",
     "un_wpp",
