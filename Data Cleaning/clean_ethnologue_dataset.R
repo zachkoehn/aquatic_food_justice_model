@@ -61,9 +61,16 @@ for(k in 1:nrow(tot)){
 tot$prop_pop_l1_inst<-as.numeric(tot$prop_pop_l1_inst)
 
 
-# Add cultural hegemony defined as 1 - number of L1 users of Chinese, English or Spanish / sum of L1 users
+# Add cultural hegemony defined as 1 - number of L1 users of Arabic, English, French or Spanish / sum of L1 users
 tot$cultural_hegemony <- rep(-999,nrow(tot))
-MostSpoken <- c("Chinese","English","Spanish")
+
+l <- unique(lic$Language_Name)
+english <- "English"
+french <- c("French","French, Cajun")
+spanish <- c("Spanish","Spanish, Charapa")
+arabic <- l[grep("Arabic",l)]
+
+MostSpoken <- unique(c(english,french,spanish,arabic))
 
 for(k in 1:nrow(tot)){
   subdata <- lic[which(lic$Country_Code==tot$iso2c[k]),]
@@ -84,10 +91,10 @@ for(k in 1:nrow(tot)){
     }
     
     if( length(keep)==0 ){
-      tot$cultural_hegemony[k] <- 0 # 0 means that cultural hegemony is not measured because English, Spanish or Chinese are not spoken in those countries
+      tot$cultural_hegemony[k] <- 0 # 0 means that cultural hegemony is not measured because English, Spanish, French, or Arabic are not spoken in those countries
     }else{
       if( is.na(subdata$L1_Users[which(subdata$Language_Name==keep)])==T & is.na(subdata$All_Users[which(subdata$Language_Name==keep)])==F ) {
-        tot$cultural_hegemony[k] <- 1 # cultural hegemony is maximal because no one speak English, Spanish or Chinese as 1st language while those are spoken
+        tot$cultural_hegemony[k] <- 1 # cultural hegemony is maximal because no one speak English, Spanish, French or Arabic as 1st language while those are spoken
       }else{
         tot$cultural_hegemony[k] <- 1 - ( subdata$L1_Users[which(subdata$Language_Name==keep)] / sum(subdata[,"L1_Users"],na.rm=T) )
       }
@@ -105,7 +112,7 @@ names(dat.final)[which(names(dat.final)=="Diversity")] <- "language_diversity"
 summary(dat.final)
 
 # and write the csv  
-write.csv(dat.final, file="EthnicityV2.csv")       
+write.csv(dat.final, file="Ethnicity_revisions.csv")       
 
 #End of script
 #
