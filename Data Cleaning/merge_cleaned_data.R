@@ -135,7 +135,7 @@ df_list[["voice_and_accountability_2008_2018.csv"]] <- df_list[["voice_and_accou
 df_list[["livelihoods_direct_indirect.csv"]] <- df_list[["livelihoods_direct_indirect.csv"]] %>%  # name needs to be changed from year.range to year_range, also double 
     rename(year_range=year.range) %>%
     mutate(year_range=as.character(year_range))
-  # and now do the same thing for the SAU based variables that do not have landlocked countries
+  # and now do the same thing for the livelihood variables
 
 df_list[["gdp_mean_annual_2006-2016.csv"]] <- df_list[["gdp_mean_annual_2006-2016.csv"]] %>%  # name needs to be changed from year.range to year_range, also double 
   rename(year_range=year,
@@ -144,9 +144,30 @@ df_list[["gdp_mean_annual_2006-2016.csv"]] <- df_list[["gdp_mean_annual_2006-201
     year_range=as.character(year_range),
     iso3n=countrycode(iso3c,"iso3c","iso3n")
     )
-# and now do the same thing for the SAU based variables that do not have landlocked countries
+# and now do the same thing for the GDP variables
+
+df_list[["Ethnicity_revisions.csv"]] <- df_list[["Ethnicity_revisions.csv"]] %>%  # name needs to be changed from year.range to year_range, also double
+  rename(
+    year_range=year,
+    country_name_en=country_name
+         ) %>%
+  mutate(
+    year_range=as.character(year_range),
+    iso3n=countrycode(iso3c,"iso3c","iso3n")
+    )
 
 
+  df_list[["nutrition_score_2010_2017_revisions.csv"]] <- df_list[["nutrition_score_2010_2017_revisions.csv"]] %>%  # name needs to be changed from year.range to year_range, also double
+  rename(
+    year_range=year,
+    country_name_en=country_name
+    ) %>%
+  mutate(
+    year_range=as.character(year_range),
+    iso3n=countrycode(iso3c,"iso3c","iso3n")
+    ) %>%
+  select(-country_name_FAO)
+# and now do the same thing for the nutrition density variables
 
 
 # now collapse the list into a single data frame in order to export to CSV
@@ -161,13 +182,13 @@ df_merged <- df_list %>%
          -starts_with("country"), #removes country variable (duplicated in csvs)
          -starts_with("year"),#removes year category variable (duplicated in csvs)
          -starts_with("geog"),#removes geog variable 
-         -starts_with("unit"),#removes unit variable (duplicated in csvs)
-         -X1 #removes blank column of rownames (from one CSV)
+         -starts_with("unit")#removes unit variable (duplicated in csvs)
   ) %>% 
   filter(
     is.na(iso3n)==FALSE,
     !iso3c %in% territories, #excludes territories
-    iso3c!="NA"
+    iso3c!="NA",
+    duplicated(iso3c) ==FALSE #removes duplicated rows (after the first) from merge (distinct no longer works for me :( ))
     ) %>%
   mutate(
     country_name_en=countrycode(iso3n,"iso3n","country.name.en"),
@@ -177,7 +198,6 @@ df_merged <- df_list %>%
     un_subregion_code=countrycode(iso3c,"iso3c","un.regionsub.code"),
     un_subregion_finer_name=countrycode(iso3c,"iso3c","un.regionintermediate.name")
     ) %>%
-  distinct() %>%
   mutate( # a few of the indicators reported their proportions as 57% instead of 0.57... so transforming those
     mean_educ=mean_educ*.01,
     mean_pov_prop=mean_pov_prop*.01,
@@ -187,7 +207,6 @@ df_merged <- df_list %>%
     fish_affordability=1/fish_relative_caloric_price,
     un_subregion_2=ifelse(un_subregion_1=="Latin America and the Caribbean",un_subregion_finer_name,un_subregion_1), 
     un_subregion_2=ifelse(un_subregion_2=="Sub-Saharan Africa",un_subregion_finer_name,un_subregion_2)
-
     ) %>%
   rename(
     mean_voice_account=mean.voice.and.accountability #and change variable name to underscore from period
@@ -204,6 +223,7 @@ df_merged$eez_total[df_merged$iso3c %in% landlocked_countries] <- 0
 df_merged$ifa_total[df_merged$iso3c %in% landlocked_countries] <- 0
 df_merged$pp_eez_weighted[df_merged$iso3c %in% landlocked_countries] <- 0 
 dim(df_merged)
+
 
 write.csv(df_merged,
           file.path(work_dir,"data","data_clean","all_national_indicators.csv"),
