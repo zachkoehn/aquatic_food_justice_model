@@ -282,7 +282,7 @@ plot.dist.log <- function(dat.col, variable.title, log.dat.col = NULL, log.varia
     drop_na()
   # Can add population weighting, but https://doi.org/10.1080/17421772.2017.1343491 argues against
   gini <- gini(x = df.world$gini.col, weights = df.world$pop) 
-  gini(x = df.world$gini.col) 
+  gini_annotate <- gini(x = df.world$gini.col) 
   
   # Create histogram
   g_hist <- ggplot(df.world, aes(x = gini.col)) +
@@ -308,7 +308,8 @@ plot.dist.log <- function(dat.col, variable.title, log.dat.col = NULL, log.varia
   # Create unweighted Lorenz
   g_lorenz <- ggplot(df.world, aes(gini.col)) +
     stat_lorenz() +
-    annotate_ineq(df.world$gini.col, x = .15, size = 2.5) +
+    #annotate_ineq(df.world$gini.col, x = .15, size = 2.5) + # this version of annotate drops the 0 in "0.90"
+    annotate("text", label = paste("Gini: ", substr(as.character(gini_annotate), 1, 4), sep = ""), x = .15, y = 0.95, size = 2.5) + # set the number of digits with substr
     geom_abline(linetype = "dashed") +
     labs(x = paste(variable.title), y = "Proportion of benefit") + 
     theme(axis.line.x = element_line(colour = "black", size = 0.5, linetype = "solid"), 
@@ -369,7 +370,7 @@ a <- plot.dist.log(dat.col = "mean_total_production_perworker", variable.title =
           main.title = "")
 b <- plot.dist.log(dat.col = "mean_exports_USD1000_percap", variable.title = "Per cap exports (1000 USD)",
                    main.title = "")
-c <- plot.dist.log(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Protein Supply (g/cap)",
+c <- plot.dist.log(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Protein supply (g/cap)",
                main.title = "")
 ggarrange(a, b, c, labels = c("a", "b", "c"), ncol = 1)
 dev.off()
