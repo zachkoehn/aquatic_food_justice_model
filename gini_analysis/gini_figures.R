@@ -85,7 +85,7 @@ plot.dist <- function(dat.col, variable.title, log.dat.col = NULL, log.variable.
                          pop = df.world$mean_population)
   df.world <- df.world %>%
     drop_na()
-  # Can add population weighting, but https://doi.org/10.1080/17421772.2017.1343491 argues against
+  # Compare weighted gini
   gini <- gini(x = df.world$gini.col, weights = df.world$pop) 
   gini(x = df.world$gini.col) 
   
@@ -456,3 +456,32 @@ df %>%
 df %>% 
   select(country_name_en, mean_total_production_percap) %>%
   arrange(desc(mean_total_production_percap))
+
+
+#____________________________________________________________________________________________________#
+# Table comparison of weighted and unweighted gini
+#____________________________________________________________________________________________________#
+
+df.world <- as.data.frame(map.world)
+df.world <- df.world %>%
+  select(mean_population, mean_total_production_perworker, mean_exports_USD1000_percap, 
+         fish_supply_daily_g_protein_percap, mean_total_production_percap, 
+         direct_w_esitimated_ssf_percap, indirect_w_esitimated_ssf_percap, 
+         women_livelihoods_percap, mean_exports_tonnes_percap) %>%
+  drop_na()
+
+gini.table <- data.frame(variable = c("mean_total_production_perworker", "mean_exports_USD1000_percap", 
+                                      "fish_supply_daily_g_protein_percap", "mean_total_production_percap", 
+                                      "direct_w_esitimated_ssf_percap", "indirect_w_esitimated_ssf_percap", 
+                                      "women_livelihoods_percap", "mean_exports_tonnes_percap"), 
+                         unweighted.gini = numeric(length = 8), 
+                         weighted.gini = numeric(length = 8))
+
+for(i in 1:nrow(gini.table)){
+  gini.table$unweighted.gini[i] <- gini(x = df.world[,paste(gini.table$variable[i])]) 
+  
+  gini.table$weighted.gini[i] <- gini(x = df.world[,paste(gini.table$variable[i])],
+                                      weights = df.world$mean_population) 
+}
+
+
