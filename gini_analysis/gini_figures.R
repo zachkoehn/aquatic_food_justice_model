@@ -484,4 +484,4 @@ for(i in 1:nrow(gini.table)){
                                       weights = df.world$mean_population) 
 }
 
-
+write.csv(gini.table, "gini_comparison.csv")
