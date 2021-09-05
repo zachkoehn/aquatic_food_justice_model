@@ -1,9 +1,9 @@
 "","variable","unweighted.gini","weighted.gini"
-"1","mean_total_production_perworker",0.748730367498913,0.691771137807972
-"2","mean_exports_USD1000_percap",0.859098017112715,0.685336406819637
-"3","fish_supply_daily_g_protein_percap",0.405382608279766,0.375063908270857
-"4","mean_total_production_percap",0.821914969886127,0.47075177454704
-"5","direct_w_esitimated_ssf_percap",0.718935409310076,0.45835806437033
-"6","indirect_w_esitimated_ssf_percap",0.714902175599786,0.497369960284633
-"7","women_livelihoods_percap",0.838044432890579,0.513477786614555
-"8","mean_exports_tonnes_percap",0.875182182171733,0.708110735819552
+"1","mean_total_production_perworker",0.760098754202907,0.693889898877604
+"2","mean_exports_USD1000_percap",0.903773292953196,0.70729200271667
+"3","fish_supply_daily_g_protein_percap",0.459405169844018,0.399975345856191
+"4","mean_total_production_percap",0.862869430813026,0.505289928630489
+"5","direct_w_esitimated_ssf_percap",0.731297286663191,0.465653718244653
+"6","indirect_w_esitimated_ssf_percap",0.702057914792864,0.499269007833909
+"7","women_livelihoods_percap",0.831960663646145,0.536787857454755
+"8","mean_exports_tonnes_percap",0.913992226857281,0.727691799544871

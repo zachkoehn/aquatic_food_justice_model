@@ -467,8 +467,7 @@ df.world <- df.world %>%
   select(mean_population, mean_total_production_perworker, mean_exports_USD1000_percap, 
          fish_supply_daily_g_protein_percap, mean_total_production_percap, 
          direct_w_esitimated_ssf_percap, indirect_w_esitimated_ssf_percap, 
-         women_livelihoods_percap, mean_exports_tonnes_percap) %>%
-  drop_na()
+         women_livelihoods_percap, mean_exports_tonnes_percap) 
 
 gini.table <- data.frame(variable = c("mean_total_production_perworker", "mean_exports_USD1000_percap", 
                                       "fish_supply_daily_g_protein_percap", "mean_total_production_percap", 
@@ -478,10 +477,14 @@ gini.table <- data.frame(variable = c("mean_total_production_perworker", "mean_e
                          weighted.gini = numeric(length = 8))
 
 for(i in 1:nrow(gini.table)){
-  gini.table$unweighted.gini[i] <- gini(x = df.world[,paste(gini.table$variable[i])]) 
+  loop.df <- df.world %>%
+    select(var_col = paste(gini.table$variable[i]), mean_population) %>%
+    drop_na()
   
-  gini.table$weighted.gini[i] <- gini(x = df.world[,paste(gini.table$variable[i])],
-                                      weights = df.world$mean_population) 
+  gini.table$unweighted.gini[i] <- gini(x = loop.df$var_col) 
+  
+  gini.table$weighted.gini[i] <- gini(x = loop.df$var_col,
+                                      weights = loop.df$mean_population) 
 }
 
 write.csv(gini.table, "gini_comparison.csv")
