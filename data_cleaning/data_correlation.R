@@ -46,9 +46,10 @@ dat_model<- dat %>%
     unit_exports_log = log(unit_exports+1),
     unit_imports_log = log(unit_imports+1),
     affordability_response = fish_affordability,
+    catch_quality_response = mean_catch_nutrition_quality,
     consumption_response=fish_supply_daily_g_protein_percap,
     export_response = mean_exports_USD1000/mean_gdp*mean_population,
-    reliance_response=fish_relative_caloric_price,
+    reliance_response=percent_animal_protein_fish,
     total_livelihood_response = direct_w_esitimated_ssf + indirect_w_esitimated_ssf,
     total_production_response = mean_total_production / direct_w_esitimated_ssf,
     women_livelihood_response = direct_w_esitimated_ssf * female_particip_ssf+ 1e-6
@@ -59,11 +60,11 @@ dat_model<- dat %>%
     cultural_hegemony,working_percent_un,mean_voice_account,
     mean_capture_production_log,mean_aquaculture_production_log,
     unit_exports_log,unit_imports_log,
-    pp_eez_weighted,eez_total,inland_water_max,fish_relative_caloric_price, 
+    pp_eez_weighted,eez_total,inland_water_max,LAT_ZONE,fish_relative_caloric_price, 
     # mean_aquaculture_production_freshwater,mean_aquaculture_production_marine,mean_aquaculture_production_brackish,
     # mean_gdp,mean_population,
     # mean_exports_USD1000,mean_exports_tonnes,mean_imports_USD1000,mean_imports_tonnes,
-    affordability_response,consumption_response,export_response,reliance_response,
+    affordability_response,catch_quality_response,consumption_response,export_response,reliance_response,
     total_livelihood_response,total_production_response, women_livelihood_response
   ) 
 
