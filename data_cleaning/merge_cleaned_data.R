@@ -18,8 +18,9 @@ library(dplyr)
 
 # loads all files
 files<- list.files(pattern="*.csv")
-files <- files[files!="all_national_indicators.csv"] # remove pre-existing dataset so we aren't merging the same information on infinite repeat :) 
-files <- files[files!="meow_climatic_zone.csv"] # remove pre-existing dataset so we aren't merging the same information on infinite repeat :) 
+files <- files[! files %in% c(
+  "all_national_indicators.csv","meow_climatic_zone.csv","nutrition_score_2010_2017_revisions.csv","bayesian_model_variables.csv"
+  )] # remove pre-existing dataset so we aren't merging the same information on infinite repeat :) 
 df_list <- lapply(files, read_csv) 
 names(df_list) <- files
 
@@ -28,8 +29,6 @@ oecd_categories <- read.csv(
   header=TRUE,
   nrows=193
   ) 
-
-
 
 oecd_categories <- oecd_categories %>%
   select(X...ISO.Code,Geographic.access..5.) %>%
@@ -102,42 +101,42 @@ territories <-c(
 
 lapply(df_list,function(x)names(x))
 # substitute 0 for NA values in all produciton data (no need to do this for total)
-df_list[["production_by_isccaap_faostat_mean_2006-2016.csv"]] <- df_list[["production_by_isccaap_faostat_mean_2006-2016.csv"]] %>%
+df_list$'production_by_isccaap_faostat_mean_2006-2016' <- df_list$'production_by_isccaap_faostat_mean_2006-2016' %>%
   mutate(
     across(mean_prod_carps_etc:mean_pro_horeshoe_crabs_etc, ~replace_na(.x,0))
     ) %>%
   select(-unit)
-df_list[["production_by_source_faostat_mean_2006-2016.csv"]] <- df_list[["production_by_source_faostat_mean_2006-2016.csv"]] %>%
+df_list$'production_by_source_faostat_mean_2006-2016' <- df_list$'production_by_source_faostat_mean_2006-2016' %>%
   mutate(
     across(mean_aquaculture_production_freshwater:mean_aquaculture_production_brackish, ~replace_na(.x,0))
     ) %>%
   select(-unit)
-df_list[["production_total_faostat_mean_2006-2016.csv"]] <- df_list[["production_total_faostat_mean_2006-2016.csv"]] %>%
+df_list$'production_total_faostat_mean_2006-2016' <- df_list$'production_total_faostat_mean_2006-2016' %>%
   select(-unit)
 
-df_list[["aquastat_total_renewable_water.csv"]] <- df_list[["aquastat_total_renewable_water.csv"]] %>%  # name needs to be changed from year.range to year_range, also double 
+df_list$'aquastat_total_renewable_water' <- df_list$'aquastat_total_renewable_water' %>%  # name needs to be changed from year.range to year_range, also double 
     rename(year_range=year.range) %>%
     mutate(year_range=as.character(year_range))
 
 
 # name needs to be changed from year.range to year_range
-df_list[["FBS_seafood_consumption_reliance.csv"]] <- df_list[["FBS_seafood_consumption_reliance.csv"]] %>%  # name needs to be changed from year.range to year_range, also double 
+df_list$'FBS_seafood_consumption_reliance' <- df_list$'FBS_seafood_consumption_reliance' %>%  # name needs to be changed from year.range to year_range, also double 
     rename(year_range=year.range) %>%
     mutate(year_range=as.character(year_range))
 
-df_list[["voice_and_accountability_2008_2018.csv"]] <- df_list[["voice_and_accountability_2008_2018.csv"]] %>%  # name needs to be changed from year.range to year_range, also double 
+df_list$'voice_and_accountability_2008_2018' <- df_list$'voice_and_accountability_2008_2018' %>%  # name needs to be changed from year.range to year_range, also double 
     rename(
       year_range=year.range
       ) %>%
     mutate(year_range=as.character(year_range)) %>%
   select(-Code)
 
-df_list[["livelihoods_direct_indirect.csv"]] <- df_list[["livelihoods_direct_indirect.csv"]] %>%  # name needs to be changed from year.range to year_range, also double 
+df_list$'livelihoods_direct_indirect' <- df_list$'livelihoods_direct_indirect' %>%  # name needs to be changed from year.range to year_range, also double 
     rename(year_range=year.range) %>%
     mutate(year_range=as.character(year_range))
   # and now do the same thing for the livelihood variables
 
-df_list[["gdp_mean_annual_2006-2016.csv"]] <- df_list[["gdp_mean_annual_2006-2016.csv"]] %>%  # name needs to be changed from year.range to year_range, also double 
+df_list$'gdp_mean_annual_2006-2016' <- df_list$'gdp_mean_annual_2006-2016' %>%  # name needs to be changed from year.range to year_range, also double 
   rename(year_range=year,
          iso3c=Country.Code) %>%
   mutate(
@@ -146,7 +145,7 @@ df_list[["gdp_mean_annual_2006-2016.csv"]] <- df_list[["gdp_mean_annual_2006-201
     )
 # and now do the same thing for the GDP variables
 
-df_list[["Ethnicity_revisions.csv"]] <- df_list[["Ethnicity_revisions.csv"]] %>%  # name needs to be changed from year.range to year_range, also double
+df_list$'Ethnicity_revisions' <- df_list$'Ethnicity_revisions' %>%  # name needs to be changed from year.range to year_range, also double
   rename(
     year_range=year,
     country_name_en=country_name
@@ -157,7 +156,7 @@ df_list[["Ethnicity_revisions.csv"]] <- df_list[["Ethnicity_revisions.csv"]] %>%
     )
 
 
-  df_list[["nutrition_score_2010_2017_revisions.csv"]] <- df_list[["nutrition_score_2010_2017_revisions.csv"]] %>%  # name needs to be changed from year.range to year_range, also double
+  df_list$'nutrition_score_2010_2017_revisions' <- df_list$'nutrition_score_2010_2017_revisions' %>%  # name needs to be changed from year.range to year_range, also double
   rename(
     year_range=year,
     country_name_en=country_name
