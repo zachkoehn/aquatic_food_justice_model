@@ -22,6 +22,9 @@ library(here)
 #____________________________________________________________________________________________________#
 # Load data
 #____________________________________________________________________________________________________#
+
+# NOTE Now using the here package so that the data can be found in any directory 
+# now also outputs)to a subdirectory within  gini_analysis called plots
 df <- read.csv(here("all_national_indicators.csv"))
 
 df <- df %>%
