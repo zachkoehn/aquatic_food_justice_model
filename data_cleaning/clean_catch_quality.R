@@ -18,7 +18,7 @@ dat_raw <- read.csv(
     work_dir,
     "data",
     "data_raw",
-    "nutrition_score_Fish_Invert.csv"
+    "nutrition_score_2010_2017_revisions2022.csv"
   ),
   header=TRUE
 )
@@ -28,7 +28,6 @@ dat_raw <- read.csv(
 dat_clean <- dat_raw %>% 
   rename(
     country_name_en=country_name,
-    iso3c=country_code,
     mean_catch_nutrition_quality=mean_nutrition_score
     ) %>%
   mutate(iso3n= countrycode(iso3c,"iso3c","iso3n")) %>%

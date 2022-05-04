@@ -159,8 +159,12 @@ endCluster()
 
 stackSave(global_2016,file.path(work_dir,"global_2016"))
 writeRaster(global_2006,file.path(work_dir,"global_2006.grd"), format="raster")
-writeRaster(global_2016,file.path(work_dir,"global_2016.grd"), format="raster")
-
+writeRaster(global_2016$working_percent_pop,file.path(work_dir,"global_2016_working_percent_pop.tif"), format="raster")
+writeRaster(
+  global_2016$working_percent_pop,
+  file.path(work_dir,"proportion_working_age_2016_wgs84_longlat.tif"),
+  format="GTiff",overwrite=TRUE
+)
 
 global_2006 <- raster(file.path(work_dir,"global_2006.grd"), format="raster")
 
