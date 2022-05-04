@@ -116,7 +116,7 @@ plot.dist <- function(dat.col, variable.title, log.dat.col = NULL, log.variable.
     stat_lorenz() +
     annotate_ineq(df.world$gini.col, x = .15, size = 2.5) +
     geom_abline(linetype = "dashed") +
-    labs(x = paste(variable.title), y = "Proportion of benefit") + 
+    labs(x = "Proportion of population", y = "Proportion of benefit") + 
     theme(axis.line.x = element_line(colour = "black", size = 0.5, linetype = "solid"), 
           axis.line.y = element_line(colour = "black", size = 0.5, linetype = "solid"), 
           axis.text = element_text(size = ceiling(base_size*0.7), colour = "black"),
@@ -312,7 +312,7 @@ plot.dist.log <- function(dat.col, variable.title, log.dat.col = NULL, log.varia
     #annotate_ineq(df.world$gini.col, x = .15, size = 2.5) + # this version of annotate drops the 0 in "0.90"
     annotate("text", label = paste("Gini: ", substr(as.character(gini_annotate), 1, 4), sep = ""), x = .15, y = 0.95, size = 2.5) + # set the number of digits with substr
     geom_abline(linetype = "dashed") +
-    labs(x = paste(variable.title), y = "Proportion of benefit") + 
+    labs(x = "Proportion of population", y = "Proportion of benefit") + 
     theme(axis.line.x = element_line(colour = "black", size = 0.5, linetype = "solid"), 
           axis.line.y = element_line(colour = "black", size = 0.5, linetype = "solid"), 
           axis.text = element_text(size = ceiling(base_size*0.7), colour = "black"),
