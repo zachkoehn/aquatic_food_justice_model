@@ -16,7 +16,8 @@ library(rnaturalearthdata)
 library(cowplot)
 library(colortools)
 library(ggpubr)
-
+library(ggtextures)
+library(magick)
 
 #____________________________________________________________________________________________________#
 # Load data
@@ -139,8 +140,8 @@ plot.dist <- function(dat.col, variable.title, log.dat.col = NULL, log.variable.
   # Create map
   g_map <- ggplot(data = map.world) +
     geom_sf(aes_string(fill = map.dat.col), size = 0.1) +
-    #scale_fill_gradient(low = "white", high = "#70468C") +
-    scale_fill_gradientn(colours = c("#FFD947", "#FFE78B", "#FFF3C4", "#FFFBEC", "#F3F5F6", "#C3CAD3", "#758699", "#364F6B")) +
+    scale_fill_gradient(low = "white", high = "#70468C", na.value = "#A69569") +
+    #scale_fill_gradientn(colours = c("#FFD947", "#FFE78B", "#FFF3C4", "#FFFBEC", "#F3F5F6", "#C3CAD3", "#758699", "#364F6B")) +
     labs(fill = paste(map.lab)) +
     coord_sf(ylim = c(-50, 90), datum = NA) +
     theme(axis.line = element_blank(), axis.text = element_blank(), 
@@ -273,14 +274,14 @@ dev.off()
 base_size <- 10
 base_family <- "Helvetica Neue"
 
-plot.dist.log <- function(dat.col, variable.title, log.dat.col = NULL, log.variable.title = NULL, main.title = ""){
+plot.dist.log <- function(dat.col, variable.title, log.dat.col = NULL, log.variable.title = NULL, 
+                          main.title = "", ramp_color = "darkblue"){
   # Calculate Gini
   df.world <- as.data.frame(map.world)
   df.world <- data.frame(gini.col = c(df.world[[dat.col]]), 
                          pop = df.world$mean_population)
   df.world <- df.world %>%
     drop_na()
-  # Can add population weighting, but https://doi.org/10.1080/17421772.2017.1343491 argues against
   gini <- gini(x = df.world$gini.col, weights = df.world$pop) 
   gini_annotate <- gini(x = df.world$gini.col) 
   
@@ -335,9 +336,9 @@ plot.dist.log <- function(dat.col, variable.title, log.dat.col = NULL, log.varia
   # Create map
   g_map <- ggplot(data = map.world) +
     geom_sf(aes_string(fill = map.dat.col), size = 0.1) +
-    #scale_fill_gradient(low = "white", high = "#70468C") +
-    scale_fill_gradientn(colours = c("#FFD947", "#FFE78B", "#FFF3C4", "#FFFBEC", "#F3F5F6", "#C3CAD3", "#758699", "#364F6B"),
-                         trans = "log10") +
+    scale_fill_gradient(low = "white", high = ramp_color, na.value = "#E4DDCF", trans = "log10") +
+    #scale_fill_gradientn(colours = c("#FFD947", "#FFE78B", "#FFF3C4", "#FFFBEC", "#F3F5F6", "#C3CAD3", "#758699", "#364F6B"),
+    #                     trans = "log10") +
     labs(fill = paste(map.lab)) +
     coord_sf(ylim = c(-50, 90), datum = NA) +
     guides(fill = guide_colourbar(barwidth = 10, barheight = 0.5)) +
@@ -365,23 +366,24 @@ plot.dist.log <- function(dat.col, variable.title, log.dat.col = NULL, log.varia
   
 }
 
+
 png("Outputs/Fig_1.png", width = 7, height = 10, units = 'in', res = 300)
 a <- plot.dist.log(dat.col = "mean_total_production_perworker", variable.title = "Production (t/worker)",
-          main.title = "")
+          main.title = "", ramp_color = "#00BCC6")
 b <- plot.dist.log(dat.col = "mean_exports_USD1000_percap", variable.title = "Per cap exports (1000 USD)",
-                   main.title = "")
+                   main.title = "", ramp_color = "#70468C")
 c <- plot.dist.log(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Protein supply (g/cap)",
-               main.title = "")
+               main.title = "", ramp_color = "#16CC52")
 ggarrange(a, b, c, labels = c("a", "b", "c"), ncol = 1)
 dev.off()
 
 pdf("Outputs/Fig_1.pdf")
 a <- plot.dist.log(dat.col = "mean_total_production_perworker", variable.title = "Production (t/worker)",
-                   main.title = "")
+                   main.title = "", ramp_color = "#00BCC6")
 b <- plot.dist.log(dat.col = "mean_exports_USD1000_percap", variable.title = "Per cap exports (1000 USD)",
-                   main.title = "")
-c <- plot.dist.log(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Protein Supply (g/cap)",
-                   main.title = "")
+                   main.title = "", ramp_color = "#70468C")
+c <- plot.dist.log(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Protein supply (g/cap)",
+                   main.title = "", ramp_color = "#16CC52")
 ggarrange(a, b, c, labels = c("a", "b", "c"), ncol = 1)
 dev.off()
 
@@ -441,12 +443,19 @@ dev.off()
 #____________________________________________________________________________________________________#
 # Summary stats
 #____________________________________________________________________________________________________#
-df_export <- df %>% 
+df_export_USD1000 <- df %>% 
   select(country_name_en, mean_exports_USD1000) %>%
   filter(!is.na(mean_exports_USD1000)) %>%
   arrange(desc(mean_exports_USD1000)) %>%
   mutate(cum_sum = cumsum(mean_exports_USD1000)) %>%
   mutate(cum_per = 100*cum_sum/sum(mean_exports_USD1000))
+
+df_export_tonnes <- df %>% 
+  select(country_name_en, mean_exports_tonnes) %>%
+  filter(!is.na(mean_exports_tonnes)) %>%
+  arrange(desc(mean_exports_tonnes)) %>%
+  mutate(cum_sum = cumsum(mean_exports_tonnes)) %>%
+  mutate(cum_per = 100*cum_sum/sum(mean_exports_tonnes))
 
 df %>% 
   select(country_name_en, mean_total_production_perworker) %>%
