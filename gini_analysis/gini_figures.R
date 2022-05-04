@@ -18,11 +18,11 @@ library(colortools)
 library(ggpubr)
 library(ggtextures)
 library(magick)
-
+library(here)
 #____________________________________________________________________________________________________#
 # Load data
 #____________________________________________________________________________________________________#
-df <- read.csv("all_national_indicators.csv")
+df <- read.csv(here("all_national_indicators.csv"))
 
 df <- df %>%
   mutate(mean_aquaculture = sum(mean_aquaculture_production_freshwater, 
@@ -71,6 +71,27 @@ df <- df %>%
 # Bind data with world data for mapping
 map.world <- ne_countries(scale = "medium", returnclass = "sf")
 map.world <- left_join(map.world, df, by = c("iso_a3" = "iso3c"))
+
+# Now extract island countries in Micornesia and Polynesia  to cast as points
+# dot-based solution for smaller island countries, based on script from Juliano Palacios Abrantes 
+map.islands <- map.world %>% 
+  filter(subregion %in% c("Micronesia","Polynesia")) %>%
+  st_cast("POINT") # transform country polygons into points
+
+# use alternative projection that preserves area a bit better
+PROJ <- "+proj=eck4 +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs" 
+
+map.world.reproj <- st_transform(map.world,PROJ) %>%
+  filter(
+    !subregion %in% c("Micronesia","Polynesia"),
+    continent !="Antarctica"
+    )
+
+map.islands.reproj<- st_transform(map.islands,PROJ)
+# 
+map.world.poly.points <- rbind(map.world.reproj,map.islands.reproj) %>%
+  filter(continent !="Antarctica") #remove NA of Antarctica
+
 
 #____________________________________________________________________________________________________#
 # Create function for map with embedded hist and Gini
@@ -190,79 +211,79 @@ plot.dist <- function(dat.col, variable.title, log.dat.col = NULL, log.variable.
 
   }
 
-png("Outputs/mean_total_production_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/mean_total_production_percap.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "mean_total_production_percap", variable.title = "Production (t/capita)",
           log.dat.col = "log_mean_total_production_percap", 
           log.variable.title = "log(t/capita)", main.title = "Production per capita")
 dev.off()
 
-png("Outputs/mean_total_production_perworker.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/mean_total_production_perworker.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "mean_total_production_perworker", variable.title = "Production (t/worker)",
           log.dat.col = "log_mean_total_production_perworker", 
           log.variable.title = "log(t/worker)", main.title = "a")
 dev.off()
 
-png("Outputs/mean_capture_production_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/mean_capture_production_percap.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "mean_capture_production_percap", variable.title = "Per cap capture production (t)",
           log.dat.col = "log_mean_capture_production_percap", 
           log.variable.title = "Per cap capture production (log(t))", main.title = "Capture production per capita")
 dev.off()
 
-png("Outputs/mean_aquaculture_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/mean_aquaculture_percap.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "mean_aquaculture_percap", variable.title = "Per cap aquaculture production (t)",
           log.dat.col = "log_mean_aquaculture_percap", 
           log.variable.title = "Per cap aquaculture production (log(t))", main.title = "Aquaculture production per capita")
 dev.off()
 
-png("Outputs/direct_w_esitimated_ssf_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/direct_w_esitimated_ssf_percap.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "direct_w_esitimated_ssf_percap", variable.title = "Per cap direct livelihoods",
           log.dat.col = "log_direct_w_esitimated_ssf_percap", 
           log.variable.title = "Per cap direct livelihoods (log(workers/cap))", main.title = "Direct livelihoods per capita")
 dev.off()
 
-png("Outputs/women_livelihoods_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/women_livelihoods_percap.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "women_livelihoods_percap", variable.title = "Per cap women's livelihoods",
           log.dat.col = "log_women_livelihoods_percap", 
           log.variable.title = "Per cap women's livelihoods (log(workers/cap))", main.title = "Women's livelihoods per capita")
 dev.off()
 
-png("Outputs/indirect_w_esitimated_ssf_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/indirect_w_esitimated_ssf_percap.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "indirect_w_esitimated_ssf_percap", variable.title = "Per cap indirect livelihoods",
           log.dat.col = "log_indirect_w_esitimated_ssf_percap", 
           log.variable.title = "Per cap indirect livelihoods (log(workers/cap))", main.title = "Indirect livelihoods per capita")
 dev.off()
 
-png("Outputs/fish_affordability.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/fish_affordability.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "fish_affordability", variable.title = "Relative affordability", main.title = "Relative affordability")
 dev.off()
 
-png("Outputs/mean_exports_tonnes_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/mean_exports_tonnes_percap.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "mean_exports_tonnes_percap", variable.title = "Per cap exports (t)",
           log.dat.col = "log_mean_exports_tonnes_percap", 
           log.variable.title = "Per cap exports (log(t))", main.title = "b")
 dev.off()
 
-png("Outputs/mean_exports_USD1000_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/mean_exports_USD1000_percap.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "mean_exports_USD1000_percap", variable.title = "Per cap exports (1000 USD)",
           log.dat.col = "log_mean_exports_USD1000_percap", 
           log.variable.title = "Per cap exports (log(1000 USD))", main.title = "Exports per capita ($)")
 dev.off()
 
-png("Outputs/mean_catch_nutrition_quality.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/mean_catch_nutrition_quality.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "mean_catch_nutrition_quality", variable.title = "Mean catch quality", main.title = "Catch quality")
 dev.off()
 
-png("Outputs/fish_supply_daily_g_protein_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/fish_supply_daily_g_protein_percap.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Per cap supply (g protein)", main.title = "c")
 dev.off()
 
-png("Outputs/log_fish_supply_daily_g_protein_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/log_fish_supply_daily_g_protein_percap.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Per cap supply (g protein)",
           log.dat.col = "log_fish_supply_daily_g_protein_percap", 
           log.variable.title = "Per cap supply (log(g protein))", main.title = "c")
 dev.off()
 
-png("Outputs/mean_gdp.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/mean_gdp.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist(dat.col = "mean_gdp", variable.title = "GDP", main.title = "GDP")
 dev.off()
 
@@ -275,7 +296,15 @@ base_size <- 10
 base_family <- "Helvetica Neue"
 
 plot.dist.log <- function(dat.col, variable.title, log.dat.col = NULL, log.variable.title = NULL, 
-                          main.title = "", ramp_color = "darkblue"){
+                          main.title = "",color_low,color_high){
+  # plot.dist.log <- function(dat.col, variable.title, log.dat.col = NULL, log.variable.title = NULL,
+                            # main.title = "", ramp_color = "darkblue"){
+
+  # ##  for test
+  # dat.col = "mean_total_production_perworker"; variable.title = "Production (t/worker)";
+  # main.title = "";log.dat.col = NULL; log.variable.title = NULL;
+  # color_low="#cbeef0";color_high="#1e666a"
+
   # Calculate Gini
   df.world <- as.data.frame(map.world)
   df.world <- data.frame(gini.col = c(df.world[[dat.col]]), 
@@ -334,29 +363,53 @@ plot.dist.log <- function(dat.col, variable.title, log.dat.col = NULL, log.varia
   map.lab <- ifelse(is.null(log.variable.title) == TRUE, paste(variable.title), paste(log.variable.title))
   
   # Create map
-  g_map <- ggplot(data = map.world) +
-    geom_sf(aes_string(fill = map.dat.col), size = 0.1) +
-    scale_fill_gradient(low = "white", high = ramp_color, na.value = "#E4DDCF", trans = "log10") +
+  
+  g_map <- ggplot(data = map.world.poly.points) +
+    # new structure that includes Pacific island nations as points
+    geom_sf(aes_string(fill = map.dat.col,color=map.dat.col), size = .15) +
+    scale_fill_gradient(low = color_low, high = color_high,trans="log10",na.value = "#dfd9c9") +
+    scale_color_gradient(low = color_low, high = color_high,trans="log10",na.value = "#dfd9c9") +
+    geom_sf(data=map.world.reproj,color="grey40",fill=NA,size=.1) +
+    labs(fill = paste(map.lab),color=paste(map.lab)) +
+    guides(
+      fill = guide_colourbar(barwidth = 10, barheight = 0.5),
+      color = guide_colourbar(barwidth = 10, barheight = 0.5)) +
+    theme(
+      axis.line = element_blank(), axis.text = element_blank(), 
+      axis.ticks = element_blank(), axis.title = element_blank(), 
+      panel.background = element_blank(), panel.border = element_blank(), 
+      panel.grid = element_blank(), panel.spacing = unit(0, "lines"), plot.background = element_blank(), 
+      legend.justification = c(0.5, 0), legend.position = "bottom"
+      # legend.title= element_text(size = ceiling(base_size*0.8)),
+      # legend.text = element_text(size = ceiling(base_size*0.7))
+    )
+    # geom_sf(aes_string(fill = map.dat.col), size = 0.1) +
+    # scale_fill_gradient(low = "white", high = ramp_color, na.value = "#E4DDCF", trans = "log10") +
     #scale_fill_gradientn(colours = c("#FFD947", "#FFE78B", "#FFF3C4", "#FFFBEC", "#F3F5F6", "#C3CAD3", "#758699", "#364F6B"),
     #                     trans = "log10") +
-    labs(fill = paste(map.lab)) +
-    coord_sf(ylim = c(-50, 90), datum = NA) +
-    guides(fill = guide_colourbar(barwidth = 10, barheight = 0.5)) +
-    theme(axis.line = element_blank(), axis.text = element_blank(), 
-          axis.ticks = element_blank(), axis.title = element_blank(), 
-          panel.background = element_blank(), panel.border = element_blank(), 
-          panel.grid = element_blank(), panel.spacing = unit(0, 
-                                                             "lines"), plot.background = element_blank(), 
-          legend.justification = c(0, 0), legend.position = "bottom")
+    # geom_sf(aes_string(fill = map.dat.col,color=map.dat.col), size = .1) +
+    # scale_fill_gradient(low = color_low, high = color_high,trans="log10",na.value = "#dfd9c9") +
+    # scale_color_gradient(low = color_low, high = color_high,trans="log10",na.value = "#dfd9c9") +
+    # labs(fill = paste(map.lab)) +
+    # # coord_sf(ylim = c(-50, 90), datum = NA) + #doesn't play nice with this projection for some reason
+    # guides(fill = guide_colourbar(barwidth = 10, barheight = 0.5)) +
+    # theme(axis.line = element_blank(), axis.text = element_blank(), 
+    #       axis.ticks = element_blank(), axis.title = element_blank(), 
+    #       panel.background = element_blank(), panel.border = element_blank(), 
+    #       panel.grid = element_blank(), 
+    #       panel.spacing = unit(0, "lines"), plot.background = element_blank(), 
+    #       legend.justification = c(0, 0), legend.position = "bottom"
+    #       )
+  
   
   # Layout without histogram
   ggdraw() +
     draw_plot(
+      g_lorenz, x=0.01, y = .25, height = .4, width = .25, hjust = 0, vjust=0.55
+    ) + 
+    draw_plot(
       g_map, x=0.05, y=0.5, hjust = 0, vjust=0.5,
     ) +
-    draw_plot(
-      g_lorenz, x=0.05, y = 0.45, height = .4, width = .25, hjust = 0, vjust=0.55
-    ) + 
     geom_text(data = data.frame(x = 0.05, y = .86, label = paste(main.title)),
               aes(x, y, label = label),
               hjust = 0, vjust = 0, angle = 0, size = .5*base_size, fontface="bold",
@@ -367,17 +420,17 @@ plot.dist.log <- function(dat.col, variable.title, log.dat.col = NULL, log.varia
 }
 
 
-png("Outputs/Fig_1.png", width = 7, height = 10, units = 'in', res = 300)
+png(here("gini_analysis/plots/Fig_2_v2.png"), width = 7, height = 10, units = 'in', res = 300)
 a <- plot.dist.log(dat.col = "mean_total_production_perworker", variable.title = "Production (t/worker)",
-          main.title = "", ramp_color = "#00BCC6")
+          main.title = "", color_low="white", color_high = "#00BCC6")
 b <- plot.dist.log(dat.col = "mean_exports_USD1000_percap", variable.title = "Per cap exports (1000 USD)",
-                   main.title = "", ramp_color = "#70468C")
+                   main.title = "", color_low="white", color_high = "#70468C")
 c <- plot.dist.log(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Protein supply (g/cap)",
-               main.title = "", ramp_color = "#16CC52")
+               main.title = "", color_low="white", color_high = "#16CC52")
 ggarrange(a, b, c, labels = c("a", "b", "c"), ncol = 1)
 dev.off()
 
-pdf("Outputs/Fig_1.pdf")
+pdf(here("gini_analysis/plots/Fig_1.pdf"))
 a <- plot.dist.log(dat.col = "mean_total_production_perworker", variable.title = "Production (t/worker)",
                    main.title = "", ramp_color = "#00BCC6")
 b <- plot.dist.log(dat.col = "mean_exports_USD1000_percap", variable.title = "Per cap exports (1000 USD)",
@@ -387,7 +440,7 @@ c <- plot.dist.log(dat.col = "fish_supply_daily_g_protein_percap", variable.titl
 ggarrange(a, b, c, labels = c("a", "b", "c"), ncol = 1)
 dev.off()
 
-png("Outputs/SIFig_inequality_maps.png", width = 7, height = 10, units = 'in', res = 300)
+png(here("gini_analysis/plots/SIFig_inequality_maps.png"), width = 7, height = 10, units = 'in', res = 300)
 a <- plot.dist.log(dat.col = "mean_total_production_percap", variable.title = "Production (t/capita)",
                main.title = "")
 b <- plot.dist.log(dat.col = "direct_w_esitimated_ssf_percap", variable.title = "Per cap direct livelihoods",
@@ -401,7 +454,7 @@ e <- plot.dist.log(dat.col = "mean_exports_tonnes_percap", variable.title = "Exp
 ggarrange(a, b, c, d, e, labels = c("a", "b", "c", "d", "e"), ncol = 1)
 dev.off()
 
-pdf("Outputs/SIFig_inequality_maps.pdf")
+pdf(here("gini_analysis/plots/SIFig_inequality_maps.pdf"))
 a <- plot.dist.log(dat.col = "mean_total_production_percap", variable.title = "Production (t/capita)",
                    main.title = "")
 b <- plot.dist.log(dat.col = "direct_w_esitimated_ssf_percap", variable.title = "Per cap direct livelihoods",
@@ -416,26 +469,26 @@ ggarrange(a, b, c, d, e, labels = c("a", "b", "c", "d", "e"), ncol = 1)
 dev.off()
 
 # Extra plots
-png("Outputs/mean_capture_production_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/mean_capture_production_percap.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist.log(dat.col = "mean_capture_production_percap", variable.title = "Per cap capture production (t)",
           main.title = "Capture production per capita")
 dev.off()
 
-png("Outputs/mean_aquaculture_percap.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/mean_aquaculture_percap.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist.log(dat.col = "mean_aquaculture_percap", variable.title = "Per cap aquaculture production (t)",
           main.title = "Aquaculture production per capita")
 dev.off()
 
-png("Outputs/fish_affordability.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/fish_affordability.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist.log(dat.col = "fish_affordability", variable.title = "Relative affordability", 
           main.title = "Relative affordability")
 dev.off()
 
-png("Outputs/mean_catch_nutrition_quality.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/mean_catch_nutrition_quality.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist.log(dat.col = "mean_catch_nutrition_quality", variable.title = "Mean catch quality", main.title = "Catch quality")
 dev.off()
 
-png("Outputs/mean_gdp.png", width = 8, height = 3.5, units = 'in', res = 300)
+png(here("gini_analysis/plots/mean_gdp.png"), width = 8, height = 3.5, units = 'in', res = 300)
 plot.dist.log(dat.col = "mean_gdp", variable.title = "GDP", main.title = "GDP")
 dev.off()
 
