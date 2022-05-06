@@ -425,20 +425,20 @@ plot.dist.log <- function(dat.col, variable.title, log.dat.col = NULL, log.varia
 }
 
 
-png(here("gini_analysis/plots/Fig_2_v2.png"), width = 7, height = 10, units = 'in', res = 300)
+png(here("gini_analysis/plots/Fig_2_v3.png"), width = 7, height = 10, units = 'in', res = 300)
 a <- plot.dist.log(dat.col = "mean_total_production_perworker", variable.title = "Production (t/worker)",
-          main.title = "", color_low="white", color_high = "#00BCC6")
-b <- plot.dist.log(dat.col = "mean_exports_USD1000_percap", variable.title = "Per cap exports (1000 USD)",
+          main.title = "", color_low="white", color_high = "#00a4ad")
+b <- plot.dist.log(dat.col = "mean_exports_USD1000_percap", variable.title = "Exports (1000 USD/cap)",
                    main.title = "", color_low="white", color_high = "#70468C")
 c <- plot.dist.log(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Protein supply (g/cap)",
-               main.title = "", color_low="white", color_high = "#16CC52")
+               main.title = "", color_low="white", color_high = "#14b549")
 ggarrange(a, b, c, labels = c("a", "b", "c"), ncol = 1)
 dev.off()
 
 pdf(here("gini_analysis/plots/Fig_2_v2.pdf"))
 a <- plot.dist.log(dat.col = "mean_total_production_perworker", variable.title = "Production (t/worker)",
-                   main.title = "", color_low="white", color_high = "#00BCC6")
-b <- plot.dist.log(dat.col = "mean_exports_USD1000_percap", variable.title = "Per cap exports (1000 USD)",
+                   main.title = "", color_low="white", color_high = "#00AEB7")
+b <- plot.dist.log(dat.col = "mean_exports_USD1000_percap", variable.title = "Exports (1000 USD/cap)",
                    main.title = "", color_low="white", color_high = "#70468C")
 c <- plot.dist.log(dat.col = "fish_supply_daily_g_protein_percap", variable.title = "Protein supply (g/cap)",
                    main.title = "", color_low="white", color_high = "#16CC52")
@@ -448,11 +448,11 @@ dev.off()
 png(here("gini_analysis/plots/SIFig_inequality_maps.png"), width = 8, height = 10, units = 'in', res = 300)
 a <- plot.dist.log(dat.col = "mean_total_production_percap", variable.title = "Production (t/capita)",
                    main.title = "", color_low="white", color_high = "#FC5185")
-b <- plot.dist.log(dat.col = "direct_w_esitimated_ssf_percap", variable.title = "Per cap direct livelihoods",
+b <- plot.dist.log(dat.col = "direct_w_esitimated_ssf_percap", variable.title = "Direct livelihoods (/cap)",
                    main.title = "", color_low="white", color_high = "#364F6B")
-c <- plot.dist.log(dat.col = "indirect_w_esitimated_ssf_percap", variable.title = "Per cap indirect livelihoods",
+c <- plot.dist.log(dat.col = "indirect_w_esitimated_ssf_percap", variable.title = "Indirect livelihoods (/cap)",
                    main.title = "", color_low="white", color_high = "#A9D158")
-d <- plot.dist.log(dat.col = "women_livelihoods_percap", variable.title = "Per cap women's livelihoods",
+d <- plot.dist.log(dat.col = "women_livelihoods_percap", variable.title = "Women's livelihoods (/cap)",
                    main.title = "", color_low="white", color_high = "#FFA647")
 e <- plot.dist.log(dat.col = "mean_exports_tonnes_percap", variable.title = "Exports (t/cap)",
                    main.title = "", color_low="white", color_high = "#C93F3F")
@@ -462,11 +462,11 @@ dev.off()
 pdf(here("gini_analysis/plots/SIFig_inequality_maps.pdf"), width = 8, height = 10, units = 'in', res = 300)
 a <- plot.dist.log(dat.col = "mean_total_production_percap", variable.title = "Production (t/capita)",
                    main.title = "", color_low="white", color_high = "#FC5185")
-b <- plot.dist.log(dat.col = "direct_w_esitimated_ssf_percap", variable.title = "Per cap direct livelihoods",
+b <- plot.dist.log(dat.col = "direct_w_esitimated_ssf_percap", variable.title = "Direct livelihoods (/cap)",
                    main.title = "", color_low="white", color_high = "#364F6B")
-c <- plot.dist.log(dat.col = "indirect_w_esitimated_ssf_percap", variable.title = "Per cap indirect livelihoods",
+c <- plot.dist.log(dat.col = "indirect_w_esitimated_ssf_percap", variable.title = "Indirect livelihoods (/cap)",
                    main.title = "", color_low="white", color_high = "#A9D158")
-d <- plot.dist.log(dat.col = "women_livelihoods_percap", variable.title = "Per cap women's livelihoods",
+d <- plot.dist.log(dat.col = "women_livelihoods_percap", variable.title = "Women's livelihoods (/cap)",
                    main.title = "", color_low="white", color_high = "#FFA647")
 e <- plot.dist.log(dat.col = "mean_exports_tonnes_percap", variable.title = "Exports (t/cap)",
                    main.title = "", color_low="white", color_high = "#C93F3F")
