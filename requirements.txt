@@ -47,7 +47,7 @@ nbformat==5.0.8
 nest-asyncio==1.4.3
 netCDF4==1.5.5
 notebook==6.1.5
-numpy==1.19.4
+numpy==1.22.0
 packaging==20.7
 palettable==3.3.0
 pandas==1.1.5
