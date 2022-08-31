@@ -13,5 +13,6 @@ Description of contents of the subdirectories:
 The repository also includes some data files used in the analysis: 
 * all_national_indicators.csv - All data pulled into the Bayesian model scripts in the model folder. This includes all variables considered, but not all variables are used in the model. 
 * bayesian_model_variables.csv - Only includes the data (cleaned and transformed) that are in the predictor, nuisance and response (denoted by _response) variables.
+* policy_nvivo_keyword_extract.csv - Keywords for the barriers to participation in national policy documents,extracted using NVivo. 
 * meow_climatic_zone.csv - Climatic data used in the model folder. 
 * requirements.txt - Text file used by Python-based scripts in the model folder. 
