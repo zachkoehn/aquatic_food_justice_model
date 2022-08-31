@@ -5,11 +5,10 @@ This repository houses the script and data necessary to run the quantitative asp
 
 Description of contents of the subdirectories:
 * data_cleaning - includes all the scripts that clean the raw data. Raw data is not included in the repository due to size. 
-* model - Scripts associated with the Bayesian models
+* model - Scripts associated with the Bayesian models, including the outputs for Fig. 4 (Bayesian hierarchical models establishing how economic, social, and political barriers are associated with distributions of aquatic food benefits)
 * model_outputs - Stores the outputs of the Bayesian models
 * fig_2 - Script to produce Fig. 2 (Global distribution of benefits from aquatic foods)
 * fig_3 - Script to produce Fig. 3 (Recognition of barriers to participation in national policy documents)
-* fig_4 - Script to produce Fig. 4 (Bayesian hierarchical models establishing how economic, social, and political barriers are associated with distributions of aquatic food benefits)
 
 The repository also includes some data files used in the analysis: 
 * all_national_indicators.csv - All data pulled into the Bayesian model scripts in the model folder. This includes all variables considered, but not all variables are used in the model. 
