@@ -1,7 +1,9 @@
 
-# Towards Justice in Blue Foods
+# Rights and Representation Support Justice across Aquatic Food Systems
 
-This repository houses the script and data necessary to run the quantitative aspects of the paper. This project is a part of the Blue Food Assessment. 
+This repository houses the script and data necessary to run the quantitative aspects of the paper. This project is a part of the Blue Food Assessment.
+
+
 
 Description of contents of the subdirectories:
 * data_cleaning - includes all the scripts that clean the raw data. Raw data is not included in the repository due to size. 
