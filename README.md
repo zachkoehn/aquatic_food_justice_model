@@ -1,5 +1,5 @@
 
-# Rights and Representation Support Justice across Aquatic Food Systems
+# Rights and representation support justice across aquatic food systems
 
 This repository houses the script and data necessary to run the quantitative aspects of the paper. This project is a part of the Blue Food Assessment.
 
