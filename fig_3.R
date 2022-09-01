@@ -17,13 +17,11 @@ library(sf)
 library(rnaturalearth)
 library(rnaturalearthdata)
 library(cowplot)
-
-# directory
-directory <- "/Volumes/GoogleDrive/My Drive/BFA_Papers/BFA_Justice/section_model/aquatic_food_justice_model"
+library(here)
 
 raw_dat <- read.csv(
   file.path(
-    directory,
+    here(),
     "policy_nvivo_keyword_extract.csv"
   ),
   header=TRUE

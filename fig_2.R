@@ -219,7 +219,7 @@ c <- plot.dist.log(dat.col = "fish_supply_daily_g_protein_percap", variable.titl
                    main.title = "",color_low="#a7e7be",color_high="#248446")
 figure_2 <- ggarrange(a, b, c, labels = c("a", "b", "c"), ncol = 1)
 
-pdf(here("gini_analysis/outputs/figure_2_nature_food.pdf"), width = 7, height = 10)
+pdf(here("outputs/figure_2_nature_food.pdf"), width = 7, height = 10)
 figure_2
 dev.off()
 
